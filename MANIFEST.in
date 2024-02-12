@@ -1,0 +1,15 @@
+#  the MANIFEST.in file is used to ensure that certain important files, 
+# which are not Python code files but are essential to the package (like READMEs, licenses, and data files), are included in the package when it is distributed (e.g., uploaded to PyPI).
+
+
+
+# Include the README.md in the package
+include README.md
+
+# Include the LICENSE file in the package
+include LICENSE
+
+# Include any additional data files or directories in the package
+# recursive-include path/to/data/directory *
+
+# The above line should be uncommented and modified according to the actual data directory path

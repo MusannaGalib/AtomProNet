@@ -1,0 +1,17 @@
+#Bytecode compiled files created by Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# These files might appear in Python projects
+# where Python virtual environments are used.
+# .Python is a folder that might be created in some configurations.
+.Python
+
+# The env and venv directories are commonly used 
+# for Python virtual environments.
+# Virtual environments are isolated Python environments, 
+# used for dependency management and project isolation.
+env/
+venv/

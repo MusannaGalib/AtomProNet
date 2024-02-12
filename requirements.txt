@@ -1,0 +1,35 @@
+# This is the 'requirements.txt' file for the Python project.
+# It lists all the external Python packages (dependencies) the project needs.
+
+# The purpose of this file is to ensure that anyone who sets up the project
+# has all the necessary dependencies installed. This aids in maintaining
+# consistency across different development environments.
+
+# To install these dependencies, one can run the command:
+# pip install -r requirements.txt
+# This command uses pip, the Python package manager, to install all listed packages.
+
+# Listed Dependencies:
+# ---------------------
+
+# numpy: Required for numerical operations, large arrays, and matrices handling.
+numpy
+
+# ase: Used for atomistic simulations, essential for computational chemistry and materials science.
+ase
+
+# Note on 'os' Module:
+# ---------------------
+# The 'os' module is a built-in module in Python and does not need to be installed separately.
+# It is available by default in all Python environments. Therefore, it's generally unnecessary
+# to include it in the 'requirements.txt' file. However, if needed, it can be included here.
+#os
+
+# Note on Adding More Packages:
+# -----------------------------
+# If you add more package names to this file, there is no need to modify any other
+# files for installation purposes. However, you may need to import and use these
+# new packages in your Python scripts (e.g., in 'converter.py' or other modules) as needed.
+
+# When a new package is added, simply listing it here (optionally with a version number)
+# is sufficient for pip to handle its installation.
