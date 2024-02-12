@@ -1,4 +1,4 @@
-# Nequip Converter Package
+# VASP_Neural_Network_dataset_converter Package
 
 This package demonstrates a data processing workflow involving Bash script, Python conversion scripts, which automatically converts multiple VASP OUTCAR data into neural network training format (extxyz or npz).
 
@@ -17,8 +17,6 @@ This package demonstrates a data processing workflow involving Bash script, Pyth
    - Takes the output from `combine.py` and performs a final operation.
    - Outputs the converted extxyz file.
 
-
-# Nequip Converter Package
 
 ## Installation and Usage Guide
 
