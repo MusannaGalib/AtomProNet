@@ -18,8 +18,6 @@ This package demonstrates a data processing workflow involving Bash script, Pyth
    - Outputs the converted extxyz file.
 
 
-# Nequip Converter Package
-
 ## Installation and Usage Guide
 
 This guide provides detailed instructions on how to install and use the VASP_Neural_Network_dataset_converter package.
