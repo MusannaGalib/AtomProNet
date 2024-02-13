@@ -36,10 +36,16 @@ This guide provides detailed instructions on how to install and use the VASP_Neu
    - Navigate to the directory where you extracted the package.
    - Install the package by running the command:
      ```
+     git clone https://github.com/MusannaGalib/VASP_Neural_Network_dataset_converter.git
+     cd VASP_Neural_Network_dataset_converter
      pip install .
      ```
    This command installs the package along with its dependencies.
 
+   VASP_Neural_Network_dataset_converter can also be installed from PyPI:
+     ```
+     pip install VASP_Neural_Network_dataset_converter
+     ```
 
 ### Using the Package
 
@@ -85,6 +91,9 @@ process_and_run_script(r'FOLDER_PATH\example_dataset\hydrostatic_strain')
 # execute the python wrapper
 python3 process_and_run_script.py
 ```
+## Authors
+This Software is developed by Musanna Galib
+
 
 ## Citing This Work
 If you use this software in your research, please cite the following paper:
