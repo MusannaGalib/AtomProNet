@@ -110,3 +110,11 @@ BibTeX entry:
   publisher={Publisher}
 }
 
+
+### Contact, questions, and contributing
+If you have questions, please don't hesitate to reach out to galibubc[at]student[dot]ubc[dot]ca
+
+If you find a bug or have a proposal for a feature, please post it in the Issues. If you have a question, topic, or issue that isn't obviously one of those, try our GitHub Disucssions.
+
+If your post is related to the framework/package, please post in the issues/discussion on that repository. 
+

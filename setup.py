@@ -5,7 +5,7 @@ setup(
     name='VASP_Neural_Network_dataset_converter',  # Name of the package
     version='0.1.0',  # Version of the package
     author='Musanna Galib',  # Replace with your name
-    author_email='musannagalib@rocketmail.com',  # Replace with your email
+    author_email='galibubc@student.ubc.ca',  # Replace with your email
     description='A Python package for converting VASP data to extxyz/npz format.',  # Short description of your package
     long_description=open('README.md').read(),  # Long description read from the README.md
     long_description_content_type='text/markdown',  # Type of the long description, markdown is recommended
