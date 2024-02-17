@@ -80,6 +80,27 @@ python3 process_and_run_script.py
         if len(index_line) == 3:              #3 for -0.05 -0.05 -0.05   2 for -0.05 -0.05
 ```
 
+**Ab-inito MD simulation:**
+```bash
+# in the main run file activate the bash file for AIMD data processing as following- AIMD_data_extract.sh 
+    bash_script_path = os.path.join(script_dir, '..', 'scripts', 'AIMD_data_extract.sh')  
+    subprocess.run(['bash', 'AIMD_data_extract.sh'], capture_output=True, text=True, check=True)
+# give your folder path containing AIMD VASP data    
+    process_and_run_script(r'F:\Research\ML\package\VASP_Neural_Network_dataset_converter\example_dataset\AIMD')
+```
+```bash
+# in AIMD_data_extract.sh file edit the following
+
+#If you have multiple folder edit here to give ("alumina_*") the prefix of folders 
+    for DIRECTORY in $(find . -type d -name "alumina_*"); do
+
+# change this lopp (i<=10) depending on AIMD steps
+		for ((i=1; i<=10; i++)); do   
+			echo "0.0 0.0 0.0" >> ../lattice.txt
+			sed -n '3,5p' CONTCAR | awk '{printf $1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "} END {print ""}' >> ../lattice.txt
+		done
+```
+
 ### Example Usage
 
 An example dataset is given in 'example_dataset' folder. You can use the following commands to play with that.
