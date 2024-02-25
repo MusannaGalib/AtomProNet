@@ -1,6 +1,6 @@
 ![PyPI downloads](https://img.shields.io/pypi/dm/your-package-name)
 [![Paper](https://img.shields.io/badge/Journal-J.ComMatSci-blue)](https://doi.org/your-paper-doi)
-![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)
+[![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
 
 
 # VASP_Neural_Network_dataset_converter Package
