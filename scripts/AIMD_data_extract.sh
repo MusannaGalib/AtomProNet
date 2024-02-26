@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#Convert Line Endings to Unix Format
+#sed -i 's/\r$//' AIMD_data_extract.sh
+
+
 # Find all directories containing OUTCAR files
 for DIRECTORY in $(find . -type d -name "alumina_*"); do
     echo "Currently working in directory: ${DIRECTORY}"
@@ -21,6 +25,7 @@ for DIRECTORY in $(find . -type d -name "alumina_*"); do
     if [ -f lattice.txt ]; then
         rm lattice.txt
     fi
+
 
     # Check if OUTCAR file exists
     if [ -f "OUTCAR" ]; then
