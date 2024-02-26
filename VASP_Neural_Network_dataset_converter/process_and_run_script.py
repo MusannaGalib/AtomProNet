@@ -57,5 +57,5 @@ def process_and_run_script(input_folder):                       # Define a wrapp
 if __name__ == "__main__":
     # Replace 'path/to/input_file.txt' with the actual path to your input file
     #process_and_run_script(r'F:\Research\ML\package\VASP_Neural_Network_dataset_converter\example_dataset\hydrostatic_strain')
-    process_and_run_script(r'F:\Research\ML\package\VASP_Neural_Network_dataset_converter\example_dataset\AIMD')
+    process_and_run_script(r'F:\Research\ML\package\VASP_Neural_Network_dataset_converter\example_dataset\AIMD\alumina')
     pass
