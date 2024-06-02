@@ -78,6 +78,7 @@ process_and_run_script(r'Folder path')
 python3 process_and_run_script.py
 
 ```
+Options in lattice.py for 2D and 3D strains:
 
 ```python
 # change the index_line in 'lattice.py': 2 for inplane/2D strains; 3 for hydrostratic/3D strains
