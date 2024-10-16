@@ -3,7 +3,7 @@
 [![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
 
 
-# VASP_Neural_Network_dataset_converter Package
+# AtomProNet Package
 
 This package demonstrates a data processing workflow involving Bash script, Python conversion scripts, which automatically converts multiple VASP OUTCAR data into neural network training format (extxyz or npz).
 
@@ -33,7 +33,7 @@ This guide provides detailed instructions on how to install and use the VASP_Neu
 
 ### Installation
 1. **Download the Package:**
-   - Download the zip file containing the VASP_Neural_Network_dataset_converter package.
+   - Download the zip file containing the AtomProNet package.
    - Extract the zip file to a directory of your choice.
 
 2. **Install the Package:**
@@ -41,15 +41,15 @@ This guide provides detailed instructions on how to install and use the VASP_Neu
    - Navigate to the directory where you extracted the package.
    - Install the package by running the command:
      ```
-     git clone https://github.com/MusannaGalib/VASP_Neural_Network_dataset_converter.git
-     cd VASP_Neural_Network_dataset_converter
+     git clone https://github.com/MusannaGalib/AtomProNet.git
+     cd AtomProNet
      pip install .
      ```
    This command installs the package along with its dependencies.
 
-   VASP_Neural_Network_dataset_converter can also be installed from PyPI:
+   AtomProNet can also be installed from PyPI:
      ```
-     pip install VASP_Neural_Network_dataset_converter
+     pip install AtomProNet
      ```
 
 ### Using the Package
