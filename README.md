@@ -92,7 +92,7 @@ Options in lattice.py for 2D and 3D strains:
     bash_script_path = os.path.join(script_dir, '..', 'scripts', 'AIMD_data_extract.sh')  
     subprocess.run(['bash', 'AIMD_data_extract.sh'], capture_output=True, text=True, check=True)
 # give your folder path containing AIMD VASP data    
-    process_and_run_script(r'F:\Research\ML\package\VASP_Neural_Network_dataset_converter\example_dataset\AIMD')
+    process_and_run_script(r'F:\Research\ML\package\AtomProNet\example_dataset\AIMD')
 ```
 ```bash
 # in AIMD_data_extract.sh file edit the following
