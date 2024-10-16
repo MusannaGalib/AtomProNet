@@ -7,8 +7,8 @@ def npz_to_extxyz(input_file):
     from ase.calculators.singlepoint import SinglePointCalculator
 
     # Read in npz file
-    #in_filename = 'F:/Research/ML/package/AtomProNet/trial/alumina_pure.npz'
-    #out_filename = 'F:/Research/ML/package/AtomProNet/trial/nequip_data_alumina_pure.extxyz'
+    #in_filename = 'F:/Research/ML/package/VASP_GNN_dataset_converter/trial/alumina_pure.npz'
+    #out_filename = 'F:/Research/ML/package/VASP_GNN_dataset_converter/trial/nequip_data_alumina_pure.extxyz'
     #data = np.load(in_filename)
 
    # Get the absolute path of the input file

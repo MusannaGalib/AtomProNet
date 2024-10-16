@@ -17,7 +17,6 @@ def process_and_run_script(input_folder):                       # Define a wrapp
     input_folder_path = os.path.abspath(input_folder)           # Get the absolute path of the input folder
     script_dir = os.path.dirname(os.path.abspath(__file__))     # Set the path to the directory where the Bash script resides  
     bash_script_path = os.path.join(script_dir, '..', 'scripts', 'hydrostatic_strain_post_processing.sh')  # Find the path to the Bash script
-    #bash_script_path = os.path.join(script_dir, '..', 'scripts', 'AIMD_data_extract.sh')  # Find the path to the Bash script
 
     if not os.path.exists(bash_script_path):        #  Check if the Bash script exists
         print("Error: Bash script not found.")
@@ -32,7 +31,6 @@ def process_and_run_script(input_folder):                       # Define a wrapp
     os.chdir(input_folder_path)                       # Change directory to the input folder
     try:                                              # Execute the Bash script
         subprocess.run(['bash', 'hydrostatic_strain_post_processing.sh'], capture_output=True, text=True, check=True)
-        #subprocess.run(['bash', 'AIMD_data_extract.sh'], capture_output=True, text=True, check=True)
         print("Bash script executed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error executing Bash script: {e}")
@@ -56,6 +54,5 @@ def process_and_run_script(input_folder):                       # Define a wrapp
 
 if __name__ == "__main__":
     # Replace 'path/to/input_file.txt' with the actual path to your input file
-    process_and_run_script(r'F:\Research\ML\package\AtomProNet\example_dataset\hydrostatic_strain')
-    #process_and_run_script(r'F:\Research\ML\package\AtomProNet\example_dataset\AIMD\alumina')
+    process_and_run_script(r'F:\Research\ML\package\VASP_Neural_Network_dataset_converter\example_dataset\hydrostatic_strain')
     pass

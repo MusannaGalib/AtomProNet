@@ -4,7 +4,7 @@ def lattice(input_file):
     import os
 
     # Read the data from the text file
-    #with open('F:/Research/ML/package/AtomProNet/trial/lattice_pure.txt', 'r') as file:
+    #with open('F:/Research/ML/package/VASP_GNN_dataset_converter/trial/lattice_pure.txt', 'r') as file:
     #    lines = file.readlines()
 
     # Get the absolute path of the input file
