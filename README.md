@@ -3,7 +3,7 @@
 [![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
 
 
-# AtomProNet Package
+# AtomProNet: Atomic Data Processing for Neural Network
 
 This package demonstrates a data processing workflow involving Bash script, Python conversion scripts, which automatically converts multiple VASP OUTCAR data into neural network training format (extxyz or npz).
 
