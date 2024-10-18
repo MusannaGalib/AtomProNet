@@ -7,6 +7,37 @@
 
 This package demonstrates a data processing workflow involving Bash script, Python conversion scripts, which automatically converts multiple VASP OUTCAR data into neural network training format (extxyz or npz).
 
+```
+
+├── LICENSE
+├── CODE_OF_CONDUCT.md <- Guidelines for users and contributors of the project.
+├── DFT
+│   ├── 2D/3D strain      <- The final, canonical data sets for modeling.
+│   └── Ab-inito simulation            <- The original, immutable data dump.
+│
+│
+├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
+│   └── figures        <- Generated graphics and figures to be used in reporting
+│
+│
+├── src                <- Source code for use in this project.
+│   │
+│   ├── data           <- Scripts to download or generate data
+│   │   ├── DFT
+│   │   ├── 2D/3D strain      <- The final, canonical data sets for modeling.
+│   │   └── Ab-inito simulation            <- The original, immutable data dump.└── make_dataset.py
+│            │
+│            ├── AIMD
+│   │
+│   ├── models         <- Scripts to train models and then use trained models to make
+│   │   │                 predictions
+│   │   ├── predict_model.py
+│   │   └── train_model.py
+│   │
+│   └── visualisation  <- Scripts to create exploratory and results-oriented visualisations
+│       └── visualise.py
+└──
+```
 
 ## Workflow Overview
 
