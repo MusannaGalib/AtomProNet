@@ -27,13 +27,13 @@ AtomProNet
     │
     │
     └── Post-processing
-        ├── MLIP         
+        ├── Machine Learning Interatomic Potential (MLIP)         
         │   │                 
         │   ├── Uncertainity quantifications
         │   └── Visualization
         │
         └── LAMMPS  
-            ├── Uncertainity quantifications
+            ├── Validations
             └── Visualization   
 
 ```
