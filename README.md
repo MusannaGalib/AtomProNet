@@ -159,10 +159,10 @@ If you use this software in your research, please cite the following paper:
 ```python
 BibTeX entry:
 @article{YourPaper,
-  title={Title of Your Paper},
-  author={Your Name},
+  title={Data flow to and from machine learning interatomic potentials in materials science},
+  author={Musanna Galib, Mewael Isiet, Mauricio Ponga},
   journal={Journal/Conference},
-  year={2024},
+  year={2025},
   publisher={Publisher}
 }
 ```
