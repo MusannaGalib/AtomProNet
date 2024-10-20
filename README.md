@@ -10,7 +10,7 @@ This package demonstrates a data processing workflow involving Bash script, Pyth
 ```
 AtomProNet
     |
-    ├── Pre-processing for DFT simulation
+    ├── Pre-processing for DFT simulation (VASP)
     │   ├── 2D/3D strain                   
     │   └── Ab-inito simulation            
     │
@@ -32,7 +32,7 @@ AtomProNet
         │   ├── Uncertainity quantifications
         │   └── Visualization
         │
-        └── LAMMPS  
+        └── Classical Molecular Dynamics (LAMMPS)  
             ├── Validations
             └── Visualization   
 
