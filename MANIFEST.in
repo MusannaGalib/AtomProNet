@@ -9,6 +9,9 @@ include README.md
 # Include the LICENSE file in the package
 include LICENSE
 
+# Include the  CONTRIBUTING.md file in the package
+include CONTRIBUTING.md
+
 # Include any additional data files or directories in the package
 # recursive-include path/to/data/directory *
 

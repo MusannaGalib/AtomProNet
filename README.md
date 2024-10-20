@@ -1,7 +1,8 @@
 ![PyPI downloads](https://img.shields.io/pypi/dm/your-package-name)
-[![Paper](https://img.shields.io/badge/Journal-NpjComput.Mater.-blue)](https://doi.org/your-paper-doi)
+[![Paper](https://img.shields.io/badge/Journal-Nat.Comput.Sci.-blue)](https://doi.org/your-paper-doi)
 [![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
-
+[![Release](https://img.shields.io/badge/release-v0.0.1-brightgreen)](https://github.com/MusannaGalib/AtomProNet)
+[![License: MIT](https://img.shields.io/badge/license-MIT_2.0-yellow)](https://opensource.org/licenses/MIT)
 
 # AtomProNet: Atomic Data Processing for Neural Network
 
