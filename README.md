@@ -24,7 +24,7 @@ AtomProNet
     │       ├── pressure      
     │       └── lattice parameters            
     │            │
-    │            └── extxyz format
+    │            └── extxyz/npz format
     │
     │
     └── Post-processing
