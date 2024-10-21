@@ -12,13 +12,15 @@ This package demonstrates a data processing workflow involving Bash script, Pyth
 AtomProNet
     |
     ├── Pre-processing for DFT simulation (VASP)
+    │   │
     │   ├── 2D/3D strain                   
     │   └── Ab-inito simulation            
     │
     │
     ├── Pre-processing for Neural Network               
     │   │
-    │   └── DFT folders           
+    │   └── DFT folders 
+    │       │       
     │       ├── energy
     │       ├── forces
     │       ├── pressure      
@@ -28,11 +30,13 @@ AtomProNet
     │
     │
     └── Post-processing
-        ├── Machine Learning Interatomic Potential (MLIP)                          
+        ├── Machine Learning Interatomic Potential (MLIP)         
+        │   │                 
         │   ├── Uncertainity quantifications
         │   └── Visualization
         │
-        └── Classical Molecular Dynamics (LAMMPS)  
+        └── Classical Molecular Dynamics (LAMMPS) 
+            │   
             ├── Validations
             └── Visualization   
 
