@@ -28,8 +28,7 @@ AtomProNet
     │
     │
     └── Post-processing
-        ├── Machine Learning Interatomic Potential (MLIP)         
-        │   │                 
+        ├── Machine Learning Interatomic Potential (MLIP)                          
         │   ├── Uncertainity quantifications
         │   └── Visualization
         │
