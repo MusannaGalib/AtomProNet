@@ -17,7 +17,7 @@ AtomProNet
     │   └── Ab-inito simulation            
     │
     │
-    ├── Pre-processing for Neural Network               
+    ├── Pre-processing for Neural Network  (Post-processing of DFT simulation)             
     │   │
     │   └── DFT folders 
     │       │       
