@@ -91,7 +91,12 @@ This guide provides detailed instructions on how to install and use the VASP_Neu
 To use this package, run the Bash script with an input file, then pass the output file path to the Python scripts:
 
 ```bash
-# Go to scripts folder ---> hydrostatic_strain_post_processing.sh, change the following line according to your simulation range
+# Go to scripts folder change the following line according to your simulation range  ---> hydrostatic_strain_post_processing.sh
+                                                                                 #hydrostatic_strain.sh
+#hydrostatic_strain_post_processing
+#hydrostatic_strain_submission.sh
+#hydrostatic_strain_job_resubmission.sh
+
 for EXX in $(seq -0.003 0.001 0.003); do
 ```
 
