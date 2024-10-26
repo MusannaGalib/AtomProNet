@@ -64,8 +64,10 @@ def process_and_run_script(input_folder):                       # Define a wrapp
 
 if __name__ == "__main__":
     # Replace 'path/to/input_file.txt' with the actual path to your input file
-    process_and_run_script(r'C:\Users\Galib\Downloads\hydrostatic_strain_-0.1_0.0001_0.1\alumina')
+    #process_and_run_script(r'C:\Users\Galib\Downloads\hydrostatic_strain_-0.1_0.0001_0.1\alumina')
     #process_and_run_script(r'F:\Research\ML\package\AtomProNet\example_dataset\AIMD\alumina')
-    pass
-
-
+    #pass
+    
+    # Prompt the user to enter the folder path
+    input_folder = input("Please enter the full path to the folder where the operations should be performed: ").strip()
+    process_and_run_script(input_folder)
