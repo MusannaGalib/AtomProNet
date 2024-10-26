@@ -10,6 +10,20 @@ def lattice(input_file):
     # Get the absolute path of the input file
     input_file_path = os.path.join(input_file, 'lattice.txt')
 
+        # Ask the user if the sample is strained in 2 or 3 directions
+    while True:
+        try:
+            strain_directions = int(input("Enter the number of directions the sample is strained in (2 or 3): ").strip())
+            if strain_directions in [2, 3]:
+                break
+            else:
+                print("Please enter 2 or 3.")
+        except ValueError:
+            print("Invalid input. Please enter a number (2 or 3).")
+
+    # Define the expected length based on user input
+    expected_length = 3 if strain_directions == 3 else 2
+
     # Read the data from the text file
     with open(input_file_path, 'r') as file:
         lines = file.readlines()
@@ -23,7 +37,7 @@ def lattice(input_file):
         index_line = lines[i].split()
 
         # Check if the index line has the correct number of values
-        if len(index_line) == 3:              #3 for -0.05 -0.05 -0.05   2 for -0.05 -0.05
+        if len(index_line) == expected_length:              #3 for -0.05 -0.05 -0.05   2 for -0.05 -0.05
             # Check if there are enough lines remaining
             if i + 1 < len(lines):
                 # Extract the lattice parameters
