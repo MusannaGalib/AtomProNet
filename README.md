@@ -92,10 +92,10 @@ To use this package, run the Bash script with an input file, then pass the outpu
 
 ```bash
 # Go to scripts folder change the following line according to your simulation range  ---> 
-                hydrostatic_strain.sh
-                └── hydrostatic_strain_submission.sh (Limit 999 job submission; change it based on server)
-                    └── hydrostatic_strain_job_resubmission.sh
-                        └── hydrostatic_strain_post_processing.sh
+    hydrostatic_strain.sh
+    └── hydrostatic_strain_submission.sh (Limit 999 job submission; change it based on server)
+        └── hydrostatic_strain_job_resubmission.sh
+            └── hydrostatic_strain_post_processing.sh
 
 
 for EXX in $(seq -0.003 0.001 0.003); do
