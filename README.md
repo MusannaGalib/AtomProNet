@@ -88,27 +88,8 @@ This guide provides detailed instructions on how to install and use the VASP_Neu
 
 ### Using the Package
 
-<details>
-<summary>📖 Read More</summary>  
 
-<br>  
-
-### Additional Information
-
-Here you can add more detailed documentation or explanations. This text will be hidden until the user clicks "Read more."
-
-```python
-# change the index_line in 'lattice.py': 2 for inplane/2D strains; 3 for hydrostatic/3D strains
-# Default: if len(index_line) == 3 (hydrostatic strain)
-if len(index_line) == 3:              # 3 for -0.05 -0.05 -0.05   2 for -0.05 -0.05
-
-```
-  - List of features
-  - Examples
-  - More details about your project's purpose
-
-  You can use any markdown here just like in the main README content.
-</details>
+# Pre-processing for DFT simulation (VASP)
 
 To use this package, run the Bash script with an input file, then pass the output file path to the Python scripts:
 
@@ -123,6 +104,29 @@ To use this package, run the Bash script with an input file, then pass the outpu
 for EXX in $(seq -0.003 0.001 0.003); do
 ```
 
+## Pre-processing for Neural Network  (Post-processing of DFT simulation) 
+# Run the process_and_run_script.py script using any code runner
+python3 process_and_run_script.py
+  
+```bash
+# Go to scripts folder change the following line according to your simulation range  ---> 
+    hydrostatic_strain.sh
+    └── hydrostatic_strain_submission.sh (Limit 999 job submission; change it based on server)
+        └── hydrostatic_strain_job_resubmission.sh
+            └── hydrostatic_strain_post_processing.sh
+
+```
+
+
+
+
+
+<details>
+<summary>📖 Read More</summary>  
+
+<br>  
+
+### Additional Information
 ```python
 # Provide the folder path of VASP simulations in 'process_and_run_script.py'
 process_and_run_script(r'Folder path')
@@ -136,10 +140,8 @@ process_and_run_script(r'Folder path')
     # Create an array with 'Al' symbols followed by other elements
     atom_array = np.concatenate([np.full(Al_count, 'Al'), np.full(O_count, 'O')])
 
-# Run the process_and_run_script.py script using any code runner
-python3 process_and_run_script.py
-
 ```
+
 Options in lattice.py for 2D and 3D strains:
 
 ```python
@@ -147,6 +149,8 @@ Options in lattice.py for 2D and 3D strains:
 # Defalut: if len(index_line) == 3 (hydrostatic strain)
         if len(index_line) == 3:              #3 for -0.05 -0.05 -0.05   2 for -0.05 -0.05
 ```
+</details>
+
 
 **Ab-inito MD simulation:**
 ```bash
