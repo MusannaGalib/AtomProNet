@@ -89,8 +89,8 @@ This guide provides detailed instructions on how to install and use the VASP_Neu
 ### Using the Package
 
 <details>
-  <summary>Read more</summary>
-
+  <summary>✨ **Read More** ✨</summary>
+  
   ### Additional Information
   Here you can add more detailed documentation or explanations. This text will be hidden until the user clicks "Read more."
 
