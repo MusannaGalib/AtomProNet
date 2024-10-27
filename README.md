@@ -89,32 +89,32 @@ This guide provides detailed instructions on how to install and use the VASP_Neu
 ### Using the Package
 
 
-# Pre-processing for DFT simulation (VASP)
+### Pre-processing for DFT simulation (VASP)
 
 To use this package, run the Bash script with an input file, then pass the output file path to the Python scripts:
 
 ```bash
 # Go to scripts folder change the following line according to your simulation range  ---> 
-    hydrostatic_strain.sh
-    └── hydrostatic_strain_submission.sh (Limit 999 job submission; change it based on server)
-        └── hydrostatic_strain_job_resubmission.sh
-            └── hydrostatic_strain_post_processing.sh
-
+    Pre-processing for DFT simulation
+    └── hydrostatic_strain.sh
+        └── hydrostatic_strain_submission.sh (Limit 999 job submission; change it based on server)
+            └── hydrostatic_strain_job_resubmission.sh
 
 for EXX in $(seq -0.003 0.001 0.003); do
 ```
 
 ## Pre-processing for Neural Network  (Post-processing of DFT simulation) 
-# Run the process_and_run_script.py script using any code runner
+**Run the process_and_run_script.py script using any code runner**
+```bash
 python3 process_and_run_script.py
-  
+```
+
 ```bash
 # Go to scripts folder change the following line according to your simulation range  ---> 
-    hydrostatic_strain.sh
-    └── hydrostatic_strain_submission.sh (Limit 999 job submission; change it based on server)
-        └── hydrostatic_strain_job_resubmission.sh
-            └── hydrostatic_strain_post_processing.sh
-
+    Pre-processing for Neural Network
+    └── hydrostatic_strain_post_processing.sh
+        └── 2D/3D strain
+            └── Atom types
 ```
 
 
@@ -127,12 +127,10 @@ python3 process_and_run_script.py
 <br>  
 
 ### Additional Information
+
+Go to atom_symbol.py and change the atom types based on your DFT datafiles (CONTCAR)
+
 ```python
-# Provide the folder path of VASP simulations in 'process_and_run_script.py'
-process_and_run_script(r'Folder path')
-
-
-# Go to atom_symbol.py and change the atom types
     # Create the array with atomic numbers
     Al_count = 8  #Al
     O_count = 12   #O
@@ -142,7 +140,7 @@ process_and_run_script(r'Folder path')
 
 ```
 
-Options in lattice.py for 2D and 3D strains:
+Options in lattice.py for 2D and 3D strains: (mianly required for data-extrantion from lattice.py)
 
 ```python
 # change the index_line in 'lattice.py': 2 for inplane/2D strains; 3 for hydrostratic/3D strains
