@@ -88,6 +88,19 @@ This guide provides detailed instructions on how to install and use the VASP_Neu
 
 ### Using the Package
 
+<details>
+  <summary>Read more</summary>
+
+  ### Additional Information
+  Here you can add more detailed documentation or explanations. This text will be hidden until the user clicks "Read more."
+
+  - List of features
+  - Examples
+  - More details about your project's purpose
+
+  You can use any markdown here just like in the main README content.
+</details>
+
 To use this package, run the Bash script with an input file, then pass the output file path to the Python scripts:
 
 ```bash
