@@ -89,10 +89,14 @@ This guide provides detailed instructions on how to install and use the VASP_Neu
 ### Using the Package
 
 <details>
-<summary>📖 **Read More**</summary>  
+<summary>📖 Read More</summary>  
   ### Additional Information
   Here you can add more detailed documentation or explanations. This text will be hidden until the user clicks "Read more."
-
+    ```python
+    # change the index_line in 'lattice.py': 2 for inplane/2D strains; 3 for hydrostratic/3D strains
+    # Defalut: if len(index_line) == 3 (hydrostatic strain)
+            if len(index_line) == 3:              #3 for -0.05 -0.05 -0.05   2 for -0.05 -0.05
+    ```
   - List of features
   - Examples
   - More details about your project's purpose
