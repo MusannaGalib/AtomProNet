@@ -89,7 +89,7 @@ This guide provides detailed instructions on how to install and use the VASP_Neu
 ### Using the Package
 
 
-### Pre-processing for DFT simulation (VASP)
+**Pre-processing for DFT simulation (VASP)**
 
 To use this package, run the Bash script with an input file, then pass the output file path to the Python scripts:
 
@@ -103,8 +103,8 @@ To use this package, run the Bash script with an input file, then pass the outpu
 for EXX in $(seq -0.003 0.001 0.003); do
 ```
 
-## Pre-processing for Neural Network  (Post-processing of DFT simulation) 
-**Run the process_and_run_script.py script using any code runner**
+**Pre-processing for Neural Network  (Post-processing of DFT simulation)**
+Run the process_and_run_script.py script using any code runner
 ```bash
 python3 process_and_run_script.py
 ```
@@ -126,7 +126,7 @@ python3 process_and_run_script.py
 
 <br>  
 
-### Additional Information
+**Additional Information**
 
 Go to atom_symbol.py and change the atom types based on your DFT datafiles (CONTCAR)
 
