@@ -104,6 +104,7 @@ for EXX in $(seq -0.003 0.001 0.003); do
 ```
 
 **Pre-processing for Neural Network  (Post-processing of DFT simulation)**
+
 Run the process_and_run_script.py script using any code runner
 ```bash
 python3 process_and_run_script.py
