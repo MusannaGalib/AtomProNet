@@ -2,6 +2,8 @@
 import subprocess
 import os
 import shutil
+import pymatgen
+import mp_api
 from lattice import lattice
 from pressure_eV import pressure_eV
 from position_force import position_force

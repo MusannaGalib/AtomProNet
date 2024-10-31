@@ -18,7 +18,7 @@ numpy
 # ase: Used for atomistic simulations, essential for computational chemistry and materials science.
 ase
 
-
+# For materials project API
 mp-api
 pymatgen
 

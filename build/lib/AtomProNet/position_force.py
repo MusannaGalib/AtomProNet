@@ -37,7 +37,7 @@ def position_force(input_file):
         return nested_table
 
     # Read the entire file
-    #with open('F:/Research/ML/package/VASP_GNN_dataset_converter/trial/pos-conv_pure.txt', 'r') as file:
+    #with open('F:/Research/ML/package/AtomProNet/trial/pos-conv_pure.txt', 'r') as file:
     #    content = file.readlines()
 
     # Get the absolute path of the input file

@@ -1,3 +1,4 @@
+CODE_OF_CONDUCT.md
 LICENSE
 MANIFEST.in
 README.md
@@ -7,6 +8,7 @@ AtomProNet/atom_symbol.py
 AtomProNet/combine.py
 AtomProNet/energy.py
 AtomProNet/lattice.py
+AtomProNet/materials_project.py
 AtomProNet/npz_to_extxyz.py
 AtomProNet/position_force.py
 AtomProNet/pressure_eV.py

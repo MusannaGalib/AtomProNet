@@ -1,2 +1,4 @@
-ase
 numpy
+ase
+mp-api
+pymatgen
