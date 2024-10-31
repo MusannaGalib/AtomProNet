@@ -13,8 +13,8 @@ from materials_project import fetch_and_write_poscar  # Import the function from
 def process_and_run_script(input_folder):
     while True:
         print("\nChoose an option:")
-        print("1. Fetch material data and create POSCAR files")
-        print("2. Process the generated files with Python scripts")
+        print("1. Pre-processing for DFT simulation")
+        print("2. Pre-processing for Neural Network")
         print("3. Post-processing")
         print("Type 'exit' to return to the main menu.")
 
@@ -26,6 +26,8 @@ def process_and_run_script(input_folder):
             break
 
         if option == '1':
+            input_folder_path = os.path.abspath(input_folder) 
+            os.chdir(input_folder)          
             default_api_key = "H5zmHxuvPs9LKyABNRQmUsj0ROBYs5C4"
             user_api_key = input("Enter your Materials Project API key (press Enter to use default): ")
             api_key = user_api_key if user_api_key.strip() != "" else default_api_key
@@ -37,7 +39,7 @@ def process_and_run_script(input_folder):
                 sizes = input("Enter the supercell size (e.g., 2 2 2): ")
                 supercell_size = [int(x) for x in sizes.split()]
 
-            fetch_and_write_poscar(api_key, query, create_supercell_option, supercell_size)
+            fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option, supercell_size)
 
         elif option == '2':
             input_folder_path = os.path.abspath(input_folder)           

@@ -3,21 +3,17 @@ from mp_api.client import MPRester
 from pymatgen.core.structure import Structure
 from pymatgen.core.lattice import Lattice
 
-def construct_poscar_from_structure(structure, filename="POSCAR"):
-    # Get the directory of the current script
-    current_script_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # Go one level up from the current script directory
-    parent_dir = os.path.dirname(current_script_dir)
-    
-    # Construct the path to the VASP_files directory
-    directory = os.path.join(parent_dir, "VASP_files")
+def construct_poscar_from_structure(structure, input_folder, filename="POSCAR"):
+    # Construct the path to the VASP_files directory within the input folder
+    directory = os.path.join(input_folder, "VASP_files")
     
     # Ensure the directory exists
     if not os.path.exists(directory):
         os.makedirs(directory)
         
+    # Full file path to save the POSCAR file
     filepath = os.path.join(directory, filename)
+    print(f"Saving POSCAR file to: {filepath}")  # Debugging statement
     
     # Constructs a POSCAR file from a given structure object
     with open(filepath, 'w') as f:
@@ -43,7 +39,7 @@ def create_supercell(structure, supercell_size):
     supercell = pymatgen_structure.make_supercell(supercell_size)
     return supercell
 
-def fetch_and_write_poscar(api_key, query, create_supercell_option, supercell_size=None):
+def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option, supercell_size=None):
     with MPRester(api_key) as mpr:
         if query.startswith("mp-"):
             # Querying by material ID
@@ -51,14 +47,14 @@ def fetch_and_write_poscar(api_key, query, create_supercell_option, supercell_si
             structure = mpr.get_structure_by_material_id(material_id)
             if structure:
                 print(f"Structure for material ID {material_id} fetched successfully.")
-                construct_poscar_from_structure(structure, f"{material_id}_POSCAR")
+                construct_poscar_from_structure(structure, input_folder, f"{material_id}_POSCAR")
                 print(f"POSCAR file for {material_id} has been generated.")
                 
                 # Create supercell if option is enabled
                 if create_supercell_option and supercell_size:
                     supercell = create_supercell(structure, supercell_size)
                     supercell_filename = f"{material_id}_supercell_POSCAR"
-                    construct_poscar_from_structure(supercell, supercell_filename)
+                    construct_poscar_from_structure(supercell, input_folder, supercell_filename)
                     print(f"Supercell POSCAR file for {material_id} has been generated and saved as {supercell_filename}.")
         
         elif "," in query:
@@ -70,14 +66,14 @@ def fetch_and_write_poscar(api_key, query, create_supercell_option, supercell_si
                     material_id = summary.material_id
                     structure = mpr.get_structure_by_material_id(material_id)
                     if structure:
-                        construct_poscar_from_structure(structure, f"{material_id}_POSCAR")
+                        construct_poscar_from_structure(structure, input_folder, f"{material_id}_POSCAR")
                         print(f"POSCAR file for {material_id} has been generated.")
                         
                         # Create supercell if option is enabled
                         if create_supercell_option and supercell_size:
                             supercell = create_supercell(structure, supercell_size)
                             supercell_filename = f"{material_id}_supercell_POSCAR"
-                            construct_poscar_from_structure(supercell, supercell_filename)
+                            construct_poscar_from_structure(supercell, input_folder, supercell_filename)
                             print(f"Supercell POSCAR file for {material_id} has been generated and saved as {supercell_filename}.")
             except Exception as e:
                 print(f"Error during bulk search: {e}")
@@ -91,19 +87,20 @@ def fetch_and_write_poscar(api_key, query, create_supercell_option, supercell_si
                     material_id = summary.material_id
                     structure = mpr.get_structure_by_material_id(material_id)
                     if structure:
-                        construct_poscar_from_structure(structure, f"{material_id}_POSCAR")
+                        construct_poscar_from_structure(structure, input_folder, f"{material_id}_POSCAR")
                         print(f"POSCAR file for {material_id} has been generated.")
                         
                         # Create supercell if option is enabled
                         if create_supercell_option and supercell_size:
                             supercell = create_supercell(structure, supercell_size)
                             supercell_filename = f"{material_id}_supercell_POSCAR"
-                            construct_poscar_from_structure(supercell, supercell_filename)
+                            construct_poscar_from_structure(supercell, input_folder, supercell_filename)
                             print(f"Supercell POSCAR file for {material_id} has been generated and saved as {supercell_filename}.")
             except Exception as e:
                 print(f"Error during formula-based search: {e}")
 
 if __name__ == "__main__":
+    input_folder = input("Please enter the full path to the folder where the operations should be performed: ").strip()
     default_api_key = "H5zmHxuvPs9LKyABNRQmUsj0ROBYs5C4"
     user_api_key = input("Enter your Materials Project API key (press Enter to use default): ")
     api_key = user_api_key if user_api_key.strip() != "" else default_api_key
@@ -116,4 +113,4 @@ if __name__ == "__main__":
         sizes = input("Enter the supercell size (e.g., 2 2 2): ")
         supercell_size = [int(x) for x in sizes.split()]
     
-    fetch_and_write_poscar(api_key, query, create_supercell_option, supercell_size)
+    fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option, supercell_size)
