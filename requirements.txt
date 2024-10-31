@@ -18,6 +18,11 @@ numpy
 # ase: Used for atomistic simulations, essential for computational chemistry and materials science.
 ase
 
+
+mp-api
+pymatgen
+
+
 # Note on 'os' Module:
 # ---------------------
 # The 'os' module is a built-in module in Python and does not need to be installed separately.
