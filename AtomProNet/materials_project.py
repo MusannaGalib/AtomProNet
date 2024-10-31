@@ -1,0 +1,78 @@
+import os
+from mp_api.client import MPRester
+from pymatgen.core.structure import Structure
+from pymatgen.core.lattice import Lattice
+
+def construct_poscar_from_structure(structure, filename="POSCAR"):
+    # Get the directory of the current script
+    current_script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Go one level up from the current script directory
+    parent_dir = os.path.dirname(current_script_dir)
+    
+    # Construct the path to the VASP_files directory
+    directory = os.path.join(parent_dir, "VASP_files")
+    
+    # Ensure the directory exists
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        
+    filepath = os.path.join(directory, filename)
+    
+    # Constructs a POSCAR file from a given structure object
+    with open(filepath, 'w') as f:
+        f.write("Generated using mp-api\n")
+        f.write("1.0\n")
+        for vec in structure.lattice.matrix:
+            f.write(f"{' '.join(map(str, vec))}\n")
+        species = [site.specie.symbol for site in structure.sites]
+        unique_species = sorted(set(species), key=species.index)
+        f.write(" ".join(unique_species) + "\n")
+        f.write(" ".join([str(species.count(s)) for s in unique_species]) + "\n")
+        f.write("Direct\n")
+        for site in structure.sites:
+            f.write(f"{' '.join(map(str, site.frac_coords))}\n")
+
+def create_supercell(structure, supercell_size):
+    pymatgen_structure = Structure(
+        lattice=Lattice(structure.lattice.matrix),
+        species=[site.specie for site in structure.sites],
+        coords=[site.frac_coords for site in structure.sites],
+        coords_are_cartesian=False
+    )
+    supercell = pymatgen_structure.make_supercell(supercell_size)
+    return supercell
+
+def fetch_and_write_poscar(api_key, query):
+    with MPRester(api_key) as mpr:
+        if query.startswith("mp-"):
+            material_id = query
+            structure = mpr.get_structure_by_material_id(material_id)
+            if structure:
+                print(f"Structure for material ID {material_id} fetched successfully.")
+                construct_poscar_from_structure(structure, f"{material_id}_POSCAR")
+                print(f"POSCAR file for {material_id} has been generated.")
+            else:
+                print(f"Failed to fetch structure for material ID {material_id}.")
+        else:
+            # Allow user to input elements as a comma-separated list
+            elements_input = query.lower()
+            elements = [elem.strip().capitalize() for elem in elements_input.split(',')]
+            try:
+                # Use the summary.search() method to find materials
+                summaries = mpr.materials.summary.search(elements=elements)
+                for summary in summaries:
+                    material_id = summary.material_id
+                    structure = mpr.get_structure_by_material_id(material_id)
+                    if structure:
+                        construct_poscar_from_structure(structure, f"{material_id}_POSCAR")
+                        print(f"POSCAR file for {material_id} has been generated.")
+            except Exception as e:
+                print(f"Error during bulk search: {e}")
+
+if __name__ == "__main__":
+    default_api_key = "H5zmHxuvPs9LKyABNRQmUsj0ROBYs5C4"
+    user_api_key = input("Enter your Materials Project API key (press Enter to use default): ")
+    api_key = user_api_key if user_api_key.strip() != "" else default_api_key
+    query = input("Enter the material ID (e.g., mp-1234), compound formula (e.g., Al2O3), or elements (e.g., Li, O, Mn) for bulk download: ")
+    fetch_and_write_poscar(api_key, query)
