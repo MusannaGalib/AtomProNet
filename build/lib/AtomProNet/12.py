@@ -1,7 +1,6 @@
 import os
 import subprocess
 import shutil
-from materials_fetcher import fetch_and_write_poscar  # Import the function from your materials_fetcher.py
 from lattice import lattice
 from pressure_eV import pressure_eV
 from position_force import position_force
@@ -9,6 +8,8 @@ from energy import energy
 from atom_symbol import atom_symbol
 from combine import combine
 from npz_to_extxyz import npz_to_extxyz
+from materials_fetcher import fetch_and_write_poscar  # Import the function from your materials_fetcher.py
+
 
 def process_and_run_script(input_folder):
     # Step 2: Process files or fetch materials data

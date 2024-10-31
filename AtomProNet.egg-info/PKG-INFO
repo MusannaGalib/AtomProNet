@@ -2,7 +2,7 @@ Metadata-Version: 2.1
 Name: AtomProNet
 Version: 0.1.0
 Summary: A Python package for converting VASP data to extxyz/npz format.
-Home-page: http://example.com/AtomProNet
+Home-page: https://github.com/MusannaGalib/AtomProNet
 Author: Musanna Galib
 Author-email: galibubc@student.ubc.ca
 Classifier: Development Status :: 3 - Alpha
