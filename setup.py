@@ -9,7 +9,7 @@ setup(
     description='A Python package for converting VASP data to extxyz/npz format.',  # Short description of your package
     long_description=open('README.md').read(),  # Long description read from the README.md
     long_description_content_type='text/markdown',  # Type of the long description, markdown is recommended
-    url='http://example.com/AtomProNet',  # Replace with the URL to your package's repository
+    url='https://github.com/MusannaGalib/AtomProNet',  # Replace with the URL to your package's repository
     packages=find_packages(),  # Finds all the packages in your project
     install_requires=open('requirements.txt').read().splitlines(),  # List of dependencies, read from requirements.txt
     classifiers=[  # Classifiers give the PyPI users more information about your package

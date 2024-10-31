@@ -8,7 +8,7 @@ from .pressure_eV import pressure_eV
 from .combine import combine
 from .npz_to_extxyz import npz_to_extxyz
 from .atom_symbol import atom_symbol
-
+from .materials_project import fetch_and_write_poscar
 
 
 # The '__all__' list is a mechanism for defining what symbols (functions, classes, etc.) will be
@@ -18,4 +18,4 @@ from .atom_symbol import atom_symbol
 # 'lattice'  will be imported into their namespace.
 # This helps in controlling the public interface of the package and can prevent internal 
 # components from being exposed unintentionally.
-__all__ = ['lattice', 'energy', 'position_force', 'pressure_eV','combine','npz_to_extxyz', 'atom_symbol']
+__all__ = ['lattice', 'energy', 'position_force', 'pressure_eV','combine','npz_to_extxyz', 'atom_symbol','fetch_and_write_poscar']
