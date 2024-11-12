@@ -25,6 +25,7 @@ pymatgen
 # For MLIP Post processing
 statsmodels
 seaborn
+scikit-learn
 
 # Note on 'os' Module:
 # ---------------------
