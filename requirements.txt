@@ -23,6 +23,8 @@ mp-api
 pymatgen
 
 
+statsmodels
+
 # Note on 'os' Module:
 # ---------------------
 # The 'os' module is a built-in module in Python and does not need to be installed separately.
