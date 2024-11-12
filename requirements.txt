@@ -22,8 +22,9 @@ ase
 mp-api
 pymatgen
 
-
+# For MLIP Post processing
 statsmodels
+seaborn
 
 # Note on 'os' Module:
 # ---------------------
