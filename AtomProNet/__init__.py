@@ -1,14 +1,14 @@
 # This line imports specific functions from the 'lattice' module within the same package.
 # The '.' before 'lattice' indicates that it is a relative import, meaning the 'lattice' module
 # is in the same package as this '__init__.py' file.
-from .lattice import lattice
-from .energy import energy
-from .position_force import position_force
-from .pressure_eV import pressure_eV
-from .combine import combine
-from .npz_to_extxyz import npz_to_extxyz
-from .atom_symbol import atom_symbol
-from .materials_project import fetch_and_write_poscar
+from AtomProNet.lattice import lattice
+from AtomProNet.energy import energy
+from AtomProNet.position_force import position_force
+from AtomProNet.pressure_eV import pressure_eV
+from AtomProNet.combine import combine
+from AtomProNet.npz_to_extxyz import npz_to_extxyz
+from AtomProNet.atom_symbol import atom_symbol
+from AtomProNet.materials_project import fetch_and_write_poscar
 
 
 # The '__all__' list is a mechanism for defining what symbols (functions, classes, etc.) will be
