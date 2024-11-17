@@ -40,6 +40,9 @@ def create_supercell(structure, supercell_size):
     return supercell
 
 def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option, supercell_size=None):
+
+    print(f"Called with: api_key={api_key}, query={query}, input_folder={input_folder}, create_supercell_option={create_supercell_option}, supercell_size={supercell_size}")    
+  
     with MPRester(api_key) as mpr:
         if query.startswith("mp-"):
             # Querying by material ID
@@ -113,4 +116,8 @@ if __name__ == "__main__":
         sizes = input("Enter the supercell size (e.g., 2 2 2): ")
         supercell_size = [int(x) for x in sizes.split()]
     
-    fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option, supercell_size)
+    # Call the function
+    if create_supercell_option:
+        fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option, supercell_size)
+    else:
+        fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option)

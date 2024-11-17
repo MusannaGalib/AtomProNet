@@ -41,7 +41,10 @@ def process_and_run_script(input_folder):
                 sizes = input("Enter the supercell size (e.g., 2 2 2): ")
                 supercell_size = [int(x) for x in sizes.split()]
 
-            fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option, supercell_size)
+            if create_supercell_option:
+                fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option, supercell_size)
+            else:
+                fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option)
 
         elif option == '2':
             input_folder_path = os.path.abspath(input_folder)           
