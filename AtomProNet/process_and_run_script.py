@@ -76,16 +76,72 @@ def process_and_run_script(input_folder):
                 print("Skipping the first step and proceeding to step 2.")
             
             print("Input folder path:", input_folder_path)   
-
+            
             os.chdir(input_folder)
             print("Starting Step 2: Processing files with Python scripts.")
-            lattice_output_file = lattice(input_folder)
-            pressure_eV_output_file = pressure_eV(input_folder)
-            position_force_output_file = position_force(input_folder)
-            energy_output_file = energy(input_folder)
-            atom_symbol_output_file = atom_symbol(input_folder)
-            combined_output_file = combine(input_folder)
-            npz_to_extxyz_output_file = npz_to_extxyz(combined_output_file)
+
+            lattice_output_file = None
+            pressure_eV_output_file = None
+            position_force_output_file = None
+            energy_output_file = None
+            atom_symbol_output_file = None
+            combined_output_file = None
+            npz_to_extxyz_output_file = None
+
+            try:
+                lattice_output_file = lattice(input_folder)
+                print(f"Lattice processing completed: {lattice_output_file}")
+            except Exception as e:
+                print(f"Error in lattice processing: {e}")
+
+            try:
+                pressure_eV_output_file = pressure_eV(input_folder)
+                print(f"Pressure (eV) processing completed: {pressure_eV_output_file}")
+            except Exception as e:
+                print(f"Error in pressure (eV) processing: {e}")
+
+            try:
+                position_force_output_file = position_force(input_folder)
+                print(f"Position and force processing completed: {position_force_output_file}")
+            except Exception as e:
+                print(f"Error in position and force processing: {e}")
+
+            try:
+                energy_output_file = energy(input_folder)
+                print(f"Energy processing completed: {energy_output_file}")
+            except Exception as e:
+                print(f"Error in energy processing: {e}")
+
+            try:
+                atom_symbol_output_file = atom_symbol(input_folder)
+                print(f"Atom symbol processing completed: {atom_symbol_output_file}")
+            except Exception as e:
+                print(f"Error in atom symbol processing: {e}")
+
+            try:
+                combined_output_file = combine(input_folder)
+                print(f"File combination completed: {combined_output_file}")
+            except Exception as e:
+                print(f"Error in file combination: {e}")
+
+            try:
+                npz_to_extxyz_output_file = npz_to_extxyz(combined_output_file)
+                print(f"Conversion to .extxyz completed: {npz_to_extxyz_output_file}")
+            except Exception as e:
+                print(f"Error in conversion to .extxyz: {e}")
+
+            print(f"Final output file directory from the workflow: {npz_to_extxyz_output_file}")
+
+
+            #os.chdir(input_folder)
+            #print("Starting Step 2: Processing files with Python scripts.")
+            #lattice_output_file = lattice(input_folder)
+            #pressure_eV_output_file = pressure_eV(input_folder)
+            #position_force_output_file = position_force(input_folder)
+            #energy_output_file = energy(input_folder)
+            #atom_symbol_output_file = atom_symbol(input_folder)
+            #combined_output_file = combine(input_folder)
+            #npz_to_extxyz_output_file = npz_to_extxyz(combined_output_file)
 
             print(f"Final output file directory from the workflow: {npz_to_extxyz_output_file}") 
 

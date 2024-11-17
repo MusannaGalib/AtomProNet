@@ -101,7 +101,7 @@ def fetch_data_for_ML_training(mpr, material_id, input_folder):
                 # Append the lattice parameters to the lattice file
                 with open(lattice_file, 'a') as lf:
                     lf.write(f"{material_id}\n")
-                    lf.write(f"{lattice_params}\n")
+                    lf.write(f"{lattice.a:.6f} 0.000 0.000 0.000 {lattice.b:.3f} 0.000 0.000 0.000 {lattice.c:.3f}\n")
                     print(f"Lattice parameters for {material_id} have been written to {lattice_file}.")
 
                 # Write positions to the positions file
