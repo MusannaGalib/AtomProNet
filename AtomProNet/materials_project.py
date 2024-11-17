@@ -40,7 +40,9 @@ def create_supercell(structure, supercell_size):
     return supercell
 
 
-def fetch_energy_data(mpr, material_id, input_folder):
+import os
+
+def fetch_data_for_ML_training(mpr, material_id, input_folder):
     """
     Fetches energy data for a given material ID and writes it to an energy file in the desired format.
     """
@@ -50,6 +52,7 @@ def fetch_energy_data(mpr, material_id, input_folder):
 
     energy_file = os.path.join(input_folder, "energy.txt")
     lattice_file = os.path.join(input_folder, "lattice.txt")
+    positions_file = os.path.join(input_folder, "positions.txt")  
 
     try:
         # Retrieve entries for the material ID
@@ -68,6 +71,12 @@ def fetch_energy_data(mpr, material_id, input_folder):
                 with open(lattice_file, 'w') as lf:
                     lf.write("")
                     print(f"Created lattice file at: {lattice_file}")
+
+            # Check if the positions file exists; if not, add a header
+            if not os.path.exists(positions_file):
+                with open(positions_file, 'w') as pf:
+                    pf.write("")  # Just ensuring the file is created
+                    print(f"Created positions file at: {positions_file}")
 
             # Process each entry in the list
             for entry in entries:
@@ -94,6 +103,17 @@ def fetch_energy_data(mpr, material_id, input_folder):
                     lf.write(f"{material_id}\n")
                     lf.write(f"{lattice_params}\n")
                     print(f"Lattice parameters for {material_id} have been written to {lattice_file}.")
+
+                # Write positions to the positions file
+                with open(positions_file, 'a') as pf:
+                    pf.write(f"{material_id}\n")
+                    pf.write("POSITION\n")
+                    pf.write("-----------------------------------------\n")
+                    for site in entry.structure:
+                        coords = site.coords
+                        pf.write(f"{coords[0]:.6f} {coords[1]:.6f} {coords[2]:.6f}\n")
+                    pf.write("\n")
+                    print(f"Atomic positions for {material_id} have been written to {positions_file}.")
         else:
             print(f"No energy data found for material ID {material_id}.")
     except Exception as e:
@@ -121,7 +141,7 @@ def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option
 
                 # Download energy data if requested
                 if download_energy:
-                    fetch_energy_data(mpr, material_id, input_folder)
+                    fetch_data_for_ML_training(mpr, material_id, input_folder)
                 
                 # Create supercell if option is enabled
                 if create_supercell_option and supercell_size:
@@ -144,7 +164,7 @@ def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option
 
                         # Download energy data if requested
                         if download_energy:
-                            fetch_energy_data(mpr, material_id, input_folder)
+                            fetch_data_for_ML_training(mpr, material_id, input_folder)
                         
                         # Create supercell if option is enabled
                         if create_supercell_option and supercell_size:
@@ -169,7 +189,7 @@ def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option
 
                         # Download energy data if requested
                         if download_energy:
-                            fetch_energy_data(mpr, material_id, input_folder)
+                            fetch_data_for_ML_training(mpr, material_id, input_folder)
                         
                         # Create supercell if option is enabled
                         if create_supercell_option and supercell_size:
