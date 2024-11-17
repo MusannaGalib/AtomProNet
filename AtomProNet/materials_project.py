@@ -39,15 +39,17 @@ def create_supercell(structure, supercell_size):
     supercell = pymatgen_structure.make_supercell(supercell_size)
     return supercell
 
+
 def fetch_energy_data(mpr, material_id, input_folder):
     """
-    Fetches energy data for a given material ID and writes it to an energy file.
+    Fetches energy data for a given material ID and writes it to an energy file in the desired format.
     """
     # Ensure the input folder exists
     if not os.path.exists(input_folder):
         os.makedirs(input_folder)
 
     energy_file = os.path.join(input_folder, "energy.txt")
+    lattice_file = os.path.join(input_folder, "lattice.txt")
 
     try:
         # Retrieve entries for the material ID
@@ -58,8 +60,14 @@ def fetch_energy_data(mpr, material_id, input_folder):
             # Check if the energy file exists; if not, add a header
             if not os.path.exists(energy_file):
                 with open(energy_file, 'w') as ef:
-                    ef.write("Material_ID   Lattice_Params   Energy_without_entropy   Energy_per_atom\n")
+                    ef.write("")  # Just ensuring the file is created
                     print(f"Created energy file at: {energy_file}")
+
+            # Check if the lattice file exists; if not, add a header
+            if not os.path.exists(lattice_file):
+                with open(lattice_file, 'w') as lf:
+                    lf.write("")
+                    print(f"Created lattice file at: {lattice_file}")
 
             # Process each entry in the list
             for entry in entries:
@@ -67,15 +75,25 @@ def fetch_energy_data(mpr, material_id, input_folder):
                 total_energy = entry.energy
                 energy_per_atom = entry.energy_per_atom
                 energy_without_entropy = entry.uncorrected_energy
+                # Handle missing phase information by setting a default value
+                phase = getattr(entry, 'phase', 'Unknown')  # Default to 'Unknown' if 'phase' is not found
+                correction_method = getattr(entry, 'correction_method', 'Unknown')  # Default to 'Unknown' if 'correction_method' is not found
 
                 # Extract lattice parameters
                 lattice = entry.structure.lattice
                 lattice_params = f"{lattice.a:.3f} {lattice.b:.3f} {lattice.c:.3f}"
 
-                # Append the energy data to the file
+                # Append the energy data to the energy file in the requested format
                 with open(energy_file, 'a') as ef:
-                    ef.write(f"{material_id}   {lattice_params}   {energy_without_entropy:.8f}   {energy_per_atom:.8f}\n")
-                    print(f"Energy data for {material_id} has been written to {energy_file}.")
+                    ef.write(f"{material_id} Phase {phase}:\n")
+                    ef.write(f"  Energy without entropy = {energy_without_entropy:.8f} Energy per atom = {energy_per_atom:.8f} Correction method = {correction_method}\n")
+                    print(f"Energy data for {material_id} Phase {phase} has been written to {energy_file}.")
+
+                # Append the lattice parameters to the lattice file
+                with open(lattice_file, 'a') as lf:
+                    lf.write(f"{material_id}\n")
+                    lf.write(f"{lattice_params}\n")
+                    print(f"Lattice parameters for {material_id} have been written to {lattice_file}.")
         else:
             print(f"No energy data found for material ID {material_id}.")
     except Exception as e:
@@ -84,11 +102,12 @@ def fetch_energy_data(mpr, material_id, input_folder):
 
 
 
+
 def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option, supercell_size=None):
 
     #print(f"Called with: api_key={api_key}, query={query}, input_folder={input_folder}, create_supercell_option={create_supercell_option}, supercell_size={supercell_size}")    
   
-    download_energy = input("Do you want to download energy data for the materials? (yes/no): ").lower() == "yes"
+    download_energy = input("Do you want to download energy+lattice data for the materials? (yes/no): ").lower() == "yes"
     
     with MPRester(api_key) as mpr:
         if query.startswith("mp-"):
