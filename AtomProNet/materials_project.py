@@ -39,13 +39,57 @@ def create_supercell(structure, supercell_size):
     supercell = pymatgen_structure.make_supercell(supercell_size)
     return supercell
 
+def fetch_energy_data(mpr, material_id, input_folder):
+    """
+    Fetches energy data for a given material ID and writes it to an energy file.
+    """
+    # Ensure the input folder exists
+    if not os.path.exists(input_folder):
+        os.makedirs(input_folder)
+
+    energy_file = os.path.join(input_folder, "energy.txt")
+
+    try:
+        # Retrieve entries for the material ID
+        entries = mpr.get_entry_by_material_id(material_id)
+
+        # Check if entries exist
+        if entries:
+            # Check if the energy file exists; if not, add a header
+            if not os.path.exists(energy_file):
+                with open(energy_file, 'w') as ef:
+                    ef.write("Material_ID   Lattice_Params   Energy_without_entropy   Energy_per_atom\n")
+                    print(f"Created energy file at: {energy_file}")
+
+            # Process each entry in the list
+            for entry in entries:
+                # Retrieve energy values
+                total_energy = entry.energy
+                energy_per_atom = entry.energy_per_atom
+                energy_without_entropy = entry.uncorrected_energy
+
+                # Extract lattice parameters
+                lattice = entry.structure.lattice
+                lattice_params = f"{lattice.a:.3f} {lattice.b:.3f} {lattice.c:.3f}"
+
+                # Append the energy data to the file
+                with open(energy_file, 'a') as ef:
+                    ef.write(f"{material_id}   {lattice_params}   {energy_without_entropy:.8f}   {energy_per_atom:.8f}\n")
+                    print(f"Energy data for {material_id} has been written to {energy_file}.")
+        else:
+            print(f"No energy data found for material ID {material_id}.")
+    except Exception as e:
+        print(f"Error fetching energy data for {material_id}: {e}")
+
 
 
 
 def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option, supercell_size=None):
 
-    print(f"Called with: api_key={api_key}, query={query}, input_folder={input_folder}, create_supercell_option={create_supercell_option}, supercell_size={supercell_size}")    
+    #print(f"Called with: api_key={api_key}, query={query}, input_folder={input_folder}, create_supercell_option={create_supercell_option}, supercell_size={supercell_size}")    
   
+    download_energy = input("Do you want to download energy data for the materials? (yes/no): ").lower() == "yes"
+    
     with MPRester(api_key) as mpr:
         if query.startswith("mp-"):
             # Querying by material ID
@@ -55,6 +99,10 @@ def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option
                 print(f"Structure for material ID {material_id} fetched successfully.")
                 construct_poscar_from_structure(structure, input_folder, f"{material_id}_POSCAR")
                 print(f"POSCAR file for {material_id} has been generated.")
+
+                # Download energy data if requested
+                if download_energy:
+                    fetch_energy_data(mpr, material_id, input_folder)
                 
                 # Create supercell if option is enabled
                 if create_supercell_option and supercell_size:
@@ -74,6 +122,10 @@ def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option
                     if structure:
                         construct_poscar_from_structure(structure, input_folder, f"{material_id}_POSCAR")
                         print(f"POSCAR file for {material_id} has been generated.")
+
+                        # Download energy data if requested
+                        if download_energy:
+                            fetch_energy_data(mpr, material_id, input_folder)
                         
                         # Create supercell if option is enabled
                         if create_supercell_option and supercell_size:
@@ -95,6 +147,10 @@ def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option
                     if structure:
                         construct_poscar_from_structure(structure, input_folder, f"{material_id}_POSCAR")
                         print(f"POSCAR file for {material_id} has been generated.")
+
+                        # Download energy data if requested
+                        if download_energy:
+                            fetch_energy_data(mpr, material_id, input_folder)
                         
                         # Create supercell if option is enabled
                         if create_supercell_option and supercell_size:
