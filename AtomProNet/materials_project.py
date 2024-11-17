@@ -40,26 +40,50 @@ def create_supercell(structure, supercell_size):
     return supercell
 
 def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option, supercell_size=None):
+    print(f"Called with: api_key={api_key}, query={query}, input_folder={input_folder}, create_supercell_option={create_supercell_option}, supercell_size={supercell_size}")
 
-    print(f"Called with: api_key={api_key}, query={query}, input_folder={input_folder}, create_supercell_option={create_supercell_option}, supercell_size={supercell_size}")    
-  
+    energy_file = os.path.join(input_folder, "energy.txt")
+    
+    # Initialize the energy file with a header
+    with open(energy_file, 'w') as ef:
+        ef.write("Material_ID   Lattice_Params   Energy_without_entropy   Energy_per_atom\n")  # Header
+    
     with MPRester(api_key) as mpr:
         if query.startswith("mp-"):
-            # Querying by material ID
+            # Query by material ID
             material_id = query
             structure = mpr.get_structure_by_material_id(material_id)
-            if structure:
-                print(f"Structure for material ID {material_id} fetched successfully.")
+            entries = mpr.get_entry_by_material_id(material_id)  # Fetch energy data
+
+            if structure and entries:
+                entry = entries[0]  # Since `get_entry_by_material_id` returns a list
+
+                # Retrieve energy values
+                total_energy = entry.energy  # Total energy for the cell
+                energy_per_atom = entry.energy_per_atom  # Energy per atom
+                energy_without_entropy = entry.uncorrected_energy  # Energy (without entropy)
+
+                # Save POSCAR file
                 construct_poscar_from_structure(structure, input_folder, f"{material_id}_POSCAR")
                 print(f"POSCAR file for {material_id} has been generated.")
+
+                # Extract lattice parameters
+                lattice = structure.lattice
+                lattice_params = f"{lattice.a:.3f} {lattice.b:.3f} {lattice.c:.3f}"
+
+                # Write energy data to the file
+                with open(energy_file, 'a') as ef:
+                    ef.write(f"{material_id}   {lattice_params}   {energy_without_entropy:.8f}   {energy_per_atom:.8f}\n")
                 
-                # Create supercell if option is enabled
+                print(f"Energy data for {material_id} has been written to {energy_file}.")
+
+                # Create supercell if enabled
                 if create_supercell_option and supercell_size:
                     supercell = create_supercell(structure, supercell_size)
                     supercell_filename = f"{material_id}_supercell_POSCAR"
                     construct_poscar_from_structure(supercell, input_folder, supercell_filename)
                     print(f"Supercell POSCAR file for {material_id} has been generated and saved as {supercell_filename}.")
-        
+            
         elif "," in query:
             # Querying by a comma-separated list of elements
             elements = [elem.strip().capitalize() for elem in query.split(',')]
