@@ -15,12 +15,13 @@ from AtomProNet.materials_project import fetch_and_write_poscar  # Import the fu
 def process_and_run_script(input_folder):
     while True:
         print("\nChoose an option:")
-        print("1. Pre-processing for DFT simulation")
-        print("2. Pre-processing for Neural Network")
+        print("1. Data from Materials Project")
+        print("2. Pre-processing for DFT simulation")
+        print("3. Pre-processing for Neural Network")
         print("3. Post-processing")
         print("Type 'exit' to return to the main menu.")
 
-        option = input("Enter your choice (1/2/3 or 'exit'): ").strip()
+        option = input("Enter your choice (1/2/3/4 or 'exit'): ").strip()
 
         # Check for 'exit' option
         if option.lower() == 'exit':
@@ -46,7 +47,60 @@ def process_and_run_script(input_folder):
             else:
                 fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option)
 
+                
+
+        
+
         elif option == '2':
+            # Ask for the folder containing POSCAR files
+            poscar_folder = input("Enter the full path to the folder containing POSCAR files: ").strip()
+            poscar_folder = os.path.abspath(poscar_folder)
+
+            if not os.path.isdir(poscar_folder):
+                print(f"Error: The provided path '{poscar_folder}' is not a valid directory.")
+                continue
+
+            # Check for required files one level above the POSCAR folder
+            parent_folder = os.path.dirname(poscar_folder)
+            required_files = ["INCAR", "KPOINTS", "POTCAR", "vasp_jobsub.sh"]
+
+            missing_files = [file for file in required_files if not os.path.exists(os.path.join(parent_folder, file))]
+
+            if missing_files:
+                print("The following required files are missing in the specified parent folder:")
+                for file in missing_files:
+                    print(f"- {file}")
+                print("Please place these files in the parent folder and try again.")
+                continue
+
+            # Path to the bash script
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            bash_script_path = os.path.join(script_dir, '..', 'scripts', 'MP_vasp_folders.sh')
+
+            if not os.path.exists(bash_script_path):
+                print(f"Error: The bash script '{bash_script_path}' was not found.")
+                continue
+
+            # Copy the bash script to the POSCAR folder
+            try:
+                shutil.copy(bash_script_path, poscar_folder)
+                print(f"Copied {bash_script_path} to {poscar_folder}")
+            except IOError as e:
+                print(f"Error copying the bash script: {e}")
+                continue
+
+            # Run the bash script from the POSCAR folder
+            try:
+                print("Running MP_vasp_folders.sh...")
+                subprocess.run(['bash', './MP_vasp_folders.sh'], cwd=poscar_folder, check=True, text=True)
+                print("Bash script executed successfully.")
+            except subprocess.CalledProcessError as e:
+                print(f"Error executing bash script: {e}")
+                continue
+
+
+
+        elif option == '3':
             input_folder_path = os.path.abspath(input_folder)           
             script_dir = os.path.dirname(os.path.abspath(__file__))     
             bash_script_path = os.path.join(script_dir, '..', 'scripts', 'hydrostatic_strain_post_processing.sh')  
@@ -117,7 +171,7 @@ def process_and_run_script(input_folder):
 
             print(f"Final output file directory from the workflow: {npz_to_extxyz_output_file}") 
 
-        elif option == '3':
+        elif option == '4':
             print("Exiting the program.")
             break
 
