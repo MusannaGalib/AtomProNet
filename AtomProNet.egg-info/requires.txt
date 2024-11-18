@@ -2,3 +2,6 @@ numpy
 ase
 mp-api
 pymatgen
+statsmodels
+seaborn
+scikit-learn
