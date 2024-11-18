@@ -3,6 +3,10 @@ import subprocess
 import shutil
 import pymatgen
 import mp_api
+try:
+    import phonopy
+except ModuleNotFoundError:
+    pass  # phonopy is not required for this project
 from AtomProNet.lattice import lattice
 from AtomProNet.pressure_eV import pressure_eV
 from AtomProNet.position_force import position_force

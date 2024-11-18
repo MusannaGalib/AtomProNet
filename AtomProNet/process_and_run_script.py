@@ -115,16 +115,6 @@ def process_and_run_script(input_folder):
             npz_to_extxyz_output_file = npz_to_extxyz(combined_output_file)
 
 
-            #os.chdir(input_folder)
-            #print("Starting Step 2: Processing files with Python scripts.")
-            #lattice_output_file = lattice(input_folder)
-            #pressure_eV_output_file = pressure_eV(input_folder)
-            #position_force_output_file = position_force(input_folder)
-            #energy_output_file = energy(input_folder)
-            #atom_symbol_output_file = atom_symbol(input_folder)
-            #combined_output_file = combine(input_folder)
-            #npz_to_extxyz_output_file = npz_to_extxyz(combined_output_file)
-
             print(f"Final output file directory from the workflow: {npz_to_extxyz_output_file}") 
 
         elif option == '3':

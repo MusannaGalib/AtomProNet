@@ -16,26 +16,23 @@ def npz_to_extxyz(input_file):
         print(f"Error loading npz file: {e}")
         return None
 
-    # Extract data (allow missing fields)
-    positions = data['positions'] if 'positions' in data else None
+    # Extract data (assign zero values for missing fields)
+    positions = data['positions'] if 'positions' in data else np.zeros((0, 3))
     lattice_params = data['lattice'] if 'lattice' in data else None
-    symbols = data['symbols'] if 'symbols' in data else None
-    energies = data['energies'] if 'energies' in data else None
-    forces = data['forces'] if 'forces' in data else None
-    pressures = data['pressures'] if 'pressures' in data else None
+    symbols = data['symbols'] if 'symbols' in data else np.array([])
+    energies = data['energies'] if 'energies' in data else np.zeros((0,))
+    forces = data['forces'] if 'forces' in data else np.zeros_like(positions)
+    pressures = data['pressures'] if 'pressures' in data else np.zeros((0, 6))
 
-    # Check for minimum required fields
-    if positions is None or symbols is None:
-        print("Error: Essential data (positions or symbols) is missing. Skipping file.")
-        return None
+    num_structures = len(energies)
+    num_atoms_per_structure = symbols.shape[0] if symbols.size > 0 else (positions.shape[1] if positions.size > 0 else 0)
+    num_coords = 3
 
-    # Reshape data if present
-    num_structures, num_atoms_per_structure, num_coords = positions.shape
-    positions = positions.reshape(num_structures * num_atoms_per_structure, num_coords)
-    symbols = np.tile(symbols, num_atoms_per_structure)
-    if forces is not None:
+    if positions.size > 0:
+        positions = positions.reshape(num_structures * num_atoms_per_structure, num_coords)
+    if forces.size > 0:
         forces = forces.reshape(num_structures * num_atoms_per_structure, num_coords)
-    if pressures is not None:
+    if pressures.size > 0:
         pressures = np.repeat(pressures, num_atoms_per_structure, axis=0)
     if lattice_params is not None:
         lattice_params = lattice_params.reshape(-1, 3, 3)
@@ -48,9 +45,10 @@ def npz_to_extxyz(input_file):
         start_idx = idx * num_atoms_per_structure
         end_idx = (idx + 1) * num_atoms_per_structure
 
-        structure_positions = positions[start_idx:end_idx]
-        structure_forces = forces[start_idx:end_idx] if forces is not None else None
-        structure_pressure = pressures[start_idx:end_idx] if pressures is not None else None
+        structure_positions = positions[start_idx:end_idx] if positions.size > 0 else np.zeros((num_atoms_per_structure, 3))
+        structure_forces = forces[start_idx:end_idx] if forces.size > 0 else np.zeros((num_atoms_per_structure, 3))
+        structure_pressure = pressures[start_idx:end_idx] if pressures.size > 0 else np.zeros((num_atoms_per_structure, 6))
+        structure_symbols = symbols if symbols.size > 0 else np.array(["X"] * num_atoms_per_structure)
 
         curr_atoms = Atoms()
 
@@ -59,38 +57,30 @@ def npz_to_extxyz(input_file):
             curr_atoms.set_cell(lattice_params[idx])
             curr_atoms.set_pbc([True, True, True])
 
-        try:
-            # Add atoms to the structure
-            for atom_idx in range(len(structure_positions)):
-                atom_position = structure_positions[atom_idx]
-                atom_symbol = str(symbols[atom_idx])
-                curr_atoms += Atoms(positions=[atom_position], symbols=[atom_symbol])
+        # Add atoms to the structure
+        for atom_idx in range(num_atoms_per_structure):
+            atom_symbol = str(structure_symbols[atom_idx])
+            atom_position = structure_positions[atom_idx]
+            curr_atoms += Atoms(positions=[atom_position], symbols=[atom_symbol])
 
-            # Set energy if available
-            if energies is not None:
-                structure_energy = energies[idx][0]
-                curr_atoms.info["energy"] = structure_energy
-            else:
-                structure_energy = None
+        # Set energy if available
+        structure_energy = energies[idx].item() if energies.size > 0 else 0.0
+        curr_atoms.info["energy"] = structure_energy
 
-            # Set forces if available
-            if structure_forces is not None:
-                calculator = SinglePointCalculator(curr_atoms, energy=structure_energy, forces=structure_forces.tolist())
-                curr_atoms.set_calculator(calculator)
+        # Set forces if available
+        if forces.size > 0:
+            calculator = SinglePointCalculator(curr_atoms, energy=structure_energy, forces=structure_forces.tolist())
+            curr_atoms.set_calculator(calculator)
 
-            all_atoms.append(curr_atoms)
-
-        except Exception as e:
-            print(f"Error creating structure {idx + 1}: {e}")
-            continue
+        all_atoms.append(curr_atoms)
 
     # Write all structures to the output file
     with open(out_filename, 'w') as f:
         for idx, curr_atoms in enumerate(all_atoms):
-            structure_energy = energies[idx][0] if energies is not None else 0.0
+            structure_energy = energies[idx].item() if energies.size > 0 else 0.0
 
             # Handle pressures and lattice gracefully
-            if pressures is not None and len(structure_pressure[0]) == 6:
+            if pressures.size > 0 and structure_pressure.shape[1] == 6:
                 rearranged_pressure = [
                     structure_pressure[0][0], structure_pressure[0][3], structure_pressure[0][5],
                     structure_pressure[0][3], structure_pressure[0][1], structure_pressure[0][4],
@@ -100,17 +90,23 @@ def npz_to_extxyz(input_file):
                 rearranged_pressure = [0] * 9
 
             lattice_str = (
-                f"Lattice=\"{lattice_params[idx, 0, 0]} 0.0 0.0 0.0 {lattice_params[idx, 1, 1]} 0.0 0.0 0.0 {lattice_params[idx, 2, 2]}\""
+                f"Lattice=\"{lattice_params[idx, 0, 0]} {lattice_params[idx, 0, 1]} {lattice_params[idx, 0, 2]} "
+                f"{lattice_params[idx, 1, 0]} {lattice_params[idx, 1, 1]} {lattice_params[idx, 1, 2]} "
+                f"{lattice_params[idx, 2, 0]} {lattice_params[idx, 2, 1]} {lattice_params[idx, 2, 2]}\""
                 if lattice_params is not None else "Lattice=\"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0\""
             )
 
+            properties_str = "species:S:1:pos:R:3:forces:R:3"
             comment_line = f"virial=\"{' '.join(map(str, rearranged_pressure))}\" {lattice_str} " \
-                           f"Properties=species:S:1:pos:R:3:forces:R:3 energy={structure_energy} pbc=\"T T T\""
+                           f"Properties={properties_str} energy={structure_energy} pbc=\"T T T\""
 
             write(f, curr_atoms, format='extxyz', comment=comment_line)
 
     print(f"Output file saved to: {out_filename}")
     return out_filename
+
+
+
 
 
 
