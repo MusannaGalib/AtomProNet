@@ -39,12 +39,12 @@ for poscar_path in "$poscar_folder"/*_POSCAR; do
         exit 1
     fi
 
-    # Extract the material ID (e.g., "mp-XXXXX") from the filename
+    # Extract the folder name from the filename (everything before "_POSCAR")
     base_filename=$(basename "$poscar_path")
-    material_id=$(echo "$base_filename" | cut -d'_' -f1)  # Extracts "mp-XXXXX" part
+    folder_name=$(echo "$base_filename" | sed 's/_POSCAR.*//')  # Extracts the prefix before "_POSCAR"
 
-    # Create a folder for the material ID within the POSCAR folder
-    material_folder="$poscar_folder/$material_id"
+    # Create a folder for the extracted folder name within the POSCAR folder
+    material_folder="$poscar_folder/$folder_name"
     mkdir -p "$material_folder"
 
     # Move the POSCAR file to the new folder and rename it to "POSCAR"
@@ -56,7 +56,7 @@ for poscar_path in "$poscar_folder"/*_POSCAR; do
     cp "$potcar_file" "$material_folder/"
     cp "$vasp_jobsub_file" "$material_folder/"
 
-    echo "Processed $material_id and organized files into $material_folder"
+    echo "Processed $folder_name and organized files into $material_folder"
 done
 
 echo "All POSCAR files have been processed and organized successfully!"
