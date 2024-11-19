@@ -27,14 +27,6 @@ def combine(input_file):
             print("No data to combine. All input files are missing.")
 
     # Usage
-    combine_npz_files(
-        "positions.npz",
-        "lattice.npz",
-        "symbols.npz",
-        "energies.npz",
-        "forces.npz",
-        "pressures.npz",
-        "Converted.npz",
-    )
+    combine_npz_files("positions.npz", "lattice.npz", "symbols.npz", "energies.npz", "forces.npz", "pressures.npz", "Converted.npz")
 
     return input_file
