@@ -146,7 +146,8 @@ def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option
                 # Create supercell if option is enabled
                 if create_supercell_option and supercell_size:
                     supercell = create_supercell(structure, supercell_size)
-                    supercell_filename = f"{material_id}_supercell_POSCAR"
+                    supercell_size_str = "_".join(map(str, supercell_size))
+                    supercell_filename = f"{material_id}_{supercell_size_str}_supercell_POSCAR"
                     construct_poscar_from_structure(supercell, input_folder, supercell_filename)
                     print(f"Supercell POSCAR file for {material_id} has been generated and saved as {supercell_filename}.")
         
@@ -169,7 +170,8 @@ def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option
                         # Create supercell if option is enabled
                         if create_supercell_option and supercell_size:
                             supercell = create_supercell(structure, supercell_size)
-                            supercell_filename = f"{material_id}_supercell_POSCAR"
+                            supercell_size_str = "_".join(map(str, supercell_size))
+                            supercell_filename = f"{material_id}_{supercell_size_str}_supercell_POSCAR"
                             construct_poscar_from_structure(supercell, input_folder, supercell_filename)
                             print(f"Supercell POSCAR file for {material_id} has been generated and saved as {supercell_filename}.")
             except Exception as e:
@@ -194,7 +196,8 @@ def fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option
                         # Create supercell if option is enabled
                         if create_supercell_option and supercell_size:
                             supercell = create_supercell(structure, supercell_size)
-                            supercell_filename = f"{material_id}_supercell_POSCAR"
+                            supercell_size_str = "_".join(map(str, supercell_size))
+                            supercell_filename = f"{material_id}_{supercell_size_str}_supercell_POSCAR"
                             construct_poscar_from_structure(supercell, input_folder, supercell_filename)
                             print(f"Supercell POSCAR file for {material_id} has been generated and saved as {supercell_filename}.")
             except Exception as e:
