@@ -52,51 +52,101 @@ def process_and_run_script(input_folder):
         
 
         elif option == '2':
-            # Ask for the folder containing POSCAR files
-            poscar_folder = input("Enter the full path to the folder containing POSCAR files: ").strip()
-            poscar_folder = os.path.abspath(poscar_folder)
+                while True:
+                    print("Options:")
+                    print("1: Copy and run MP_vasp_folders.sh")
+                    print("2: Copy and run job_submission.sh")
+                    print("q: Quit")
+                    option = input("Enter your choice: ").strip()
 
-            if not os.path.isdir(poscar_folder):
-                print(f"Error: The provided path '{poscar_folder}' is not a valid directory.")
-                continue
+                    if option == '1':
+                        # Ask for the folder containing POSCAR files
+                        poscar_folder = input("Enter the full path to the folder containing POSCAR files: ").strip()
+                        poscar_folder = os.path.abspath(poscar_folder)
 
-            # Check for required files one level above the POSCAR folder
-            parent_folder = os.path.dirname(poscar_folder)
-            required_files = ["INCAR", "KPOINTS", "POTCAR", "vasp_jobsub.sh"]
+                        if not os.path.isdir(poscar_folder):
+                            print(f"Error: The provided path '{poscar_folder}' is not a valid directory.")
+                            continue
 
-            missing_files = [file for file in required_files if not os.path.exists(os.path.join(parent_folder, file))]
+                        # Check for required files one level above the POSCAR folder
+                        parent_folder = os.path.dirname(poscar_folder)
+                        required_files = ["INCAR", "KPOINTS", "POTCAR", "vasp_jobsub.sh"]
 
-            if missing_files:
-                print("The following required files are missing in the specified parent folder:")
-                for file in missing_files:
-                    print(f"- {file}")
-                print("Please place these files in the parent folder and try again.")
-                continue
+                        missing_files = [file for file in required_files if not os.path.exists(os.path.join(parent_folder, file))]
 
-            # Path to the bash script
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            bash_script_path = os.path.join(script_dir, '..', 'scripts', 'MP_vasp_folders.sh')
+                        if missing_files:
+                            print("The following required files are missing in the specified parent folder:")
+                            for file in missing_files:
+                                print(f"- {file}")
+                            print("Please place these files in the parent folder and try again.")
+                            continue
 
-            if not os.path.exists(bash_script_path):
-                print(f"Error: The bash script '{bash_script_path}' was not found.")
-                continue
+                        # Path to the bash script
+                        script_dir = os.path.dirname(os.path.abspath(__file__))
+                        bash_script_path = os.path.join(script_dir, '..', 'scripts', 'MP_vasp_folders.sh')
 
-            # Copy the bash script to the POSCAR folder
-            try:
-                shutil.copy(bash_script_path, poscar_folder)
-                print(f"Copied {bash_script_path} to {poscar_folder}")
-            except IOError as e:
-                print(f"Error copying the bash script: {e}")
-                continue
+                        if not os.path.exists(bash_script_path):
+                            print(f"Error: The bash script '{bash_script_path}' was not found.")
+                            continue
 
-            # Run the bash script from the POSCAR folder
-            try:
-                print("Running MP_vasp_folders.sh...")
-                subprocess.run(['bash', './MP_vasp_folders.sh'], cwd=poscar_folder, check=True, text=True)
-                print("Bash script executed successfully.")
-            except subprocess.CalledProcessError as e:
-                print(f"Error executing bash script: {e}")
-                continue
+                        # Copy the bash script to the POSCAR folder
+                        try:
+                            shutil.copy(bash_script_path, poscar_folder)
+                            print(f"Copied {bash_script_path} to {poscar_folder}")
+                        except IOError as e:
+                            print(f"Error copying the bash script: {e}")
+                            continue
+
+                        # Run the bash script from the POSCAR folder
+                        try:
+                            print("Running MP_vasp_folders.sh...")
+                            subprocess.run(['bash', './MP_vasp_folders.sh'], cwd=poscar_folder, check=True, text=True)
+                            print("Bash script executed successfully.")
+                        except subprocess.CalledProcessError as e:
+                            print(f"Error executing bash script: {e}")
+                            continue
+
+                    elif option == '2':
+                        # Ask for the folder containing POSCAR files
+                        poscar_folder = input("Enter the full path to the folder containing POSCAR files: ").strip()
+                        poscar_folder = os.path.abspath(poscar_folder)
+
+                        if not os.path.isdir(poscar_folder):
+                            print(f"Error: The provided path '{poscar_folder}' is not a valid directory.")
+                            continue
+
+                        # Path to the job_submission.sh script
+                        script_dir = os.path.dirname(os.path.abspath(__file__))
+                        bash_script_path = os.path.join(script_dir, '..', 'scripts', 'job_submission.sh')
+
+                        if not os.path.exists(bash_script_path):
+                            print(f"Error: The bash script '{bash_script_path}' was not found.")
+                            continue
+
+                        # Copy the bash script to the POSCAR folder
+                        try:
+                            shutil.copy(bash_script_path, poscar_folder)
+                            print(f"Copied {bash_script_path} to {poscar_folder}")
+                        except IOError as e:
+                            print(f"Error copying the bash script: {e}")
+                            continue
+
+                        # Run the bash script from the POSCAR folder
+                        try:
+                            print("Running job_submission.sh...")
+                            subprocess.run(['bash', './job_submission.sh'], cwd=poscar_folder, check=True, text=True)
+                            print("Bash script executed successfully.")
+                        except subprocess.CalledProcessError as e:
+                            print(f"Error executing bash script: {e}")
+                            continue
+
+                    elif option == 'q':
+                        print("Exiting.")
+                        break
+
+                    else:
+                        print("Invalid option. Please try again.")
+
 
 
 
