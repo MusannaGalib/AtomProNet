@@ -108,7 +108,7 @@ def process_and_run_script(input_folder):
 
                     elif option == '2':
                         # Ask for the folder containing POSCAR files
-                        poscar_folder = input("Enter the full path to the folder containing POSCAR files: ").strip()
+                        poscar_folder = input("Enter the full path to the folder to submit jobs: ").strip()
                         poscar_folder = os.path.abspath(poscar_folder)
 
                         if not os.path.isdir(poscar_folder):

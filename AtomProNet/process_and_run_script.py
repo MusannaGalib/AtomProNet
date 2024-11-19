@@ -56,6 +56,7 @@ def process_and_run_script(input_folder):
                     print("Options:")
                     print("1: Copy and run MP_vasp_folders.sh")
                     print("2: Copy and run job_submission.sh")
+                    print("3: Copy and run post_processing.sh")
                     print("q: Quit")
                     option = input("Enter your choice: ").strip()
 
@@ -108,7 +109,7 @@ def process_and_run_script(input_folder):
 
                     elif option == '2':
                         # Ask for the folder containing POSCAR files
-                        poscar_folder = input("Enter the full path to the folder containing POSCAR files: ").strip()
+                        poscar_folder = input("Enter the full path to the folder to submit jobs: ").strip()
                         poscar_folder = os.path.abspath(poscar_folder)
 
                         if not os.path.isdir(poscar_folder):
@@ -139,6 +140,41 @@ def process_and_run_script(input_folder):
                         except subprocess.CalledProcessError as e:
                             print(f"Error executing bash script: {e}")
                             continue
+
+                    elif option == '3':
+                        # Ask for the folder containing POSCAR files
+                        completed_job_folder = input("Enter the full path to the folder to post-process: ").strip()
+                        completed_job_folder = os.path.abspath(completed_job_folder)
+
+                        if not os.path.isdir(completed_job_folder):
+                            print(f"Error: The provided path '{completed_job_folder}' is not a valid directory.")
+                            continue
+
+                        # Path to the job_submission.sh script
+                        script_dir = os.path.dirname(os.path.abspath(__file__))
+                        bash_script_path = os.path.join(script_dir, '..', 'scripts', 'post_processing.sh')
+
+                        if not os.path.exists(bash_script_path):
+                            print(f"Error: The bash script '{bash_script_path}' was not found.")
+                            continue
+
+                        # Copy the bash script to the POSCAR folder
+                        try:
+                            shutil.copy(bash_script_path, completed_job_folder)
+                            print(f"Copied {bash_script_path} to {completed_job_folder}")
+                        except IOError as e:
+                            print(f"Error copying the bash script: {e}")
+                            continue
+
+                        # Run the bash script from the POSCAR folder
+                        try:
+                            print("Running post_processing.sh...")
+                            subprocess.run(['bash', './post_processing.sh'], cwd=completed_job_folder, check=True, text=True)
+                            print("Bash script executed successfully.")
+                        except subprocess.CalledProcessError as e:
+                            print(f"Error executing bash script: {e}")
+                            continue
+
 
                     elif option == 'q':
                         print("Exiting.")
