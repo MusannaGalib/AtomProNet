@@ -1,0 +1,2 @@
+[console_scripts]
+AtomProNet = AtomProNet.process_and_run_script:main

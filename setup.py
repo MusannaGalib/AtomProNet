@@ -23,4 +23,9 @@ setup(
         'Programming Language :: Python :: 3.9',
     ],
     python_requires='>=3.6',  
+    entry_points={
+        'console_scripts': [
+            'AtomProNet=AtomProNet.process_and_run_script:main',
+        ],
+    }
 )

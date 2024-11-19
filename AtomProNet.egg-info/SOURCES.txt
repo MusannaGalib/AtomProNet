@@ -18,6 +18,7 @@ AtomProNet/process_and_run_script_legacy_version.py
 AtomProNet.egg-info/PKG-INFO
 AtomProNet.egg-info/SOURCES.txt
 AtomProNet.egg-info/dependency_links.txt
+AtomProNet.egg-info/entry_points.txt
 AtomProNet.egg-info/requires.txt
 AtomProNet.egg-info/top_level.txt
 AtomProNet/tests/__init__.py
