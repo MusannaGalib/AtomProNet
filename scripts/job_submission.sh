@@ -49,7 +49,7 @@ submit_jobs_recursive() {
                 else
                     echo "Job $total_jobs submission failed: $sbatch_output"
                     echo "[$(date)] Job $total_jobs submission failed in folder: $item" >> "$log_file"
-                    break
+                    continue  # Proceed to the next folder despite failure
                 fi
 
                 # Save the last submitted job number to last_job.txt
