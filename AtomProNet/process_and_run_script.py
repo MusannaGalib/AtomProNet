@@ -18,7 +18,7 @@ def process_and_run_script(input_folder):
         print("1. Data from Materials Project")
         print("2. Pre-processing for DFT simulation")
         print("3. Pre-processing for Neural Network")
-        print("3. Post-processing")
+        print("4. Post-processing")
         print("Type 'exit' to return to the main menu.")
 
         option = input("Enter your choice (1/2/3/4 or 'exit'): ").strip()
@@ -258,8 +258,30 @@ def process_and_run_script(input_folder):
             print(f"Final output file directory from the workflow: {npz_to_extxyz_output_file}") 
 
         elif option == '4':
-            print("Exiting the program.")
-            break
+            print("\nPost-Processing Options:")
+            print("1. Post-Processing of MLIP")
+            print("2. Post-Processing of LAMMPS")
+            post_processing_option = input("Select an option (1 or 2): ").strip()
+
+            if post_processing_option == '1':
+                print("\nStarting MLIP Post-Processing...")
+                
+                # Import the necessary function from the MLIP post-processing module
+                from MLIP_post_processing import main as mlip_post_processing_main
+                
+                try:
+                    # Call the main function for MLIP post-processing
+                    mlip_post_processing_main()
+                except Exception as e:
+                    print(f"An error occurred during MLIP post-processing: {e}")
+
+            elif post_processing_option == '2':
+                print("\nStarting LAMMPS Post-Processing...")
+
+            else:
+                print("Invalid option. Please select either 1 or 2.")
+
+            #break
 
         else:
             print("Invalid option, please try again or type 'exit' to return to the main menu.")

@@ -3,6 +3,7 @@ LICENSE
 MANIFEST.in
 README.md
 setup.py
+AtomProNet/MLIP_post_processing.py
 AtomProNet/__init__.py
 AtomProNet/atom_symbol.py
 AtomProNet/combine.py
