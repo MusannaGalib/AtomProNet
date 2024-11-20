@@ -25,7 +25,7 @@ def npz_to_extxyz(input_file):
     pressures = data['pressures'] if 'pressures' in data else np.zeros((0, 6))
 
     num_structures = len(energies)
-    num_atoms_per_structure = symbols.shape[0] if symbols.size > 0 else (positions.shape[1] if positions.size > 0 else 0)
+    num_atoms_per_structure = len(symbols[0]) if len(symbols) > 0 else 0
     num_coords = 3
 
     if positions.size > 0:
@@ -35,7 +35,11 @@ def npz_to_extxyz(input_file):
     if pressures.size > 0:
         pressures = np.repeat(pressures, num_atoms_per_structure, axis=0)
     if lattice_params is not None:
-        lattice_params = lattice_params.reshape(-1, 3, 3)
+        try:
+            lattice_params = lattice_params.reshape(-1, 3, 3)
+        except ValueError:
+            print("Lattice parameters do not have the expected shape. Using default values.")
+            lattice_params = np.tile(np.eye(3), (num_structures, 1, 1))
 
     # List to store all structures
     all_atoms = []
@@ -48,18 +52,18 @@ def npz_to_extxyz(input_file):
         structure_positions = positions[start_idx:end_idx] if positions.size > 0 else np.zeros((num_atoms_per_structure, 3))
         structure_forces = forces[start_idx:end_idx] if forces.size > 0 else np.zeros((num_atoms_per_structure, 3))
         structure_pressure = pressures[start_idx:end_idx] if pressures.size > 0 else np.zeros((num_atoms_per_structure, 6))
-        structure_symbols = symbols if symbols.size > 0 else np.array(["X"] * num_atoms_per_structure)
+        structure_symbols = symbols[idx] if symbols.size > 0 else np.array(["X"] * num_atoms_per_structure)
 
         curr_atoms = Atoms()
 
         # Set lattice if available
-        if lattice_params is not None:
+        if lattice_params is not None and idx < len(lattice_params):
             curr_atoms.set_cell(lattice_params[idx])
             curr_atoms.set_pbc([True, True, True])
 
         # Add atoms to the structure
         for atom_idx in range(num_atoms_per_structure):
-            atom_symbol = str(structure_symbols[atom_idx])
+            atom_symbol = structure_symbols[atom_idx]
             atom_position = structure_positions[atom_idx]
             curr_atoms += Atoms(positions=[atom_position], symbols=[atom_symbol])
 
@@ -93,7 +97,7 @@ def npz_to_extxyz(input_file):
                 f"Lattice=\"{lattice_params[idx, 0, 0]} {lattice_params[idx, 0, 1]} {lattice_params[idx, 0, 2]} "
                 f"{lattice_params[idx, 1, 0]} {lattice_params[idx, 1, 1]} {lattice_params[idx, 1, 2]} "
                 f"{lattice_params[idx, 2, 0]} {lattice_params[idx, 2, 1]} {lattice_params[idx, 2, 2]}\""
-                if lattice_params is not None else "Lattice=\"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0\""
+                if lattice_params is not None and idx < len(lattice_params) else "Lattice=\"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0\""
             )
 
             properties_str = "species:S:1:pos:R:3:forces:R:3"
@@ -104,7 +108,6 @@ def npz_to_extxyz(input_file):
 
     print(f"Output file saved to: {out_filename}")
     return out_filename
-
 
 
 
