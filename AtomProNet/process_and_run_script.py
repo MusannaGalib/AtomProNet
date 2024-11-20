@@ -11,6 +11,7 @@ from AtomProNet.atom_symbol import atom_symbol
 from AtomProNet.combine import combine
 from AtomProNet.npz_to_extxyz import npz_to_extxyz
 from AtomProNet.materials_project import fetch_and_write_poscar  # Import the function from your materials_fetcher.py
+from AtomProNet.split import split
 
 def process_and_run_script(input_folder):
     while True:
@@ -253,9 +254,11 @@ def process_and_run_script(input_folder):
 
             combined_output_file = combine(input_folder)
             npz_to_extxyz_output_file = npz_to_extxyz(combined_output_file)
-
-
             print(f"Final output file directory from the workflow: {npz_to_extxyz_output_file}") 
+            input_folder = os.path.dirname(npz_to_extxyz_output_file)
+            split_dataset = split(input_folder)
+            print(f"Final split dataset directory from the workflow: {split_dataset}")
+            
 
         elif option == '4':
             print("\nPost-Processing Options:")

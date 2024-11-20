@@ -45,57 +45,6 @@ def plot_parity(true_values, predicted_values, title, xlabel, ylabel, save_dir='
     # Parity line
     plt.plot([min(true_values), max(true_values)], [min(true_values), max(true_values)], color='red')
 
-    # Confidence interval calculation and plotting
-    #n = len(true_values)
-    #mean_true = np.mean(true_values)
-    #std_true = np.std(true_values, ddof=1)  # Sample standard deviation
-    #z_score = norm.ppf((1 + confidence_level) / 2)  # z-score for the given confidence level
-
-    # Confidence interval margin of error
-    #margin_of_error = z_score * (std_true / np.sqrt(n))
-    #ci = 1.95 * std_true  # 80% confidence interval
-    #plt.fill_between([true_values.min(), true_values.max()], [true_values.min() - ci, true_values.max() - ci], [true_values.min() + ci, true_values.max() + ci], color='lightblue', alpha=0.4)
-
-    # Plot the confidence interval band around the parity line
-    #plt.fill_between([min(true_values), max(true_values)], 
-    #                 [min(true_values) - margin_of_error, max(true_values) - margin_of_error], 
-    #                 [min(true_values) + margin_of_error, max(true_values) + margin_of_error], 
-    #                 color='lightblue', alpha=0.4, label=f'{int(confidence_level*100)}% Confidence Interval')
-  
-    #print("Mean:", mean_true)
-    #print("Standard Deviation:", std_true)
-    #print("z_score:", z_score)
-    #print("Margin of Error:", margin_of_error)
-
-
-
-
-    # Calculate the standard deviation and mean for the true values
-    #mean_true = np.mean(true_values)  # Computes the mean of the true values.
-    #std_true = np.std(true_values, ddof=1)  # Computes the sample standard deviation of the true values. ddof=1 indicates that it is the sample standard deviation.
-    #z_score = norm.ppf((1 + confidence_level) / 2)  # Calculates the z-score for the given confidence level (e.g., 1.96 for 95% confidence level).
-
-    # Calculate the margin of error for each true value
-    # The margin of error is computed based on the standard deviation and the z-score.
-    # This margin of error is the same for all true values in this context.
-    #margin_of_error = z_score * std_true / np.sqrt(len(true_values))
-
-    # Compute the lower and upper bounds dynamically
-    # The lower and upper bounds are calculated for each true value individually.
-    # This ensures that each true value has its own specific interval.
-    #lower_bounds = true_values - margin_of_error  # Lower bound for each true value.
-    #upper_bounds = true_values + margin_of_error  # Upper bound for each true value.
-
-    # Plot the shaded area between the lower and upper bounds
-    # fill_between is used to create a shaded region between the lower and upper bounds.
-    #plt.fill_between(true_values, lower_bounds, upper_bounds, color='lightblue', alpha=0.4, label=f'{int(confidence_level*100)}% Confidence Interval')
-
-    # Debugging prints to verify calculations
-    #print("Mean:", mean_true)  # Prints the mean of the true values.
-    #print("Standard Deviation:", std_true)  # Prints the standard deviation of the true values.
-    #print("z_score:", z_score)  # Prints the z-score corresponding to the confidence level.
-    #print("Margin of Error:", margin_of_error)  # Prints the calculated margin of error.
-
 
     # Confidence interval calculation and plotting
     mean_true = np.mean(true_values)
@@ -402,10 +351,7 @@ def plot_cumulative_distribution(true_values, predicted_values, percentiles=[50,
     
     plt.show()
 
-# Example usage:
-# true_values = np.array([...])  # Your true values
-# predicted_values = np.array([...])  # Your predicted values
-# plot_cumulative_distribution(true_values, predicted_values, save=True, data_save=True)
+
 
 def flatten_list(nested_list):
     """
@@ -518,19 +464,7 @@ def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, perce
 
 # Main function to run the script
 def main():
-    # Default values
-    #default_folder_path = '.'
-    #default_original_file_name = 'nequip_data_2by2.extxyz'
-    #default_test_file_name = 'test_rmax3.xyz'
-    
-    # Ask the user if they want to provide their own file path and names
-    use_default_setup = input("Use default file setup? (yes/no): ").lower().startswith('y')
-    
-    #if use_default_setup:
-    #    folder_path = default_folder_path
-    ##    original_file_name = default_original_file_name
-    #    test_file_name = default_test_file_name
-    #else:
+
     folder_path = input("Enter the folder path (or leave blank for current directory): ").strip() 
     original_file_name = input(f"Enter the original dataset name: ").strip() 
     test_file_name = input(f"Enter the validation dataset name: ").strip() 

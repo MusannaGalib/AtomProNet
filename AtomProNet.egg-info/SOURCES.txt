@@ -16,6 +16,7 @@ AtomProNet/position_force.py
 AtomProNet/pressure_eV.py
 AtomProNet/process_and_run_script.py
 AtomProNet/process_and_run_script_legacy_version.py
+AtomProNet/split.py
 AtomProNet.egg-info/PKG-INFO
 AtomProNet.egg-info/SOURCES.txt
 AtomProNet.egg-info/dependency_links.txt
