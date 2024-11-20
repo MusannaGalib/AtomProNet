@@ -190,13 +190,13 @@ def process_and_run_script(input_folder):
         elif option == '3':
             input_folder_path = os.path.abspath(input_folder)           
             script_dir = os.path.dirname(os.path.abspath(__file__))     
-            bash_script_path = os.path.join(script_dir, '..', 'scripts', 'hydrostatic_strain_post_processing.sh')  
+            bash_script_path = os.path.join(script_dir, '..', 'scripts', 'post_processing.sh')  
 
             if not os.path.exists(bash_script_path):
                 print("Error: Bash script not found.")
                 return
 
-            run_step1 = input("Do you want to run the first step (execute hydrostatic_strain_post_processing.sh)? (yes/no): ").strip().lower()
+            run_step1 = input("Do you want to run the first step (execute post_processing.sh)? (yes/no): ").strip().lower()
             
             if run_step1 == 'yes':       
                 try:                                           
@@ -208,7 +208,7 @@ def process_and_run_script(input_folder):
 
                 os.chdir(input_folder_path)                       
                 try:                                              
-                    subprocess.run(['bash', 'hydrostatic_strain_post_processing.sh'], capture_output=True, text=True, check=True)
+                    subprocess.run(['bash', 'post_processing.sh'], capture_output=True, text=True, check=True)
                     print("Bash script executed successfully.")
                 except subprocess.CalledProcessError as e:
                     print(f"Error executing Bash script: {e}")

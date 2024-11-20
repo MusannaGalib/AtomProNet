@@ -8,12 +8,14 @@ pos_file="$output_dir/pos-conv.txt"
 energy_file="$output_dir/energy-conv.txt"
 pressure_file="$output_dir/pressure_eV.txt"
 lattice_file="$output_dir/lattice.txt"
+symbols_file="$output_dir/symbols.txt"
 
 # Clear previous output files
 > "$pos_file"
 > "$energy_file"
 > "$pressure_file"
 > "$lattice_file"
+> "$symbols_file"
 
 # Function to perform post-processing in a directory
 process_directory() {
@@ -50,7 +52,24 @@ process_directory() {
         echo "CONTCAR not found in $current_dir. Skipping."
     fi
 
-    cd - > /dev/null || return
+    
+    if [ -f "CONTCAR" ]; then
+
+        # Read the 6th and 7th lines from the CONTCAR file
+        atom_symbols=$(sed -n '6p' "$current_dir/CONTCAR")
+        atom_counts=$(sed -n '7p' "$current_dir/CONTCAR")
+
+        # Append the current directory and extracted data to symbols.txt
+        echo "Directory: $current_dir" >> "$symbols_file"
+        echo "Symbols: $atom_symbols" >> "$symbols_file"
+        echo "Counts: $atom_counts" >> "$symbols_file"
+        echo "" >> "$symbols_file"
+    else
+        echo "CONTCAR not found in $current_dir. Skipping."
+    fi
+
+    cd - > /dev/null || return  
+
 }
 
 # Recursive function to traverse all directories
