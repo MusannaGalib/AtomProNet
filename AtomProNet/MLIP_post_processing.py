@@ -189,7 +189,6 @@ def calculate_rms_forces(forces):
     rms_forces = [np.sqrt(np.mean(f**2, axis=1)) for f in forces]
     return rms_forces
 
-# Compares RMS forces between extracted and test datasets, plots
 # Compares RMS forces between extracted and test datasets, plots the comparison, and saves the RMS force data
 def compare_rms_forces(extracted_forces, test_forces, title, save_dir='plots', save=True, data_save=True):
     if not os.path.exists(save_dir):
@@ -463,21 +462,21 @@ def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, perce
 
 
 def main():
-    folder_path = input("Enter the folder path (or leave blank for current directory): ").strip()
-    original_file_name = input(f"Enter the original dataset name: ").strip()
-    test_file_name = input(f"Enter the validation dataset name: ").strip()
+    folder_path = input("Enter the folder path (or leave blank for current directory): ").strip() or "."
+    original_file_name = input("Enter the original dataset name: ").strip()
+    test_file_name = input("Enter the validation dataset name: ").strip()
 
     # Ensure we have a valid folder path
     if not os.path.isdir(folder_path):
         raise NotADirectoryError(f"Provided folder path does not exist: {folder_path}")
 
     # Getting file paths
-    original_file_path = get_file_path(os.path.join(folder_path, original_file_name), f"Enter path for {original_file_name}: ")
-    test_file_path = get_file_path(os.path.join(folder_path, test_file_name), f"Enter path for {test_file_name}: ")
+    original_file_path = os.path.join(folder_path, original_file_name)
+    test_file_path = os.path.join(folder_path, test_file_name)
 
-    # Reading and processing datasets
-    original_datasets = read_datasets(original_file_path)
-    test_datasets = read_datasets(test_file_path)
+    # Reading datasets
+    original_datasets = ase.io.read(original_file_path, index=":")
+    test_datasets = ase.io.read(test_file_path, index=":")
 
     # Extract datasets or set as test_datasets
     extracted_datasets = []
@@ -489,22 +488,25 @@ def main():
             if 'original_dataset_index' in frame.info:
                 index = frame.info['original_dataset_index']
                 dataset_counter += 1
-                # Debug line to show the counter and the index of the dataset being extracted
                 print(f"Extracting dataset {dataset_counter} using original_dataset_index: {index}")
-                extracted_dataset = extract_dataset(original_datasets, index)
-                extracted_datasets.append(extracted_dataset)
+                extracted_datasets.append(original_datasets[index])
     else:
         print("No 'original_dataset_index' found in test_datasets. Using test_datasets as extracted_datasets.")
         extracted_datasets = test_datasets
 
-    # Saving extracted datasets
+    # Save extracted datasets
     output_file_path = os.path.join(folder_path, 'extracted_datasets.extxyz')
     ase.io.write(output_file_path, extracted_datasets, format='extxyz')
     print(f"Extracted datasets have been saved to {output_file_path}")
 
-    # Reading forces for comparison
-    extracted_forces = [frame.get_forces() for frame in extracted_datasets]
-    test_forces = [frame.get_forces() for frame in test_datasets]
+    # Extract forces
+    def get_forces(frame):
+        if 'MACE_forces' in frame.arrays:
+            return frame.arrays['MACE_forces']
+        return frame.get_forces()
+
+    extracted_forces = [get_forces(frame) for frame in extracted_datasets]
+    test_forces = [get_forces(frame) for frame in test_datasets]
 
     # Comparing forces
     compare_forces(extracted_forces, test_forces, 'Force Comparison Plot')
@@ -512,9 +514,13 @@ def main():
     # Comparing RMS forces
     compare_rms_forces(extracted_forces, test_forces, 'RMS Force Comparison Plot')
 
+   # Extract energies safely (first checks 'energy', then 'MACE_energy')
+    def get_potential_energy(frame):
+        return frame.info.get('energy', frame.info.get('MACE_energy', np.nan))  # First checks 'energy', then 'MACE_energy'
+    
     # Extract energies for comparison
-    extracted_energies = np.array([frame.get_potential_energy() for frame in extracted_datasets])
-    test_energies = np.array([frame.get_potential_energy() for frame in test_datasets])
+    extracted_energies = np.array([get_potential_energy(frame) for frame in extracted_datasets])
+    test_energies = np.array([get_potential_energy(frame) for frame in test_datasets])
 
     # Ensure both energy arrays have the same length for plotting
     min_len = min(len(extracted_energies), len(test_energies))
@@ -528,7 +534,6 @@ def main():
     plot_cumulative_distribution(extracted_energies, test_energies, save=True, data_save=True)
     plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, save=True, data_save=True)
 
-        
-
 if __name__ == "__main__":
     main()
+
