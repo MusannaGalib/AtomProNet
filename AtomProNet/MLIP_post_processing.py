@@ -369,8 +369,9 @@ def flatten_list(nested_list):
 
 
 
-def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, folder_path, percentiles=[50, 80, 95], title='Cumulative Distribution of Force Errors', save=False, data_save=False):
-
+def plot_cumulative_distribution_rms_forces(
+    extracted_forces, test_forces, folder_path, percentiles=[50, 80, 95], title='Cumulative Distribution of Force Errors', save=False, data_save=False
+):
     # Calculate RMS forces
     rms_extracted = calculate_rms_forces(extracted_forces)
     rms_test = calculate_rms_forces(test_forces)
@@ -391,9 +392,13 @@ def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, folde
     print(f"rms_extracted shape: {rms_extracted.shape}, dtype: {rms_extracted.dtype}")
     print(f"rms_test shape: {rms_test.shape}, dtype: {rms_test.dtype}")
 
-
     # Calculate the absolute errors
-    errors = np.abs(rms_extracted - rms_test)   #80 atoms in the alumina
+    errors = np.abs(rms_extracted - rms_test)  # 80 atoms in the alumina
+
+    # Check if all errors are zero
+    if np.all(errors == 0):
+        print("\033[95mGood News! 0% error, no cumulative error plot needed!\033[0m")
+        return
 
     # Sort the errors
     sorted_errors = np.sort(errors)
@@ -410,9 +415,15 @@ def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, folde
 
     # Add horizontal dashed lines for specified percentiles and markers at intersections
     for p, v in zip(percentiles, percentile_values):
-        plt.axhline(y=p, xmin=0, xmax=(np.log10(v) - np.log10(sorted_errors.min())) / (np.log10(sorted_errors.max()) - np.log10(sorted_errors.min())), color='lightblue', linestyle='--')
-        plt.annotate(f'{v:.2f}', xy=(v, p), xytext=(v*2.5, p),
-                     fontsize=12, ha='center', bbox=dict(facecolor='none', edgecolor='none', boxstyle='round, pad=0.4'))
+        plt.axhline(
+            y=p,
+            xmin=0,
+            xmax=(np.log10(v) - np.log10(sorted_errors.min())) / (np.log10(sorted_errors.max()) - np.log10(sorted_errors.min())),
+            color='lightblue',
+            linestyle='--',
+        )
+        plt.annotate(f'{v:.2f}', xy=(v, p), xytext=(v * 2.5, p), fontsize=12, ha='center',
+                     bbox=dict(facecolor='none', edgecolor='none', boxstyle='round, pad=0.4'))
         plt.scatter([v], [p], color='lightblue', s=50, edgecolor='black', zorder=5)  # Circular marker
 
     # Set x and y scales
@@ -422,45 +433,25 @@ def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, folde
     # Add labels and title
     plt.xlabel('Force error (eV/$\AA$)', fontsize=16)
     plt.ylabel('Cumulative (%)', fontsize=16)
-    #plt.title(title)
-
-    # Increase x and y tick label font size
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
-
-
-
-
-    # Show the plot
     plt.tight_layout()
-    
+
+    # Save the plot and data if required
+    save_dir = os.path.join(folder_path, "plots")
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
     if save:
-        save_dir = os.path.join(folder_path, "plots")
-        if not os.path.exists(save_dir):
-            os.makedirs(save_dir)
         figure_save_path = os.path.join(save_dir, f"{title.replace(' ', '_')}.png")
         plt.savefig(figure_save_path, bbox_inches='tight')
         print(f"Figure saved to {figure_save_path}")
     plt.close()
-    
+
     if data_save:
         true_values_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_true_values.txt")
         predicted_values_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_predicted_values.txt")
-
-        #print(extracted_forces)
-
-        print("Attempting to save true values to:", true_values_path)
         np.savetxt(true_values_path, rms_extracted, header='True RMS Values', comments='')
-        print("True values saved successfully.")
-
-        print("Attempting to save predicted values to:", predicted_values_path)
         np.savetxt(predicted_values_path, rms_test, header='Predicted RMS Values', comments='')
-        print("Predicted values saved successfully.")
-
-
         print(f"Data saved to {true_values_path} and {predicted_values_path}")
-    
-    plt.show()
 
 
 
