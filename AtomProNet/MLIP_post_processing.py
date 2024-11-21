@@ -35,8 +35,12 @@ def extract_dataset(original_datasets, index):
     else:
         raise IndexError("Index out of range.")
 
+    
+
 # Plots parity between true and predicted values and optionally saves the data to files
-def plot_parity(true_values, predicted_values, title, xlabel, ylabel, save_dir='plots', data_save=True, save=True, confidence_level=0.95):
+def plot_parity(true_values, predicted_values, title, xlabel, ylabel, folder_path, data_save=True, save=True, confidence_level=0.95):
+    # Create a 'plots' directory inside the user-defined folder path
+    save_dir = os.path.join(folder_path, "plots")
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     plt.figure(figsize=(5, 4), dpi=1200)
@@ -91,7 +95,8 @@ def plot_parity(true_values, predicted_values, title, xlabel, ylabel, save_dir='
         print(f"Data saved to {true_values_path} and {predicted_values_path}")
 
 # Compares forces between extracted and test datasets, plots the comparison, and saves the force data
-def compare_forces(extracted_forces, test_forces, title, save_dir='plots', save=True, data_save=True, confidence_level=0.95):
+def compare_forces(extracted_forces, test_forces, title, folder_path, save=True, data_save=True, confidence_level=0.95):
+    save_dir = os.path.join(folder_path, "plots")
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
@@ -190,7 +195,8 @@ def calculate_rms_forces(forces):
     return rms_forces
 
 # Compares RMS forces between extracted and test datasets, plots the comparison, and saves the RMS force data
-def compare_rms_forces(extracted_forces, test_forces, title, save_dir='plots', save=True, data_save=True):
+def compare_rms_forces(extracted_forces, test_forces, title, folder_path, save=True, data_save=True):
+    save_dir = os.path.join(folder_path, "plots")
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
@@ -273,7 +279,7 @@ def compare_rms_forces(extracted_forces, test_forces, title, save_dir='plots', s
 
 
 
-def plot_cumulative_distribution(true_values, predicted_values, percentiles=[50, 80, 95], title='Cumulative Distribution of Energy Errors', save_dir='plots', save=False, data_save=False):
+def plot_cumulative_distribution(true_values, predicted_values, folder_path, percentiles=[50, 80, 95], title='Cumulative Distribution of Energy Errors', save=False, data_save=False):
     """
     Plot the cumulative distribution of absolute errors between true values and predicted values.
     
@@ -334,6 +340,7 @@ def plot_cumulative_distribution(true_values, predicted_values, percentiles=[50,
 
     
     if save:
+        save_dir = os.path.join(folder_path, "plots")
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
         figure_save_path = os.path.join(save_dir, f"{title.replace(' ', '_')}.png")
@@ -362,7 +369,7 @@ def flatten_list(nested_list):
 
 
 
-def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, percentiles=[50, 80, 95], title='Cumulative Distribution of Force Errors', save_dir='plots', save=False, data_save=False):
+def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, folder_path, percentiles=[50, 80, 95], title='Cumulative Distribution of Force Errors', save=False, data_save=False):
 
     # Calculate RMS forces
     rms_extracted = calculate_rms_forces(extracted_forces)
@@ -428,6 +435,7 @@ def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, perce
     plt.tight_layout()
     
     if save:
+        save_dir = os.path.join(folder_path, "plots")
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
         figure_save_path = os.path.join(save_dir, f"{title.replace(' ', '_')}.png")
@@ -509,10 +517,10 @@ def main():
     test_forces = [get_forces(frame) for frame in test_datasets]
 
     # Comparing forces
-    compare_forces(extracted_forces, test_forces, 'Force Comparison Plot')
+    compare_forces(extracted_forces, test_forces, 'Force Comparison Plot',folder_path)
 
     # Comparing RMS forces
-    compare_rms_forces(extracted_forces, test_forces, 'RMS Force Comparison Plot')
+    compare_rms_forces(extracted_forces, test_forces, 'RMS Force Comparison Plot', folder_path)
 
    # Extract energies safely (first checks 'energy', then 'MACE_energy')
     def get_potential_energy(frame):
@@ -528,11 +536,11 @@ def main():
     test_energies = test_energies[:min_len]
 
     # Compare energies
-    plot_parity(extracted_energies, test_energies, 'Energy Parity Plot', 'True Energies (eV)', 'Predicted Energies (eV)')
+    plot_parity(extracted_energies, test_energies, 'Energy Parity Plot', 'True Energies (eV)', 'Predicted Energies (eV)', folder_path)
 
     # Plot cumulative distributions
-    plot_cumulative_distribution(extracted_energies, test_energies, save=True, data_save=True)
-    plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, save=True, data_save=True)
+    plot_cumulative_distribution(extracted_energies, test_energies, folder_path, save=True, data_save=True)
+    plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, folder_path, save=True, data_save=True)
 
 if __name__ == "__main__":
     main()
