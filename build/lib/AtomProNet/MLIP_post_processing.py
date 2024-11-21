@@ -462,13 +462,11 @@ def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, perce
 
 
 
-# Main function to run the script
 def main():
+    folder_path = input("Enter the folder path (or leave blank for current directory): ").strip()
+    original_file_name = input(f"Enter the original dataset name: ").strip()
+    test_file_name = input(f"Enter the validation dataset name: ").strip()
 
-    folder_path = input("Enter the folder path (or leave blank for current directory): ").strip() 
-    original_file_name = input(f"Enter the original dataset name: ").strip() 
-    test_file_name = input(f"Enter the validation dataset name: ").strip() 
-    
     # Ensure we have a valid folder path
     if not os.path.isdir(folder_path):
         raise NotADirectoryError(f"Provided folder path does not exist: {folder_path}")
@@ -477,22 +475,27 @@ def main():
     original_file_path = get_file_path(os.path.join(folder_path, original_file_name), f"Enter path for {original_file_name}: ")
     test_file_path = get_file_path(os.path.join(folder_path, test_file_name), f"Enter path for {test_file_name}: ")
 
-    # Continue with the existing code for reading and processing datasets...
-
-    # Reading and extracting datasets
+    # Reading and processing datasets
     original_datasets = read_datasets(original_file_path)
     test_datasets = read_datasets(test_file_path)
 
+    # Extract datasets or set as test_datasets
     extracted_datasets = []
     dataset_counter = 0
-    for frame in test_datasets:
-        if 'original_dataset_index' in frame.info:
-            index = frame.info['original_dataset_index']
-            dataset_counter += 1
-             # Debug line to show the counter and the index of the dataset being extracted
-            print(f"Extracting dataset {dataset_counter} using original_dataset_index: {index}")
-            extracted_dataset = extract_dataset(original_datasets, index)
-            extracted_datasets.append(extracted_dataset)
+    has_original_index = any('original_dataset_index' in frame.info for frame in test_datasets)
+
+    if has_original_index:
+        for frame in test_datasets:
+            if 'original_dataset_index' in frame.info:
+                index = frame.info['original_dataset_index']
+                dataset_counter += 1
+                # Debug line to show the counter and the index of the dataset being extracted
+                print(f"Extracting dataset {dataset_counter} using original_dataset_index: {index}")
+                extracted_dataset = extract_dataset(original_datasets, index)
+                extracted_datasets.append(extracted_dataset)
+    else:
+        print("No 'original_dataset_index' found in test_datasets. Using test_datasets as extracted_datasets.")
+        extracted_datasets = test_datasets
 
     # Saving extracted datasets
     output_file_path = os.path.join(folder_path, 'extracted_datasets.extxyz')
@@ -508,7 +511,7 @@ def main():
 
     # Comparing RMS forces
     compare_rms_forces(extracted_forces, test_forces, 'RMS Force Comparison Plot')
-    
+
     # Extract energies for comparison
     extracted_energies = np.array([frame.get_potential_energy() for frame in extracted_datasets])
     test_energies = np.array([frame.get_potential_energy() for frame in test_datasets])
@@ -518,13 +521,13 @@ def main():
     extracted_energies = extracted_energies[:min_len]
     test_energies = test_energies[:min_len]
 
-# Compare energies
+    # Compare energies
     plot_parity(extracted_energies, test_energies, 'Energy Parity Plot', 'True Energies (eV)', 'Predicted Energies (eV)')
 
+    # Plot cumulative distributions
+    plot_cumulative_distribution(extracted_energies, test_energies, save=True, data_save=True)
+    plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, save=True, data_save=True)
 
-#plot_cumulative_distribution
-    plot_cumulative_distribution(extracted_energies, test_energies, save=True, data_save=True) 
-    plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, save=True, data_save=True) 
         
 
 if __name__ == "__main__":
