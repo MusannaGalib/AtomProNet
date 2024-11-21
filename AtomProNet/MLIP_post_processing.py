@@ -293,7 +293,12 @@ def plot_cumulative_distribution(true_values, predicted_values, folder_path, per
     - data_save: boolean indicating whether to save the data (default: False)
     """
     # Calculate the absolute errors
-    errors = np.abs(true_values - predicted_values)/80   #80 atoms in the alumina
+    errors = np.abs(true_values - predicted_values) / 80  # 80 atoms in the alumina
+
+    # Check if all errors are zero
+    if np.all(errors == 0):
+        print("\033[95mGood News! 0% error, no cumulative error plot needed!\033[0m")
+        return
 
     # Sort the errors
     sorted_errors = np.sort(errors)
@@ -310,9 +315,15 @@ def plot_cumulative_distribution(true_values, predicted_values, folder_path, per
 
     # Add horizontal dashed lines for specified percentiles and markers at intersections
     for p, v in zip(percentiles, percentile_values):
-        plt.axhline(y=p, xmin=0, xmax=(np.log10(v) - np.log10(sorted_errors.min())) / (np.log10(sorted_errors.max()) - np.log10(sorted_errors.min())), color='lightblue', linestyle='--')
-        plt.annotate(f'{v:.2f}', xy=(v, p), xytext=(v*1.5, p),
-                     fontsize=12, ha='center', bbox=dict(facecolor='none', edgecolor='none', boxstyle='round,pad=0.2'))
+        plt.axhline(
+            y=p,
+            xmin=0,
+            xmax=(np.log10(v) - np.log10(sorted_errors.min())) / (np.log10(sorted_errors.max()) - np.log10(sorted_errors.min())),
+            color='lightblue',
+            linestyle='--',
+        )
+        plt.annotate(f'{v:.2f}', xy=(v, p), xytext=(v * 1.5, p), fontsize=12, ha='center',
+                     bbox=dict(facecolor='none', edgecolor='none', boxstyle='round,pad=0.2'))
         plt.scatter([v], [p], color='lightblue', s=50, edgecolor='black', zorder=5)  # Circular marker
 
     # Set x and y scales
@@ -322,23 +333,18 @@ def plot_cumulative_distribution(true_values, predicted_values, folder_path, per
     # Add labels and title
     plt.xlabel('Energy error (eV/ atom)', fontsize=16)
     plt.ylabel('Cumulative (%)', fontsize=16)
-    #plt.title(title)
+    # plt.title(title)
 
     # Increase x and y tick label font size
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
 
-
-
-
     # Show the plot
     plt.tight_layout()
 
-    
     # Set the x-axis limit to avoid overlapping with annotations
     plt.xlim(sorted_errors.min(), sorted_errors.max() * 1.5)  # Adjust multiplier as needed
 
-    
     if save:
         save_dir = os.path.join(folder_path, "plots")
         if not os.path.exists(save_dir):
@@ -347,15 +353,16 @@ def plot_cumulative_distribution(true_values, predicted_values, folder_path, per
         plt.savefig(figure_save_path, bbox_inches='tight')
         print(f"Figure saved to {figure_save_path}")
     plt.close()
-    
+
     if data_save:
         true_values_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_true_values.txt")
         predicted_values_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_predicted_values.txt")
         np.savetxt(true_values_path, true_values, header='True Values', comments='')
         np.savetxt(predicted_values_path, predicted_values, header='Predicted Values', comments='')
         print(f"Data saved to {true_values_path} and {predicted_values_path}")
-    
+
     plt.show()
+
 
 
 
@@ -397,7 +404,7 @@ def plot_cumulative_distribution_rms_forces(
 
     # Check if all errors are zero
     if np.all(errors == 0):
-        print("\033[95mGood News! 0% error, no cumulative error plot needed!\033[0m")
+        print("\033[95mGood News! 0% force error, no cumulative force error plot needed!\033[0m")
         return
 
     # Sort the errors
