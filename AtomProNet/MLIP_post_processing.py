@@ -307,7 +307,7 @@ def plot_cumulative_distribution(true_values, predicted_values, folder_path, ext
 
     # Check if all errors are zero
     if np.all(errors == 0):
-        print("\033[95mGood News! 0% error, no cumulative error plot needed!\033[0m")
+        print("\033[95mGood News! 0% error, no cumulative energy error plot needed!\033[0m")
         return
 
     # Sort the errors
@@ -332,7 +332,7 @@ def plot_cumulative_distribution(true_values, predicted_values, folder_path, ext
             color='lightblue',
             linestyle='--',
         )
-        plt.annotate(f'{v:.2f}', xy=(v, p), xytext=(v * 1.5, p), fontsize=12, ha='center',
+        plt.annotate(f'{v:.2f}', xy=(v, p), xytext=(v * 2.0, p), fontsize=12, ha='center',
                      bbox=dict(facecolor='none', edgecolor='none', boxstyle='round,pad=0.2'))
         plt.scatter([v], [p], color='lightblue', s=50, edgecolor='black', zorder=5)  # Circular marker
 
@@ -444,7 +444,7 @@ def plot_cumulative_distribution_rms_forces(
             color='lightblue',
             linestyle='--',
         )
-        plt.annotate(f'{v:.2f}', xy=(v, p), xytext=(v * 2.5, p), fontsize=12, ha='center',
+        plt.annotate(f'{v:.3f}', xy=(v, p), xytext=(v * 2.8, p), fontsize=12, ha='center',
                      bbox=dict(facecolor='none', edgecolor='none', boxstyle='round, pad=0.4'))
         plt.scatter([v], [p], color='lightblue', s=50, edgecolor='black', zorder=5)  # Circular marker
 
@@ -515,8 +515,8 @@ def main(folder_path=None):
                 print(f"Extracting dataset {dataset_counter} using original_dataset_index: {index}")
                 extracted_datasets.append(original_datasets[index])
     else:
-        print("No 'original_dataset_index' found in test_datasets. Using test_datasets as extracted_datasets.")
-        extracted_datasets = test_datasets
+        print("No 'original_dataset_index' found in test_datasets. Using original_datasets as extracted_datasets.")
+        extracted_datasets = original_datasets
 
     # Save extracted datasets
     output_file_path = os.path.join(folder_path, 'extracted_datasets.extxyz')
