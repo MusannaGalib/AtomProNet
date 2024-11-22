@@ -270,7 +270,7 @@ def process_and_run_script(input_folder):
                 print("\nStarting MLIP Post-Processing...")
                 
                 # Import the necessary function from the MLIP post-processing module
-                from MLIP_post_processing import main as mlip_post_processing_main
+                from AtomProNet.MLIP_post_processing import main as mlip_post_processing_main
                 
                 try:
                     # Call the main function for MLIP post-processing
