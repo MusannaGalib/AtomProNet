@@ -279,21 +279,31 @@ def compare_rms_forces(extracted_forces, test_forces, title, folder_path, save=T
 
 
 
-def plot_cumulative_distribution(true_values, predicted_values, folder_path, percentiles=[50, 80, 95], title='Cumulative Distribution of Energy Errors', save=False, data_save=False):
+def plot_cumulative_distribution(true_values, predicted_values, folder_path, extracted_datasets, percentiles=[50, 80, 95], title='Cumulative Distribution of Energy Errors', save=False, data_save=False):
     """
     Plot the cumulative distribution of absolute errors between true values and predicted values.
-    
+
     Parameters:
     - true_values: numpy array of true values
     - predicted_values: numpy array of predicted values
+    - extracted_datasets: list of ASE Atoms objects representing datasets
     - percentiles: list of percentiles to annotate on the plot (default: [50, 80, 95])
     - title: title of the plot (default: 'Cumulative Distribution of Energy Errors')
     - save_dir: directory where the plot and data will be saved (default: 'plots')
     - save: boolean indicating whether to save the plot (default: False)
     - data_save: boolean indicating whether to save the data (default: False)
     """
-    # Calculate the absolute errors
-    errors = np.abs(true_values - predicted_values) / 80  # 80 atoms in the alumina
+    # Ensure the same number of datasets are used for atom_counts
+    min_len = min(len(true_values), len(predicted_values), len(extracted_datasets))
+    true_values = true_values[:min_len]
+    predicted_values = predicted_values[:min_len]
+    extracted_datasets = extracted_datasets[:min_len]
+
+    # Extract atom counts for each dataset
+    atom_counts = np.array([len(frame) for frame in extracted_datasets])
+
+    # Calculate the absolute errors normalized by atom counts
+    errors = np.abs(true_values - predicted_values) / atom_counts
 
     # Check if all errors are zero
     if np.all(errors == 0):
@@ -357,11 +367,16 @@ def plot_cumulative_distribution(true_values, predicted_values, folder_path, per
     if data_save:
         true_values_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_true_values.txt")
         predicted_values_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_predicted_values.txt")
+        atom_counts_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_atom_counts.txt")
+
         np.savetxt(true_values_path, true_values, header='True Values', comments='')
         np.savetxt(predicted_values_path, predicted_values, header='Predicted Values', comments='')
-        print(f"Data saved to {true_values_path} and {predicted_values_path}")
+        np.savetxt(atom_counts_path, atom_counts, header='Atom Counts', comments='')
+
+        print(f"Data saved to {true_values_path}, {predicted_values_path}, and {atom_counts_path}")
 
     plt.show()
+
 
 
 
@@ -540,7 +555,7 @@ def main(folder_path=None):
     plot_parity(extracted_energies, test_energies, 'Energy Parity Plot', 'True Energies (eV)', 'Predicted Energies (eV)', folder_path)
 
     # Plot cumulative distributions
-    plot_cumulative_distribution(extracted_energies, test_energies, folder_path, save=True, data_save=True)
+    plot_cumulative_distribution(extracted_energies, test_energies, folder_path, extracted_datasets, save=True, data_save=True)
     plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, folder_path, save=True, data_save=True)
 
 if __name__ == "__main__":
