@@ -332,7 +332,15 @@ def plot_cumulative_distribution(true_values, predicted_values, folder_path, ext
             color='lightblue',
             linestyle='--',
         )
-        plt.annotate(f'{v:.2f}', xy=(v, p), xytext=(v * 2.0, p), fontsize=12, ha='center',
+
+        # Get x-axis limits
+        x_min, x_max = plt.gca().get_xlim()
+        
+        # Ensure the annotation position is within the x-axis limits
+        annotation_x = min(max(v * 2.0, x_min), x_max * 0.95)  # Keep within 95% of x_max to avoid overlap
+   
+
+        plt.annotate(f'{v:.2f}', xy=(v, p), xytext=(annotation_x, p), fontsize=12, ha='center',
                      bbox=dict(facecolor='none', edgecolor='none', boxstyle='round,pad=0.2'))
         plt.scatter([v], [p], color='lightblue', s=50, edgecolor='black', zorder=5)  # Circular marker
 

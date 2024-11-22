@@ -353,7 +353,7 @@ def plot_cumulative_distribution(true_values, predicted_values, folder_path, ext
     plt.tight_layout()
 
     # Set the x-axis limit to avoid overlapping with annotations
-    plt.xlim(sorted_errors.min(), sorted_errors.max() * 1.5)  # Adjust multiplier as needed
+    plt.xlim(sorted_errors.min(), sorted_errors.max() * 3.0)  # Adjust multiplier as needed
 
     if save:
         save_dir = os.path.join(folder_path, "plots")
@@ -456,6 +456,9 @@ def plot_cumulative_distribution_rms_forces(
     plt.xlabel('Force error (eV/$\AA$)', fontsize=16)
     plt.ylabel('Cumulative (%)', fontsize=16)
     plt.tight_layout()
+
+    # Set the x-axis limit to avoid overlapping with annotations
+    plt.xlim(sorted_errors.min(), sorted_errors.max() * 3.0)  # Adjust multiplier as needed
 
     # Save the plot and data if required
     save_dir = os.path.join(folder_path, "plots")
