@@ -467,8 +467,11 @@ def plot_cumulative_distribution_rms_forces(
 
 
 
-def main():
-    folder_path = input("Enter the folder path (or leave blank for current directory): ").strip() or "."
+def main(folder_path=None):
+    if not folder_path:  # If no folder path is provided, ask the user
+        folder_path = input("Enter the folder path: ").strip() or "."
+    else:
+        print(f"Using provided folder path: {folder_path}")
     original_file_name = input("Enter the original dataset name: ").strip()
     test_file_name = input("Enter the validation dataset name: ").strip()
 
