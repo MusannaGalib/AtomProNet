@@ -35,8 +35,12 @@ def extract_dataset(original_datasets, index):
     else:
         raise IndexError("Index out of range.")
 
+    
+
 # Plots parity between true and predicted values and optionally saves the data to files
-def plot_parity(true_values, predicted_values, title, xlabel, ylabel, save_dir='plots', data_save=True, save=True, confidence_level=0.95):
+def plot_parity(true_values, predicted_values, title, xlabel, ylabel, folder_path, data_save=True, save=True, confidence_level=0.95):
+    # Create a 'plots' directory inside the user-defined folder path
+    save_dir = os.path.join(folder_path, "plots")
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     plt.figure(figsize=(5, 4), dpi=1200)
@@ -91,7 +95,8 @@ def plot_parity(true_values, predicted_values, title, xlabel, ylabel, save_dir='
         print(f"Data saved to {true_values_path} and {predicted_values_path}")
 
 # Compares forces between extracted and test datasets, plots the comparison, and saves the force data
-def compare_forces(extracted_forces, test_forces, title, save_dir='plots', save=True, data_save=True, confidence_level=0.95):
+def compare_forces(extracted_forces, test_forces, title, folder_path, save=True, data_save=True, confidence_level=0.95):
+    save_dir = os.path.join(folder_path, "plots")
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
@@ -189,9 +194,9 @@ def calculate_rms_forces(forces):
     rms_forces = [np.sqrt(np.mean(f**2, axis=1)) for f in forces]
     return rms_forces
 
-# Compares RMS forces between extracted and test datasets, plots
 # Compares RMS forces between extracted and test datasets, plots the comparison, and saves the RMS force data
-def compare_rms_forces(extracted_forces, test_forces, title, save_dir='plots', save=True, data_save=True):
+def compare_rms_forces(extracted_forces, test_forces, title, folder_path, save=True, data_save=True):
+    save_dir = os.path.join(folder_path, "plots")
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
@@ -274,21 +279,36 @@ def compare_rms_forces(extracted_forces, test_forces, title, save_dir='plots', s
 
 
 
-def plot_cumulative_distribution(true_values, predicted_values, percentiles=[50, 80, 95], title='Cumulative Distribution of Energy Errors', save_dir='plots', save=False, data_save=False):
+def plot_cumulative_distribution(true_values, predicted_values, folder_path, extracted_datasets, percentiles=[50, 80, 95], title='Cumulative Distribution of Energy Errors', save=False, data_save=False):
     """
     Plot the cumulative distribution of absolute errors between true values and predicted values.
-    
+
     Parameters:
     - true_values: numpy array of true values
     - predicted_values: numpy array of predicted values
+    - extracted_datasets: list of ASE Atoms objects representing datasets
     - percentiles: list of percentiles to annotate on the plot (default: [50, 80, 95])
     - title: title of the plot (default: 'Cumulative Distribution of Energy Errors')
     - save_dir: directory where the plot and data will be saved (default: 'plots')
     - save: boolean indicating whether to save the plot (default: False)
     - data_save: boolean indicating whether to save the data (default: False)
     """
-    # Calculate the absolute errors
-    errors = np.abs(true_values - predicted_values)/80   #80 atoms in the alumina
+    # Ensure the same number of datasets are used for atom_counts
+    min_len = min(len(true_values), len(predicted_values), len(extracted_datasets))
+    true_values = true_values[:min_len]
+    predicted_values = predicted_values[:min_len]
+    extracted_datasets = extracted_datasets[:min_len]
+
+    # Extract atom counts for each dataset
+    atom_counts = np.array([len(frame) for frame in extracted_datasets])
+
+    # Calculate the absolute errors normalized by atom counts
+    errors = np.abs(true_values - predicted_values) / atom_counts
+
+    # Check if all errors are zero
+    if np.all(errors == 0):
+        print("\033[95mGood News! 0% error, no cumulative error plot needed!\033[0m")
+        return
 
     # Sort the errors
     sorted_errors = np.sort(errors)
@@ -305,9 +325,15 @@ def plot_cumulative_distribution(true_values, predicted_values, percentiles=[50,
 
     # Add horizontal dashed lines for specified percentiles and markers at intersections
     for p, v in zip(percentiles, percentile_values):
-        plt.axhline(y=p, xmin=0, xmax=(np.log10(v) - np.log10(sorted_errors.min())) / (np.log10(sorted_errors.max()) - np.log10(sorted_errors.min())), color='lightblue', linestyle='--')
-        plt.annotate(f'{v:.2f}', xy=(v, p), xytext=(v*1.5, p),
-                     fontsize=12, ha='center', bbox=dict(facecolor='none', edgecolor='none', boxstyle='round,pad=0.2'))
+        plt.axhline(
+            y=p,
+            xmin=0,
+            xmax=(np.log10(v) - np.log10(sorted_errors.min())) / (np.log10(sorted_errors.max()) - np.log10(sorted_errors.min())),
+            color='lightblue',
+            linestyle='--',
+        )
+        plt.annotate(f'{v:.2f}', xy=(v, p), xytext=(v * 1.5, p), fontsize=12, ha='center',
+                     bbox=dict(facecolor='none', edgecolor='none', boxstyle='round,pad=0.2'))
         plt.scatter([v], [p], color='lightblue', s=50, edgecolor='black', zorder=5)  # Circular marker
 
     # Set x and y scales
@@ -317,39 +343,41 @@ def plot_cumulative_distribution(true_values, predicted_values, percentiles=[50,
     # Add labels and title
     plt.xlabel('Energy error (eV/ atom)', fontsize=16)
     plt.ylabel('Cumulative (%)', fontsize=16)
-    #plt.title(title)
+    # plt.title(title)
 
     # Increase x and y tick label font size
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
 
-
-
-
     # Show the plot
     plt.tight_layout()
 
-    
     # Set the x-axis limit to avoid overlapping with annotations
     plt.xlim(sorted_errors.min(), sorted_errors.max() * 1.5)  # Adjust multiplier as needed
 
-    
     if save:
+        save_dir = os.path.join(folder_path, "plots")
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
         figure_save_path = os.path.join(save_dir, f"{title.replace(' ', '_')}.png")
         plt.savefig(figure_save_path, bbox_inches='tight')
         print(f"Figure saved to {figure_save_path}")
     plt.close()
-    
+
     if data_save:
         true_values_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_true_values.txt")
         predicted_values_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_predicted_values.txt")
+        atom_counts_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_atom_counts.txt")
+
         np.savetxt(true_values_path, true_values, header='True Values', comments='')
         np.savetxt(predicted_values_path, predicted_values, header='Predicted Values', comments='')
-        print(f"Data saved to {true_values_path} and {predicted_values_path}")
-    
+        np.savetxt(atom_counts_path, atom_counts, header='Atom Counts', comments='')
+
+        print(f"Data saved to {true_values_path}, {predicted_values_path}, and {atom_counts_path}")
+
     plt.show()
+
+
 
 
 
@@ -363,8 +391,9 @@ def flatten_list(nested_list):
 
 
 
-def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, percentiles=[50, 80, 95], title='Cumulative Distribution of Force Errors', save_dir='plots', save=False, data_save=False):
-
+def plot_cumulative_distribution_rms_forces(
+    extracted_forces, test_forces, folder_path, percentiles=[50, 80, 95], title='Cumulative Distribution of Force Errors', save=False, data_save=False
+):
     # Calculate RMS forces
     rms_extracted = calculate_rms_forces(extracted_forces)
     rms_test = calculate_rms_forces(test_forces)
@@ -385,9 +414,13 @@ def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, perce
     print(f"rms_extracted shape: {rms_extracted.shape}, dtype: {rms_extracted.dtype}")
     print(f"rms_test shape: {rms_test.shape}, dtype: {rms_test.dtype}")
 
-
     # Calculate the absolute errors
-    errors = np.abs(rms_extracted - rms_test)   #80 atoms in the alumina
+    errors = np.abs(rms_extracted - rms_test)  # 80 atoms in the alumina
+
+    # Check if all errors are zero
+    if np.all(errors == 0):
+        print("\033[95mGood News! 0% force error, no cumulative force error plot needed!\033[0m")
+        return
 
     # Sort the errors
     sorted_errors = np.sort(errors)
@@ -404,9 +437,15 @@ def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, perce
 
     # Add horizontal dashed lines for specified percentiles and markers at intersections
     for p, v in zip(percentiles, percentile_values):
-        plt.axhline(y=p, xmin=0, xmax=(np.log10(v) - np.log10(sorted_errors.min())) / (np.log10(sorted_errors.max()) - np.log10(sorted_errors.min())), color='lightblue', linestyle='--')
-        plt.annotate(f'{v:.2f}', xy=(v, p), xytext=(v*2.5, p),
-                     fontsize=12, ha='center', bbox=dict(facecolor='none', edgecolor='none', boxstyle='round, pad=0.4'))
+        plt.axhline(
+            y=p,
+            xmin=0,
+            xmax=(np.log10(v) - np.log10(sorted_errors.min())) / (np.log10(sorted_errors.max()) - np.log10(sorted_errors.min())),
+            color='lightblue',
+            linestyle='--',
+        )
+        plt.annotate(f'{v:.2f}', xy=(v, p), xytext=(v * 2.5, p), fontsize=12, ha='center',
+                     bbox=dict(facecolor='none', edgecolor='none', boxstyle='round, pad=0.4'))
         plt.scatter([v], [p], color='lightblue', s=50, edgecolor='black', zorder=5)  # Circular marker
 
     # Set x and y scales
@@ -416,44 +455,25 @@ def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, perce
     # Add labels and title
     plt.xlabel('Force error (eV/$\AA$)', fontsize=16)
     plt.ylabel('Cumulative (%)', fontsize=16)
-    #plt.title(title)
-
-    # Increase x and y tick label font size
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
-
-
-
-
-    # Show the plot
     plt.tight_layout()
-    
+
+    # Save the plot and data if required
+    save_dir = os.path.join(folder_path, "plots")
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
     if save:
-        if not os.path.exists(save_dir):
-            os.makedirs(save_dir)
         figure_save_path = os.path.join(save_dir, f"{title.replace(' ', '_')}.png")
         plt.savefig(figure_save_path, bbox_inches='tight')
         print(f"Figure saved to {figure_save_path}")
     plt.close()
-    
+
     if data_save:
         true_values_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_true_values.txt")
         predicted_values_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_predicted_values.txt")
-
-        #print(extracted_forces)
-
-        print("Attempting to save true values to:", true_values_path)
         np.savetxt(true_values_path, rms_extracted, header='True RMS Values', comments='')
-        print("True values saved successfully.")
-
-        print("Attempting to save predicted values to:", predicted_values_path)
         np.savetxt(predicted_values_path, rms_test, header='Predicted RMS Values', comments='')
-        print("Predicted values saved successfully.")
-
-
         print(f"Data saved to {true_values_path} and {predicted_values_path}")
-    
-    plt.show()
 
 
 
@@ -462,22 +482,25 @@ def plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, perce
 
 
 
-def main():
-    folder_path = input("Enter the folder path (or leave blank for current directory): ").strip()
-    original_file_name = input(f"Enter the original dataset name: ").strip()
-    test_file_name = input(f"Enter the validation dataset name: ").strip()
+def main(folder_path=None):
+    if not folder_path:  # If no folder path is provided, ask the user
+        folder_path = input("Enter the folder path: ").strip() or "."
+    else:
+        print(f"Using provided folder path: {folder_path}")
+    original_file_name = input("Enter the original dataset name: ").strip()
+    test_file_name = input("Enter the validation dataset name: ").strip()
 
     # Ensure we have a valid folder path
     if not os.path.isdir(folder_path):
         raise NotADirectoryError(f"Provided folder path does not exist: {folder_path}")
 
     # Getting file paths
-    original_file_path = get_file_path(os.path.join(folder_path, original_file_name), f"Enter path for {original_file_name}: ")
-    test_file_path = get_file_path(os.path.join(folder_path, test_file_name), f"Enter path for {test_file_name}: ")
+    original_file_path = os.path.join(folder_path, original_file_name)
+    test_file_path = os.path.join(folder_path, test_file_name)
 
-    # Reading and processing datasets
-    original_datasets = read_datasets(original_file_path)
-    test_datasets = read_datasets(test_file_path)
+    # Reading datasets
+    original_datasets = ase.io.read(original_file_path, index=":")
+    test_datasets = ase.io.read(test_file_path, index=":")
 
     # Extract datasets or set as test_datasets
     extracted_datasets = []
@@ -489,32 +512,39 @@ def main():
             if 'original_dataset_index' in frame.info:
                 index = frame.info['original_dataset_index']
                 dataset_counter += 1
-                # Debug line to show the counter and the index of the dataset being extracted
                 print(f"Extracting dataset {dataset_counter} using original_dataset_index: {index}")
-                extracted_dataset = extract_dataset(original_datasets, index)
-                extracted_datasets.append(extracted_dataset)
+                extracted_datasets.append(original_datasets[index])
     else:
         print("No 'original_dataset_index' found in test_datasets. Using test_datasets as extracted_datasets.")
         extracted_datasets = test_datasets
 
-    # Saving extracted datasets
+    # Save extracted datasets
     output_file_path = os.path.join(folder_path, 'extracted_datasets.extxyz')
     ase.io.write(output_file_path, extracted_datasets, format='extxyz')
     print(f"Extracted datasets have been saved to {output_file_path}")
 
-    # Reading forces for comparison
-    extracted_forces = [frame.get_forces() for frame in extracted_datasets]
-    test_forces = [frame.get_forces() for frame in test_datasets]
+    # Extract forces
+    def get_forces(frame):
+        if 'MACE_forces' in frame.arrays:
+            return frame.arrays['MACE_forces']
+        return frame.get_forces()
+
+    extracted_forces = [get_forces(frame) for frame in extracted_datasets]
+    test_forces = [get_forces(frame) for frame in test_datasets]
 
     # Comparing forces
-    compare_forces(extracted_forces, test_forces, 'Force Comparison Plot')
+    compare_forces(extracted_forces, test_forces, 'Force Comparison Plot',folder_path)
 
     # Comparing RMS forces
-    compare_rms_forces(extracted_forces, test_forces, 'RMS Force Comparison Plot')
+    compare_rms_forces(extracted_forces, test_forces, 'RMS Force Comparison Plot', folder_path)
 
+   # Extract energies safely (first checks 'energy', then 'MACE_energy')
+    def get_potential_energy(frame):
+        return frame.info.get('energy', frame.info.get('MACE_energy', np.nan))  # First checks 'energy', then 'MACE_energy'
+    
     # Extract energies for comparison
-    extracted_energies = np.array([frame.get_potential_energy() for frame in extracted_datasets])
-    test_energies = np.array([frame.get_potential_energy() for frame in test_datasets])
+    extracted_energies = np.array([get_potential_energy(frame) for frame in extracted_datasets])
+    test_energies = np.array([get_potential_energy(frame) for frame in test_datasets])
 
     # Ensure both energy arrays have the same length for plotting
     min_len = min(len(extracted_energies), len(test_energies))
@@ -522,13 +552,12 @@ def main():
     test_energies = test_energies[:min_len]
 
     # Compare energies
-    plot_parity(extracted_energies, test_energies, 'Energy Parity Plot', 'True Energies (eV)', 'Predicted Energies (eV)')
+    plot_parity(extracted_energies, test_energies, 'Energy Parity Plot', 'True Energies (eV)', 'Predicted Energies (eV)', folder_path)
 
     # Plot cumulative distributions
-    plot_cumulative_distribution(extracted_energies, test_energies, save=True, data_save=True)
-    plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, save=True, data_save=True)
-
-        
+    plot_cumulative_distribution(extracted_energies, test_energies, folder_path, extracted_datasets, save=True, data_save=True)
+    plot_cumulative_distribution_rms_forces(extracted_forces, test_forces, folder_path, save=True, data_save=True)
 
 if __name__ == "__main__":
     main()
+

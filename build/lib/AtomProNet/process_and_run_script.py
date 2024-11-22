@@ -1,8 +1,8 @@
 import os
 import subprocess
 import shutil
-import pymatgen
-import mp_api
+
+
 from AtomProNet.lattice import lattice
 from AtomProNet.pressure_eV import pressure_eV
 from AtomProNet.position_force import position_force
@@ -12,6 +12,9 @@ from AtomProNet.combine import combine
 from AtomProNet.npz_to_extxyz import npz_to_extxyz
 from AtomProNet.materials_project import fetch_and_write_poscar  # Import the function from your materials_fetcher.py
 from AtomProNet.split import split
+
+os.environ["PYPHONOPY_SKIP"] = "1"
+
 
 def process_and_run_script(input_folder):
     while True:
@@ -274,7 +277,7 @@ def process_and_run_script(input_folder):
                 
                 try:
                     # Call the main function for MLIP post-processing
-                    mlip_post_processing_main()
+                    mlip_post_processing_main(input_folder)
                 except Exception as e:
                     print(f"An error occurred during MLIP post-processing: {e}")
 
