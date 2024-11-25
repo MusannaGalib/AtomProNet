@@ -1,17 +1,53 @@
 #!/bin/bash
 
-# Define folder paths
+# Get the current script location (assumes the script is copied to the POSCAR folder by the wrapper)
 script_folder=$(dirname "$(realpath "$0")")
-structure_folder="$script_folder"
-parent_folder=$(dirname "$structure_folder")
+parent_folder=$(dirname "$script_folder")  # Parent directory (where input_template.in and qe_jobsub.sh are created)
 
-# Define filenames for QE job submission script and input template
-qe_jobsub_file="$parent_folder/qe_jobsub.sh"
+# Debug: Print paths for verification
+echo "Script folder: $script_folder"
+echo "Parent folder: $parent_folder"
+
+# Define paths for required template files in the parent folder
 input_template_file="$parent_folder/input_template.in"
+qe_jobsub_file="$parent_folder/qe_jobsub.sh"
 
-# Generate the QE job submission script in the parent folder
+# Generate input_template.in if it doesn't exist
+if [[ ! -f "$input_template_file" ]]; then
+    cat > "$input_template_file" <<EOL
+&control
+    calculation = 'scf',
+    restart_mode = 'from_scratch',
+    pseudo_dir = './',
+    outdir = './tmp/'
+/
+&system
+    ibrav = 0,
+    nat = 0,    ! This will be replaced with the atom count
+    ntyp = 0,   ! This will be replaced with the unique atom types count
+    ecutwfc = 40,
+    ecutrho = 320,
+/
+&electrons
+    diagonalization = 'david',
+    conv_thr = 1.0d-8,
+    mixing_beta = 0.7,
+/
+CELL_PARAMETERS angstrom
+! Replace with cell parameters
+ATOMIC_SPECIES
+! Replace with species info
+ATOMIC_POSITIONS angstrom
+! Replace with atomic positions
+K_POINTS automatic
+4 4 4 0 0 0
+EOL
+    echo "Generated 'input_template.in' in the parent folder."
+fi
+
+# Generate qe_jobsub.sh if it doesn't exist
 if [[ ! -f "$qe_jobsub_file" ]]; then
-    cat <<EOL > "$qe_jobsub_file"
+    cat > "$qe_jobsub_file" <<EOL
 #!/bin/bash
 #PBS -l walltime=60:00:00,select=1:ncpus=32:ompthreads=1:mpiprocs=32:mem=180gb
 #PBS -N JobName
@@ -28,90 +64,36 @@ module load fftw/3.3.8-mpi3.1.4
 
 cd \$PBS_O_WORKDIR
 
-mpirun  QE_PATH/bin/pw.x < input > output
+mpirun QE_PATH/bin/pw.x < input > output
 EOL
     echo "Generated 'qe_jobsub.sh' in the parent folder."
 fi
 
-# Generate the QE input template file in the parent folder
-if [[ ! -f "$input_template_file" ]]; then
-    cat <<EOL > "$input_template_file"
-&control
-    calculation = 'scf',
-    prefix = 'PREFIX',
-    pseudo_dir = './',
-    outdir = './out',
-    verbosity = 'high',
-/
-&system
-    ibrav = 0,
-    nat = NAT_VALUE,
-    ntyp = NTYP_VALUE,
-    ecutwfc = 40.0,
-    ecutrho = 400.0,
-/
-&electrons
-    conv_thr = 1.0d-8,
-    mixing_beta = 0.7,
-/
-ATOMIC_SPECIES
-SPECIES_PLACEHOLDER
-ATOMIC_POSITIONS crystal
-POSITION_PLACEHOLDER
-K_POINTS automatic
-4 4 4 0 0 0
-EOL
-    echo "Generated 'input_template.in' in the parent folder."
-fi
+# Search for POSCAR files in the current script folder
+structure_files=($(find "$script_folder" -type f -name "*_POSCAR"))
 
-# Check for the presence of structure files
-structure_files=("$structure_folder"/*_POSCAR)
-if [[ ! -e "${structure_files[0]}" ]]; then
-    echo "No POSCAR files found in $structure_folder"
+# Check if no structure files are found
+if [[ ${#structure_files[@]} -eq 0 ]]; then
+    echo "No structure files found in $script_folder"
     exit 1
 fi
 
-# Ensure the user updates the files before rerunning the script
-echo "Please review and modify 'qe_jobsub.sh' and 'input_template.in' in the parent folder if necessary."
-echo "After making changes, rerun this script to organize files into respective folders."
-exit 0
+# Process each POSCAR file in the folder
+for poscar_path in "${structure_files[@]}"; do
+    # Extract the folder name from the filename (everything before "_POSCAR")
+    base_filename=$(basename "$poscar_path")
+    folder_name=$(echo "$base_filename" | sed 's/_POSCAR.*//')  # Extracts the prefix before "_POSCAR"
 
-# Function to parse POSCAR and extract atomic data
-parse_poscar() {
-    local poscar_path="$1"
-    local output_folder="$2"
-
-    nat=$(sed -n '7p' "$poscar_path" | awk '{sum=0; for(i=1; i<=NF; i++) sum+=$i; print sum}')
-    atomic_species=$(sed -n '6p' "$poscar_path" | awk '{for(i=1; i<=NF; i++) print $i}')
-    positions=$(sed -n '9,$p' "$poscar_path")
-
-    atomic_species_section=""
-    for species in $atomic_species; do
-        atomic_species_section+="$species $species.upf 1.0\n"
-    done
-
-    sed -e "s/NAT_VALUE/$nat/" \
-        -e "s/NTYP_VALUE/$(echo "$atomic_species" | wc -w)/" \
-        -e "s/SPECIES_PLACEHOLDER/$atomic_species_section/" \
-        -e "s/POSITION_PLACEHOLDER/$positions/" \
-        "$input_template_file" > "$output_folder/input.in"
-}
-
-# Process each POSCAR file
-for structure_path in "$structure_folder"/*_POSCAR; do
-    base_filename=$(basename "$structure_path")
-    folder_name=$(echo "$base_filename" | sed 's/_POSCAR.*//')
-    material_folder="$structure_folder/$folder_name"
-
+    # Create a folder for the extracted folder name within the script folder
+    material_folder="$script_folder/$folder_name"
     mkdir -p "$material_folder"
-    mv "$structure_path" "$material_folder/structure"
 
-    # Copy qe_jobsub.sh and UPF files to the material folder
+    # Move the POSCAR file to the new folder and rename it to "POSCAR"
+    mv "$poscar_path" "$material_folder/POSCAR"
+
+    # Copy the required files from the parent folder into the material folder
+    cp "$input_template_file" "$material_folder/input.in"
     cp "$qe_jobsub_file" "$material_folder/"
-    cp "$structure_folder"/*.upf "$material_folder/" 2>/dev/null || true
-
-    # Generate input.in file for the folder
-    parse_poscar "$material_folder/structure" "$material_folder"
 
     echo "Processed $folder_name and organized files into $material_folder"
 done
