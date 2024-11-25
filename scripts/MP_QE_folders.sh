@@ -34,11 +34,11 @@ if [[ ! -f "$input_template_file" ]]; then
     mixing_beta = 0.7,
 /
 CELL_PARAMETERS angstrom
-! Replace with cell parameters
+CELL_PLACEHOLDER
 ATOMIC_SPECIES
-! Replace with species info
+SPECIES_PLACEHOLDER
 ATOMIC_POSITIONS angstrom
-! Replace with atomic positions
+POSITION_PLACEHOLDER
 K_POINTS automatic
 4 4 4 0 0 0
 EOL
@@ -78,6 +78,44 @@ if [[ ${#structure_files[@]} -eq 0 ]]; then
     exit 1
 fi
 
+# Function to parse POSCAR and generate the input file
+parse_poscar_to_input() {
+    local poscar_file="$1"
+    local input_file="$2"
+
+    # Extract cell parameters
+    cell_parameters=$(sed -n '3,5p' "$poscar_file")
+
+    # Extract atomic species and counts
+    atom_types=$(sed -n '6p' "$poscar_file")
+    atom_counts=$(sed -n '7p' "$poscar_file")
+    nat=$(echo "$atom_counts" | awk '{sum=0; for(i=1; i<=NF; i++) sum+=$i; print sum}')
+    ntyp=$(echo "$atom_types" | wc -w)
+
+    # Generate ATOMIC_SPECIES section
+    atomic_species=""
+    for species in $atom_types; do
+        atomic_species+="$species $species.upf 1.0\n"
+    done
+
+    # Extract atomic positions
+    positions=$(sed -n '9,$p' "$poscar_file")
+
+    # Replace placeholders directly into the template
+    awk -v nat="$nat" -v ntyp="$ntyp" \
+        -v cell_parameters="$cell_parameters" \
+        -v atomic_species="$atomic_species" \
+        -v positions="$positions" \
+        '{
+            gsub(/nat = 0,/, "nat = " nat ",");
+            gsub(/ntyp = 0,/, "ntyp = " ntyp ",");
+            gsub(/CELL_PLACEHOLDER/, cell_parameters);
+            gsub(/SPECIES_PLACEHOLDER/, atomic_species);
+            gsub(/POSITION_PLACEHOLDER/, positions);
+            print;
+        }' "$input_template_file" > "$input_file"
+}
+
 # Process each POSCAR file in the folder
 for poscar_path in "${structure_files[@]}"; do
     # Extract the folder name from the filename (everything before "_POSCAR")
@@ -92,8 +130,10 @@ for poscar_path in "${structure_files[@]}"; do
     mv "$poscar_path" "$material_folder/POSCAR"
 
     # Copy the required files from the parent folder into the material folder
-    cp "$input_template_file" "$material_folder/input.in"
     cp "$qe_jobsub_file" "$material_folder/"
+
+    # Generate the input file for Quantum Espresso
+    parse_poscar_to_input "$material_folder/POSCAR" "$material_folder/input.in"
 
     echo "Processed $folder_name and organized files into $material_folder"
 done
