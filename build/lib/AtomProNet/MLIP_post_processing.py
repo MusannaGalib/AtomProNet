@@ -250,16 +250,9 @@ def compare_rms_forces(extracted_forces, test_forces, title, folder_path, save=T
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
 
-    # Set range limits for x and y axes
-    #plt.xlim(0, 10)  # Adjust range limits for the x-axis
-    #plt.ylim(0, 10)  # Adjust range limits for the y-axis
 
     plt.tight_layout()
  
-    # Set tick levels for x and y axes
-    plt.xticks(np.arange(0, 11, 2))  # Tick levels for the x-axis from 0 to 10 with a gap of 2
-    plt.yticks(np.arange(0, 11, 2))  # Tick levels for the y-axis from 0 to 10 with a gap of 2
-
 
     if save:
         figure_save_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_rms_forces.png")
