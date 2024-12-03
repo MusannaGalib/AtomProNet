@@ -135,7 +135,7 @@ def compare_rms_forces(extracted_forces, test_forces, title, folder_path, save=T
     rmse = np.sqrt(mean_squared_error(true_rms_forces, predicted_rms_forces))
 
     # Add metrics as text
-    metrics_text = f"$R^2$ = {r_squared:.2f}\nMAE = {mae:.2f}\nRMSE = {rmse:.2f}"
+    metrics_text = f"$R^2$ = {r_squared:.3f}\nMAE = {mae:.3f}\nRMSE = {rmse:.3f}"
     plt.text(0.05, 0.85, metrics_text, ha='left', va='center', transform=plt.gca().transAxes, fontsize=14)
 
 
