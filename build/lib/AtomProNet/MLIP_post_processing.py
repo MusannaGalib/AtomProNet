@@ -6,7 +6,7 @@ import statsmodels.api as sm
 import seaborn as sns
 from scipy.stats import norm
 from sklearn.metrics import r2_score
-
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 # Checks if a file exists at the given path
 def check_file_exists(file_path):
@@ -43,50 +43,46 @@ def plot_parity(true_values, predicted_values, title, xlabel, ylabel, folder_pat
     save_dir = os.path.join(folder_path, "plots")
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
-    plt.figure(figsize=(5, 4), dpi=1200)
-    plt.scatter(true_values, predicted_values, alpha=0.7, color='black', s=10)
+
+    # Set up the figure layout
+    fig = plt.figure(figsize=(6, 6), dpi=1200)
+    grid = plt.GridSpec(4, 4, hspace=0, wspace=0)
+
+    # Main parity plot
+    ax_main = fig.add_subplot(grid[1:, :-1])
+    ax_main.scatter(true_values, predicted_values, alpha=0.7, color='black', s=10)
     
-    # Parity line
-    plt.plot([min(true_values), max(true_values)], [min(true_values), max(true_values)], color='red')
+    # Ensure the 45-degree line starts from (0, 0)
+    min_val = min(min(true_values), min(predicted_values), 0)  # Include 0 in the minimum
+    max_val = max(max(true_values), max(predicted_values))  # Find the max value in data
 
+    
+    # Plot the parity line
+    ax_main.plot([min_val, max_val], [min_val, max_val], color="red", linestyle="--")
 
-    # Confidence interval calculation and plotting
-    mean_true = np.mean(true_values)
-    std_true = np.std(true_values)
-    ci = 1.95 * std_true  # 80% confidence interval
-    #plt.fill_between([true_values.min(), true_values.max()], [true_values.min() - ci, true_values.max() - ci], [true_values.min() + ci, true_values.max() + ci], color='lightblue', alpha=0.4)
-
-    # Calculate R-squared value
+    # Calculate metrics
     r_squared = r2_score(true_values, predicted_values)
-    plt.text(0.1, 0.9, f'$R^2$ = {r_squared:.2f}', ha='left', va='center', transform=plt.gca().transAxes, fontsize=14)
+    mae = mean_absolute_error(true_values, predicted_values)
+    rmse = np.sqrt(mean_squared_error(true_values, predicted_values))
 
+    # Add metrics as text
+    metrics_text = f"$R^2$ = {r_squared:.2f}\nMAE = {mae:.2f}\nRMSE = {rmse:.2f}"
+    ax_main.text(0.05, 0.95, metrics_text, transform=ax_main.transAxes, fontsize=14, verticalalignment='top')
 
-    
-    plt.xlabel(xlabel, fontsize=16)
-    plt.ylabel(ylabel, fontsize=16)
-    #plt.title(title, fontsize=14)
+    ax_main.set_xlabel(xlabel, fontsize=16)
+    ax_main.set_ylabel(ylabel, fontsize=16)
 
-    # Set range limits for x and y axes
-    plt.xlim([min(true_values), max(true_values)])  # Adjust range limits for the x-axis
-    plt.ylim([min(predicted_values), max(predicted_values)])  # Adjust range limits for the y-axis
-
-
-    # Set aspect ratio
-    plt.gca().set_aspect('auto')
-    # Increase x and y tick label font size
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
-
-    # Add legend
-    # Add legend without box
-    plt.legend(frameon=False)
-    plt.tight_layout()
+    # Set axis limits to include 0
+    ax_main.set_xlim(min_val, max_val)
+    ax_main.set_ylim(min_val, max_val)
+    ax_main.tick_params(labelsize=12)
 
     if save:
         figure_save_path = os.path.join(save_dir, f"{title.replace(' ', '_')}.png")
         plt.savefig(figure_save_path, bbox_inches='tight')
         print(f"Figure saved to {figure_save_path}")
     plt.close()
+
     if data_save:
         true_values_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_true_values.txt")
         predicted_values_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_predicted_values.txt")
@@ -94,100 +90,102 @@ def plot_parity(true_values, predicted_values, title, xlabel, ylabel, folder_pat
         np.savetxt(predicted_values_path, predicted_values, header='Predicted Values', comments='')
         print(f"Data saved to {true_values_path} and {predicted_values_path}")
 
-# Compares forces between extracted and test datasets, plots the comparison, and saves the force data
-def compare_forces(extracted_forces, test_forces, title, folder_path, save=True, data_save=True, confidence_level=0.95):
-    save_dir = os.path.join(folder_path, "plots")
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
 
-    # Demonstrating the process for the first dataset of extracted_forces
-    print("Example from the first dataset of extracted_forces:")
-    original_shape = extracted_forces[0].shape
-    print(f"Original Shape: {original_shape}")
-    num_elements_after_flattening = np.prod(original_shape)
-    print(f"Shape After Flattening: {original_shape[0]}*{original_shape[1]} ({num_elements_after_flattening},)")
 
-    # Flattening the forces
-    flattened_extracted = [f.flatten() for f in extracted_forces]
-    flattened_test = [f.flatten() for f in test_forces]
+# # Compares forces between extracted and test datasets, plots the comparison, and saves the force data
+# def compare_forces(extracted_forces, test_forces, title, folder_path, save=True, data_save=True, confidence_level=0.95):
+#     save_dir = os.path.join(folder_path, "plots")
+#     if not os.path.exists(save_dir):
+#         os.makedirs(save_dir)
 
-    # Concatenating flattened forces
-    true_forces = np.concatenate(flattened_extracted, axis=0)
-    predicted_forces = np.concatenate(flattened_test, axis=0)
-    num_datasets = len(extracted_forces)
-    print(f"Flattened and Concatenated Shape of True Forces: {num_elements_after_flattening}*{num_datasets} ({true_forces.shape[0]},)")
+#     # Demonstrating the process for the first dataset of extracted_forces
+#     print("Example from the first dataset of extracted_forces:")
+#     original_shape = extracted_forces[0].shape
+#     print(f"Original Shape: {original_shape}")
+#     num_elements_after_flattening = np.prod(original_shape)
+#     print(f"Shape After Flattening: {original_shape[0]}*{original_shape[1]} ({num_elements_after_flattening},)")
 
-    # Similarly, for test_forces to predicted_forces
-    print("Example from the first dataset of test_forces:")
-    original_shape_test = test_forces[0].shape
-    num_elements_after_flattening_test = np.prod(original_shape_test)
-    num_datasets_test = len(test_forces)
-    print(f"Flattened and Concatenated Shape of Predicted Forces: {num_elements_after_flattening_test}*{num_datasets_test} ({predicted_forces.shape[0]},)")
+#     # Flattening the forces
+#     flattened_extracted = [f.flatten() for f in extracted_forces]
+#     flattened_test = [f.flatten() for f in test_forces]
 
-    # Proceed with plotting and saving as before
-    plt.figure(figsize=(5, 4), dpi=1200)
-    plt.scatter(true_forces, predicted_forces, alpha=0.7, color='black', s=10)
-    plt.plot([true_forces.min(), true_forces.max()], [true_forces.min(), true_forces.max()], color='red')
+#     # Concatenating flattened forces
+#     true_forces = np.concatenate(flattened_extracted, axis=0)
+#     predicted_forces = np.concatenate(flattened_test, axis=0)
+#     num_datasets = len(extracted_forces)
+#     print(f"Flattened and Concatenated Shape of True Forces: {num_elements_after_flattening}*{num_datasets} ({true_forces.shape[0]},)")
 
-    # Confidence interval calculation and plotting
-    n = len(true_forces)
-    mean_true = np.mean(true_forces)
-    std_true = np.std(true_forces, ddof=1)  # Sample standard deviation
-    z_score = norm.ppf((1 + confidence_level) / 2)  # z-score for the given confidence level
+#     # Similarly, for test_forces to predicted_forces
+#     print("Example from the first dataset of test_forces:")
+#     original_shape_test = test_forces[0].shape
+#     num_elements_after_flattening_test = np.prod(original_shape_test)
+#     num_datasets_test = len(test_forces)
+#     print(f"Flattened and Concatenated Shape of Predicted Forces: {num_elements_after_flattening_test}*{num_datasets_test} ({predicted_forces.shape[0]},)")
 
-    # Confidence interval margin of error
-    margin_of_error = z_score * (std_true / np.sqrt(n))
+#     # Proceed with plotting and saving as before
+#     plt.figure(figsize=(5, 4), dpi=1200)
+#     plt.scatter(true_forces, predicted_forces, alpha=0.7, color='black', s=10)
+#     plt.plot([true_forces.min(), true_forces.max()], [true_forces.min(), true_forces.max()], color='red')
 
-    # Plot the confidence interval band around the parity line
-    plt.fill_between([min(true_forces), max(true_forces)], 
-                     [min(true_forces) - margin_of_error, max(true_forces) - margin_of_error], 
-                     [min(true_forces) + margin_of_error, max(true_forces) + margin_of_error], 
-                     color='lightblue', alpha=0.4, label=f'{int(confidence_level*100)}% Confidence Interval')
+#     # Confidence interval calculation and plotting
+#     n = len(true_forces)
+#     mean_true = np.mean(true_forces)
+#     std_true = np.std(true_forces, ddof=1)  # Sample standard deviation
+#     z_score = norm.ppf((1 + confidence_level) / 2)  # z-score for the given confidence level
+
+#     # Confidence interval margin of error
+#     margin_of_error = z_score * (std_true / np.sqrt(n))
+
+#     # Plot the confidence interval band around the parity line
+#     plt.fill_between([min(true_forces), max(true_forces)], 
+#                      [min(true_forces) - margin_of_error, max(true_forces) - margin_of_error], 
+#                      [min(true_forces) + margin_of_error, max(true_forces) + margin_of_error], 
+#                      color='lightblue', alpha=0.4, label=f'{int(confidence_level*100)}% Confidence Interval')
   
-    print("Mean:", mean_true)
-    print("Standard Deviation:", std_true)
-    print("z_score:", z_score)
-    print("Margin of Error:", margin_of_error)
+#     print("Mean:", mean_true)
+#     print("Standard Deviation:", std_true)
+#     print("z_score:", z_score)
+#     print("Margin of Error:", margin_of_error)
     
-    # Confidence interval calculation and plotting
-    mean_true = np.mean(true_forces)
-    std_true = np.std(true_forces)
-    ci = 1.95 * std_true  # 80% confidence interval
-    plt.fill_between([true_forces.min(), true_forces.max()], [true_forces.min() - ci, true_forces.max() - ci], [true_forces.min() + ci, true_forces.max() + ci], color='lightblue', alpha=0.4)
+#     # Confidence interval calculation and plotting
+#     mean_true = np.mean(true_forces)
+#     std_true = np.std(true_forces)
+#     ci = 1.95 * std_true  # 80% confidence interval
+#     plt.fill_between([true_forces.min(), true_forces.max()], [true_forces.min() - ci, true_forces.max() - ci], [true_forces.min() + ci, true_forces.max() + ci], color='lightblue', alpha=0.4)
 
 
-    # Calculate R-squared value
-    r_squared = r2_score(true_forces, predicted_forces)
-    plt.text(0.1, 0.9, f'$R^2$ = {r_squared:.2f}', ha='left', va='center', transform=plt.gca().transAxes, fontsize=12)
+#     # Calculate R-squared value
+#     r_squared = r2_score(true_forces, predicted_forces)
+#     plt.text(0.05, 0.70, f'$R^2$ = {r_squared:.2f}', ha='left', va='center', transform=plt.gca().transAxes, fontsize=12)
 
-    plt.xlabel('True Forces (eV/$\AA$)', fontsize=16)
-    plt.ylabel('Predicted Forces (eV/$\AA$)', fontsize=16)
-    #plt.title(title, fontsize=14)
-    # Set range limits for x and y axes
-    plt.xlim([min(true_forces), max(true_forces)])  # Adjust range limits for the x-axis
-    plt.ylim([min(predicted_forces), max(predicted_forces)])  # Adjust range limits for the y-axis
-
-
-    # Set aspect ratio
-    plt.gca().set_aspect('auto')
-    plt.tight_layout()
-
-    # Increase x and y tick label font size
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
+#     plt.xlabel('True Forces (eV/$\AA$)', fontsize=16)
+#     plt.ylabel('Predicted Forces (eV/$\AA$)', fontsize=16)
+#     #plt.title(title, fontsize=14)
+#     # Set range limits for x and y axes
+#     plt.xlim([min(true_forces), max(true_forces)])  # Adjust range limits for the x-axis
+#     plt.ylim([min(predicted_forces), max(predicted_forces)])  # Adjust range limits for the y-axis
 
 
-    if save:
-        figure_save_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_forces.png")
-        plt.savefig(figure_save_path, bbox_inches='tight')
-        print(f"Figure saved to {figure_save_path}")
-    plt.close()
-    if data_save:
-        true_forces_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_true_forces.txt")
-        predicted_forces_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_predicted_forces.txt")
-        np.savetxt(true_forces_path, true_forces, header='True Forces', comments='')
-        np.savetxt(predicted_forces_path, predicted_forces, header='Predicted Forces', comments='')
-        print(f"Force data saved to {true_forces_path} and {predicted_forces_path}")
+#     # Set aspect ratio
+#     plt.gca().set_aspect('auto')
+#     plt.tight_layout()
+
+#     # Increase x and y tick label font size
+#     plt.xticks(fontsize=12)
+#     plt.yticks(fontsize=12)
+
+
+#     if save:
+#         figure_save_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_forces.png")
+#         plt.savefig(figure_save_path, bbox_inches='tight')
+#         print(f"Figure saved to {figure_save_path}")
+#     plt.close()
+#     if data_save:
+#         true_forces_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_true_forces.txt")
+#         predicted_forces_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_predicted_forces.txt")
+#         np.savetxt(true_forces_path, true_forces, header='True Forces', comments='')
+#         np.savetxt(predicted_forces_path, predicted_forces, header='Predicted Forces', comments='')
+#         print(f"Force data saved to {true_forces_path} and {predicted_forces_path}")
 
 # Calculates the RMS of forces in each row
 def calculate_rms_forces(forces):
@@ -227,10 +225,14 @@ def compare_rms_forces(extracted_forces, test_forces, title, folder_path, save=T
     ci = 1.95 * std_true  # 80% confidence interval
     #plt.fill_between([true_rms_forces.min(), true_rms_forces.max()], [true_rms_forces.min() - ci, true_rms_forces.max() - ci], [true_rms_forces.min() + ci, true_rms_forces.max() + ci], color='lightblue', alpha=0.4)
 
-
-    # Calculate R-squared value
+    # Calculate metrics
     r_squared = r2_score(true_rms_forces, predicted_rms_forces)
-    plt.text(0.1, 0.9, f'$R^2$ = {r_squared:.2f}', ha='left', va='center', transform=plt.gca().transAxes, fontsize=14)
+    mae = mean_absolute_error(true_rms_forces, predicted_rms_forces)
+    rmse = np.sqrt(mean_squared_error(true_rms_forces, predicted_rms_forces))
+
+    # Add metrics as text
+    metrics_text = f"$R^2$ = {r_squared:.2f}\nMAE = {mae:.2f}\nRMSE = {rmse:.2f}"
+    plt.text(0.05, 0.85, metrics_text, ha='left', va='center', transform=plt.gca().transAxes, fontsize=14)
 
 
 
@@ -448,6 +450,11 @@ def plot_cumulative_distribution_rms_forces(
     # Add labels and title
     plt.xlabel('Force error (eV/$\AA$)', fontsize=16)
     plt.ylabel('Cumulative (%)', fontsize=16)
+    
+    # Increase x and y tick label font size
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+    
     plt.tight_layout()
 
     # Set the x-axis limit to avoid overlapping with annotations
@@ -529,15 +536,23 @@ def main(folder_path=None):
     test_forces = [get_forces(frame) for frame in test_datasets]
 
     # Comparing forces
-    compare_forces(extracted_forces, test_forces, 'Force Comparison Plot',folder_path)
+    #compare_forces(extracted_forces, test_forces, 'Force Comparison Plot',folder_path)
 
     # Comparing RMS forces
     compare_rms_forces(extracted_forces, test_forces, 'RMS Force Comparison Plot', folder_path)
 
    # Extract energies safely (first checks 'energy', then 'MACE_energy')
     def get_potential_energy(frame):
-        return frame.info.get('energy', frame.info.get('MACE_energy', np.nan))  # First checks 'energy', then 'MACE_energy'
-    
+        # Check multiple potential keys for energy
+        for key in ['energy', 'MACE_energy', 'potential_energy', 'total_energy']:
+            if key in frame.info:
+                return frame.info[key]
+        # Fallback to ASE's built-in method
+        try:
+            return frame.get_potential_energy()
+        except Exception:
+            return np.nan
+        
     # Extract energies for comparison
     extracted_energies = np.array([get_potential_energy(frame) for frame in extracted_datasets])
     test_energies = np.array([get_potential_energy(frame) for frame in test_datasets])
