@@ -67,12 +67,13 @@ def npz_to_extxyz(input_file):
             atom_position = structure_positions[atom_idx]
             curr_atoms += Atoms(positions=[atom_position], symbols=[atom_symbol])
 
-        # Set energy if available
+        # Avoid manual setting of "energy" in atoms.info
         structure_energy = energies[idx].item() if energies.size > 0 else 0.0
-        curr_atoms.info["energy"] = structure_energy
 
-        # Set forces if available
+        # Set forces and energy using SinglePointCalculator
         if forces.size > 0:
+            # Clear existing keys in atoms.info to avoid conflicts
+            curr_atoms.info = {k: v for k, v in curr_atoms.info.items() if k not in ["energy", "forces"]}
             calculator = SinglePointCalculator(curr_atoms, energy=structure_energy, forces=structure_forces.tolist())
             curr_atoms.set_calculator(calculator)
 
