@@ -19,7 +19,8 @@ License-File: LICENSE
 Requires-Dist: numpy
 Requires-Dist: ase
 Requires-Dist: mp-api
-Requires-Dist: pymatgen
+Requires-Dist: scipy
+Requires-Dist: pymatgen==2023.11.12
 Requires-Dist: statsmodels
 Requires-Dist: seaborn
 Requires-Dist: scikit-learn

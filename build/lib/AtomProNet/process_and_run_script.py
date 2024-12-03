@@ -274,7 +274,7 @@ def process_and_run_script(input_folder):
                 
                 try:
                     # Call the main function for MLIP post-processing
-                    mlip_post_processing_main(input_folder)
+                    mlip_post_processing_main(None)
                 except Exception as e:
                     print(f"An error occurred during MLIP post-processing: {e}")
 

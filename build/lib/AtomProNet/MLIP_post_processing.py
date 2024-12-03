@@ -6,7 +6,6 @@ import statsmodels.api as sm
 import seaborn as sns
 from scipy.stats import norm
 from sklearn.metrics import r2_score
-from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 
 # Checks if a file exists at the given path
@@ -190,14 +189,6 @@ def compare_forces(extracted_forces, test_forces, title, folder_path, save=True,
         np.savetxt(predicted_forces_path, predicted_forces, header='Predicted Forces', comments='')
         print(f"Force data saved to {true_forces_path} and {predicted_forces_path}")
 
-
-
-import os
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-
 # Calculates the RMS of forces in each row
 def calculate_rms_forces(forces):
     rms_forces = [np.sqrt(np.mean(f**2, axis=1)) for f in forces]
@@ -213,85 +204,67 @@ def compare_rms_forces(extracted_forces, test_forces, title, folder_path, save=T
     rms_extracted = calculate_rms_forces(extracted_forces)
     rms_test = calculate_rms_forces(test_forces)
 
-    # Debugging: Print first row of data and RMS values
-    print("Debug: First row of forces for extracted forces:", extracted_forces[0][0])
-    print(f"RMS value for the first row of extracted forces: {rms_extracted[0][0]}")
-    print("Debug: First row of forces for test forces:", test_forces[0][0])
-    print(f"RMS value for the first row of test forces: {rms_test[0][0]}")
+    # Debug lines to show the first RMS calculation for both true and trial
+    print("Debug: First row of forces for extracted forces:")
+    print(extracted_forces[0][0])  # Print the first row of forces from the first dataset
+    print(f"RMS value for the first row of extracted forces: {rms_extracted[0][0]}")  # Print the RMS value for the first row
+
+    print("Debug: First row of forces for test forces:")
+    print(test_forces[0][0])  # Print the first row of forces from the first dataset
+    print(f"RMS value for the first row of test forces: {rms_test[0][0]}")  # Print the RMS value for the first row
 
     # Concatenating RMS values
     true_rms_forces = np.concatenate(rms_extracted, axis=0)
     predicted_rms_forces = np.concatenate(rms_test, axis=0)
 
-    # Calculate metrics
-    mae = mean_absolute_error(true_rms_forces, predicted_rms_forces)
-    rmse = np.sqrt(mean_squared_error(true_rms_forces, predicted_rms_forces))
+    plt.figure(figsize=(5, 4), dpi=1200)
+    plt.scatter(true_rms_forces, predicted_rms_forces, alpha=0.7, color='black', s=10)
+    plt.plot([true_rms_forces.min(), true_rms_forces.max()], [true_rms_forces.min(), true_rms_forces.max()], color='red')
+    
+    # Confidence interval calculation and plotting
+    mean_true = np.mean(true_rms_forces)
+    std_true = np.std(true_rms_forces)
+    ci = 1.95 * std_true  # 80% confidence interval
+    #plt.fill_between([true_rms_forces.min(), true_rms_forces.max()], [true_rms_forces.min() - ci, true_rms_forces.max() - ci], [true_rms_forces.min() + ci, true_rms_forces.max() + ci], color='lightblue', alpha=0.4)
+
+
+    # Calculate R-squared value
     r_squared = r2_score(true_rms_forces, predicted_rms_forces)
+    plt.text(0.1, 0.9, f'$R^2$ = {r_squared:.2f}', ha='left', va='center', transform=plt.gca().transAxes, fontsize=14)
 
-    # Set white background style
-    sns.set_style("whitegrid")
 
-    # Create a jointplot with hexbin
-    g = sns.jointplot(
-        x=true_rms_forces,
-        y=predicted_rms_forces,
-        kind="hex",
-        marginal_kws=dict(bins=50, fill=True, kde=True, color="skyblue"),
-        cmap="viridis",
-        space=0
-    )
 
-    # Add identity line (y = x)
-    g.ax_joint.plot(
-        [true_rms_forces.min(), true_rms_forces.max()],
-        [true_rms_forces.min(), true_rms_forces.max()],
-        'k--',
-        linewidth=1
-    )
+    plt.xlabel('True RMS Forces (eV/$\AA$)', fontsize=16)
+    plt.ylabel('Predicted RMS Forces (eV/$\AA$)', fontsize=16)
+    #plt.title(title, fontsize=14)
+    
+    # Set range limits for x and y axes
+    plt.xlim([min(true_rms_forces), max(true_rms_forces)])  # Adjust range limits for the x-axis
+    plt.ylim([min(predicted_rms_forces), max(predicted_rms_forces)])  # Adjust range limits for the y-axis
 
-    # Annotate metrics on the plot
-    g.ax_joint.text(
-        0.05,
-        0.95,
-        f"$\\epsilon_{{mae}} = {mae:.2f}$\n$R^2 = {r_squared:.2f}$\n$\\epsilon_{{rmse}} = {rmse:.2f}$",
-        transform=g.ax_joint.transAxes,
-        fontsize=12,
-        verticalalignment='top',
-        bbox=dict(boxstyle="round", alpha=0.3, color='white')
-    )
 
-    # Customize axis labels and tick sizes
-    g.ax_joint.set_xlabel('True RMS Forces (eV/Å)', fontsize=14)
-    g.ax_joint.set_ylabel('Predicted RMS Forces (eV/Å)', fontsize=14)
-    g.ax_joint.tick_params(labelsize=12)
+    # Set aspect ratio
+    plt.gca().set_aspect('auto')
 
-    # Adjust layout for tight spacing
-    g.fig.tight_layout()
-    g.fig.subplots_adjust(top=0.9)  # Adjust further if needed
+    # Increase x and y tick label font size
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
 
-    # Save the plot
+
+    plt.tight_layout()
+ 
+
     if save:
         figure_save_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_rms_forces.png")
-        g.savefig(figure_save_path, dpi=300, bbox_inches='tight')
+        plt.savefig(figure_save_path, bbox_inches='tight')
         print(f"Figure saved to {figure_save_path}")
-
-    # Save RMS force data
+    plt.close()
     if data_save:
         true_rms_forces_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_true_rms_forces.txt")
         predicted_rms_forces_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_predicted_rms_forces.txt")
         np.savetxt(true_rms_forces_path, true_rms_forces, header='True RMS Forces', comments='')
         np.savetxt(predicted_rms_forces_path, predicted_rms_forces, header='Predicted RMS Forces', comments='')
         print(f"RMS force data saved to {true_rms_forces_path} and {predicted_rms_forces_path}")
-
-# Example usage
-# Assuming extracted_forces and test_forces are lists of numpy arrays containing force data
-# Example data:
-# extracted_forces = [np.random.rand(100, 3) for _ in range(10)]  # Replace with actual data
-# test_forces = [np.random.rand(100, 3) for _ in range(10)]       # Replace with actual data
-
-# folder_path = "./results"
-# title = "RMS Force Comparison"
-# compare_rms_forces(extracted_forces, test_forces, title, folder_path)
 
 
 
