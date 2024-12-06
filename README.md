@@ -55,8 +55,10 @@ AtomProNet
 
 ## Tutorial
 
-[![Open in Colab](https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Colaboratory_SVG_Logo.svg)](https://colab.research.google.com/drive/1RZ4txh0NH7t5kEyNNxojxVN8c5QAky5P?usp=sharing)
-
+<a href="https://colab.research.google.com/drive/1RZ4txh0NH7t5kEyNNxojxVN8c5QAky5P?usp=sharing" target="_blank">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Colaboratory_SVG_Logo.svg" alt="Open in Colab" height="30">
+</a>  
+**[Open in Colab](https://colab.research.google.com/drive/1RZ4txh0NH7t5kEyNNxojxVN8c5QAky5P?usp=sharing)**
 
 ## Workflow Overview
 
