@@ -6,10 +6,9 @@
 
 
 <p>
-  <img src="AtomProNet/AtomProNet_logo.jpg" alt="Logo" width="200" style="vertical-align: middle; margin-right: 10px;">
-  <span style="font-size: 2em; font-weight: bold;">AtomProNet: Atomic Data Processing for Neural Network</span>
+  <img src="AtomProNet/AtomProNet_logo.jpg" alt="Logo" width="100" style="vertical-align: middle; margin-right: 10px;">
+  <span># AtomProNet: Atomic Data Processing for Neural Network</span>
 </p>
-
 
 
 This package demonstrates a data processing workflow involving Bash script, Python conversion scripts, which automatically converts multiple VASP OUTCAR data into neural network training format (extxyz or npz).
