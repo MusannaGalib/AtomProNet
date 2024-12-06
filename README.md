@@ -53,6 +53,11 @@ AtomProNet
 
 ```
 
+## Tutorial
+
+[![Open in Colab](https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Colaboratory_SVG_Logo.svg)](https://colab.research.google.com/drive/1RZ4txh0NH7t5kEyNNxojxVN8c5QAky5P?usp=sharing)
+
+
 ## Workflow Overview
 
 1. **Bash Script (`hydrostatic_strain_post_processing.sh`):**
