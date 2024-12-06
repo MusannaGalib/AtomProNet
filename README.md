@@ -32,8 +32,8 @@ AtomProNet
     └── Post-processing
         ├── Machine Learning Interatomic Potential (MLIP)         
         │   │                 
-        │   ├── Uncertainity quantifications
-        │   └── Visualization
+        │   ├── Parity plots
+        │   └── Cumulative distributions
         │
         └── Classical Molecular Dynamics (LAMMPS) 
             │   
