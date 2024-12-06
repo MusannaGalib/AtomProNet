@@ -4,9 +4,13 @@
 [![Release](https://img.shields.io/badge/release-v0.0.1-brightgreen)](https://github.com/MusannaGalib/AtomProNet)
 [![License: MIT](https://img.shields.io/badge/license-MIT_2.0-yellow)](https://opensource.org/licenses/MIT)
 
-# AtomProNet: Atomic Data Processing for Neural Network
 
-<img src="AtomProNet/AtomProNet_logo.jpg" alt="Logo" width="200">
+<p>
+  <img src="AtomProNet/AtomProNet_logo.jpg" alt="Logo" width="200" style="vertical-align: middle; margin-right: 10px;">
+  <span style="font-size: 2em; font-weight: bold;">AtomProNet: Atomic Data Processing for Neural Network</span>
+</p>
+
+
 
 This package demonstrates a data processing workflow involving Bash script, Python conversion scripts, which automatically converts multiple VASP OUTCAR data into neural network training format (extxyz or npz).
 
