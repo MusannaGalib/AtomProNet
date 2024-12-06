@@ -55,11 +55,7 @@ AtomProNet
 
 ## Tutorial
 
-Example notebook of using AtomProNet's 4 modules- <a href="https://colab.research.google.com/drive/1RZ4txh0NH7t5kEyNNxojxVN8c5QAky5P?usp=sharing" target="_blank">
-    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" style="vertical-align: middle; display: inline-block;"/>
-    <span style="vertical-align: middle; display: inline-block;">Open in Colab</span>
-</a>
-
+Example notebook of using AtomProNet's 4 modules- <a href="https://colab.research.google.com/drive/1RZ4txh0NH7t5kEyNNxojxVN8c5QAky5P?usp=sharing" target="_blank"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" style="vertical-align: middle;"></a>
 
 
 
