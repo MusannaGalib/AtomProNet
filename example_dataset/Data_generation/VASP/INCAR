@@ -1,0 +1,31 @@
+General:
+
+  SYSTEM = Alumina_orthorombic_cell_under_strain
+  ISTART=0       ! =1, if a WAVECAR file exists Continuation job: "restart with constant energy cut-off". Orbitals are read from the WAVECAR 
+  ICHARG=2       ! ICHARG=1 , Read the charge density from CHGCAR file,   ICHARG 	= 2 	if ISTART=0 
+  ENCUT = 400    !Default:  largest ENMAX on the POTCAR file 	    
+  ALGO = Normal  ! IALGO=38 
+  PREC= Normal
+  ISPIN=1        ! non spin polarized calculation
+  LWAVE  = T             (Write WAVECAR)
+  LCHARG = T             (Write CHGCAR) 
+  NPAR = 1
+
+Electronic Relaxation:
+  EDIFF = 1E-6   ! recommeded value for high precision
+
+    
+Ionic Relaxation:
+  NSW = 0        !single point self consistant calculation with the relaxed structure, no ionic update is required 
+  NELM = 100     !the maximum number of electronic SC (selfconsistency) steps which may be performed
+  POTIM = 0.5    !scaling constant for the step widths
+  IBRION = -1     !no update, The ions are not moved
+  ISMEAR = 1     !for metal ISMEAR > 0 , Fermi smearing
+  SIGMA = 0.026  !0.026 ev = 300K
+  EDIFFG= -0.001 !Stopping criteria for ionic relaxation loop
+  ISIF = 2       !Default: degree of freedom for positions only
+  LREAL= Auto    !for larger cells it might be more efficient to use real-space projection operators
+
+
+
+
