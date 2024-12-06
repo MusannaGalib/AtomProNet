@@ -11,10 +11,17 @@ This package demonstrates a data processing workflow involving Bash script, Pyth
 ```
 AtomProNet
     |
-    ├── Pre-processing for DFT simulation (VASP)
+    ├── Data collection from materials project database
     │   │
-    │   ├── 2D/3D strain                   
-    │   └── Ab-inito simulation            
+    │   ├── Atomic energy, position, lattice parameters                   
+    │   └── Supercell formation  
+    |
+    |
+    ├── Data generation using DFT simulation (VASP/Quantum Espresso)
+    │   │
+    │   ├── Batch job preparation  
+    │   ├── Batch job submission                   
+    │   └── Batch data collection            
     │
     │
     ├── Pre-processing for Neural Network  (Post-processing of DFT simulation)             
