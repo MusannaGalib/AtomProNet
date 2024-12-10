@@ -17,10 +17,14 @@ symbols_file="$output_dir/symbols.txt"
 > "$lattice_file"
 > "$symbols_file"
 
+# Initialize folder counter
+counter=0
+
 # Function to perform post-processing in a directory
 process_directory() {
     local current_dir=$1
-    echo "Processing directory: $current_dir"
+    ((counter++))  # Increment counter
+    echo "Processing folder #$counter: $current_dir"  # Debug line
 
     cd "$current_dir" || return
 
@@ -52,9 +56,7 @@ process_directory() {
         echo "CONTCAR not found in $current_dir. Skipping."
     fi
 
-    
     if [ -f "CONTCAR" ]; then
-
         # Read the 6th and 7th lines from the CONTCAR file
         atom_symbols=$(sed -n '6p' "$current_dir/CONTCAR")
         atom_counts=$(sed -n '7p' "$current_dir/CONTCAR")
@@ -69,7 +71,6 @@ process_directory() {
     fi
 
     cd - > /dev/null || return  
-
 }
 
 # Recursive function to traverse all directories
@@ -92,4 +93,5 @@ traverse_directories() {
 # Start recursive processing
 echo "Post-processing started at $(date)"
 traverse_directories "$(pwd)"
+echo "Processed $counter folders in total."  # Final counter output
 echo "Post-processing completed at $(date)"

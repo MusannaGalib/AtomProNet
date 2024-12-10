@@ -32,16 +32,27 @@ Requires-Dist: scikit-learn
 [![License: MIT](https://img.shields.io/badge/license-MIT_2.0-yellow)](https://opensource.org/licenses/MIT)
 
 # AtomProNet: Atomic Data Processing for Neural Network
+<div align="center">
+  <img src="AtomProNet/AtomProNet_logo.jpg" alt="Logo" width="200">
+</div>
+
 
 This package demonstrates a data processing workflow involving Bash script, Python conversion scripts, which automatically converts multiple VASP OUTCAR data into neural network training format (extxyz or npz).
 
 ```
 AtomProNet
     |
-    â”œâ”€â”€ Pre-processing for DFT simulation (VASP)
+    â”œâ”€â”€ Data collection from materials project database
     â”‚   â”‚
-    â”‚   â”œâ”€â”€ 2D/3D strain                   
-    â”‚   â””â”€â”€ Ab-inito simulation            
+    â”‚   â”œâ”€â”€ Atomic energy, position, lattice parameters                   
+    â”‚   â””â”€â”€ Supercell formation  
+    |
+    |
+    â”œâ”€â”€ Data generation using DFT simulation (VASP/Quantum Espresso)
+    â”‚   â”‚
+    â”‚   â”œâ”€â”€ Batch job preparation  
+    â”‚   â”œâ”€â”€ Batch job submission                   
+    â”‚   â””â”€â”€ Batch data collection            
     â”‚
     â”‚
     â”œâ”€â”€ Pre-processing for Neural Network  (Post-processing of DFT simulation)             
@@ -59,8 +70,8 @@ AtomProNet
     â””â”€â”€ Post-processing
         â”œâ”€â”€ Machine Learning Interatomic Potential (MLIP)         
         â”‚   â”‚                 
-        â”‚   â”œâ”€â”€ Uncertainity quantifications
-        â”‚   â””â”€â”€ Visualization
+        â”‚   â”œâ”€â”€ Parity plots
+        â”‚   â””â”€â”€ Cumulative distributions
         â”‚
         â””â”€â”€ Classical Molecular Dynamics (LAMMPS) 
             â”‚   
@@ -68,6 +79,12 @@ AtomProNet
             â””â”€â”€ Visualization   
 
 ```
+
+## Tutorial
+
+Example notebook of using AtomProNet's 4 modules- <a href="https://colab.research.google.com/drive/1RZ4txh0NH7t5kEyNNxojxVN8c5QAky5P?usp=sharing" target="_blank"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" style="vertical-align: middle;"></a>
+
+
 
 ## Workflow Overview
 

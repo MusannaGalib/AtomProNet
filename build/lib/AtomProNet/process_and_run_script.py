@@ -208,7 +208,7 @@ def process_and_run_script(input_folder):
 
                 os.chdir(input_folder_path)                       
                 try:                                              
-                    subprocess.run(['bash', 'post_processing.sh'], capture_output=True, text=True, check=True)
+                    subprocess.run(['bash', 'post_processing.sh'], capture_output=False, text=True, check=True)
                     print("Bash script executed successfully.")
                 except subprocess.CalledProcessError as e:
                     print(f"Error executing Bash script: {e}")
