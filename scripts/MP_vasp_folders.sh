@@ -19,7 +19,6 @@ vasp_jobsub_file="$parent_folder/vasp_jobsub.sh"
 missing_files=()
 if [[ ! -f "$incar_file" ]]; then missing_files+=("INCAR"); fi
 if [[ ! -f "$kpoints_file" ]]; then missing_files+=("KPOINTS"); fi
-if [[ ! -f "$potcar_file" ]]; then missing_files+=("POTCAR"); fi
 if [[ ! -f "$vasp_jobsub_file" ]]; then missing_files+=("vasp_jobsub.sh"); fi
 
 # Exit if any required files are missing
@@ -53,8 +52,33 @@ for poscar_path in "$poscar_folder"/*_POSCAR; do
     # Copy the required files from the parent folder into the material folder
     cp "$incar_file" "$material_folder/"
     cp "$kpoints_file" "$material_folder/"
-    cp "$potcar_file" "$material_folder/"
     cp "$vasp_jobsub_file" "$material_folder/"
+
+    # Extract atom types from the 6th line of the POSCAR file
+    atom_types=$(sed -n '6p' "$material_folder/POSCAR" | awk '{print $1,$2,$3,$4}')  # Modify to handle multiple atoms
+    atom_list=($atom_types)
+
+    # Create a new POTCAR file by concatenating atom-specific POTCAR files
+    missing_potcar_atoms=()
+    : > "$material_folder/POTCAR"  # Clear any existing POTCAR file in the folder
+    for atom in "${atom_list[@]}"; do
+        atom_potcar="$parent_folder/POTCAR_$atom"
+        if [[ -f "$atom_potcar" ]]; then
+            cat "$atom_potcar" >> "$material_folder/POTCAR"
+        else
+            missing_potcar_atoms+=("$atom")
+        fi
+    done
+
+    # Check for missing POTCAR files
+    if [[ ${#missing_potcar_atoms[@]} -gt 0 ]]; then
+        echo -e "\033[31mWarning: The following POTCAR files are missing in the parent folder for $folder_name:\033[0m"
+        for atom in "${missing_potcar_atoms[@]}"; do
+            echo -e "\033[31m- POTCAR_$atom\033[0m"
+        done
+    else
+        echo "POTCAR file created successfully for $folder_name."
+    fi
 
     echo "Processed $folder_name and organized files into $material_folder"
 done
