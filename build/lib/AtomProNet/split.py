@@ -2,7 +2,6 @@ import os
 import random
 import ase.io
 
-
 def read_datasets(file_path):
     """Read all datasets from the extxyz file using ASE."""
     datasets = []
@@ -10,23 +9,29 @@ def read_datasets(file_path):
         datasets.append(frame)
     return datasets
 
-
 def split(input_folder):
     """
-    Split the dataset in 'Converted.extxyz' into train, test, and validation sets interactively.
+    Split the dataset in 'Converted.extxyz' or a user-specified file into train, test, and validation sets interactively.
 
     Parameters:
-        input_folder (str): Path to the folder containing 'Converted.extxyz'.
+        input_folder (str): Path to the folder containing the extxyz file.
     
     Returns:
         None
     """
-    # Define the path to 'Converted.extxyz'
-    input_file = os.path.join(input_folder, 'Converted.extxyz')
+    # Ask the user if they want to split the default 'Converted.extxyz' or specify a different file
+    use_default = input("Do you want to split 'Converted.extxyz'? (yes/no): ").strip().lower()
+    if use_default.startswith('y'):
+        input_file_name = 'Converted.extxyz'
+    else:
+        input_file_name = input("Please enter the name of the file to split (including extension): ").strip()
+    
+    # Define the path to the selected file
+    input_file = os.path.join(input_folder, input_file_name)
     
     # Check if the input file exists
     if not os.path.isfile(input_file):
-        raise FileNotFoundError(f"'Converted.extxyz' not found in the specified folder: {input_folder}")
+        raise FileNotFoundError(f"'{input_file_name}' not found in the specified folder: {input_folder}")
     
     # Read all datasets
     datasets = read_datasets(input_file)
@@ -68,3 +73,8 @@ def split(input_folder):
         print(f"Test dataset saved to {test_file} with {len(test_datasets)} structures.")
     else:
         print("Dataset splitting skipped.")
+
+# If the script is run directly, ask for input_folder and call split
+if __name__ == "__main__":
+    input_folder = input("Please enter the path to the input folder: ").strip()
+    split(input_folder)
