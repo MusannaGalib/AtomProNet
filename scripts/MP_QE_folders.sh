@@ -12,8 +12,8 @@ echo "Parent folder: $parent_folder"
 input_template_file="$parent_folder/input_template.in"
 qe_jobsub_file="$parent_folder/qe_jobsub.sh"
 
-# Generate input_template.in if it doesn't exist
-if [[ ! -f "$input_template_file" ]]; then
+# Function to generate input_template.in
+generate_input_template() {
     cat > "$input_template_file" <<EOL
 &control
     calculation = 'scf',
@@ -43,10 +43,10 @@ K_POINTS automatic
 4 4 4 0 0 0
 EOL
     echo "Generated 'input_template.in' in the parent folder."
-fi
+}
 
-# Generate qe_jobsub.sh if it doesn't exist
-if [[ ! -f "$qe_jobsub_file" ]]; then
+# Function to generate qe_jobsub.sh
+generate_qe_jobsub() {
     cat > "$qe_jobsub_file" <<EOL
 #!/bin/bash
 #PBS -l walltime=60:00:00,select=1:ncpus=32:ompthreads=1:mpiprocs=32:mem=180gb
@@ -67,6 +67,52 @@ cd \$PBS_O_WORKDIR
 mpirun QE_PATH/bin/pw.x < input > output
 EOL
     echo "Generated 'qe_jobsub.sh' in the parent folder."
+}
+
+# Check for input_template.in and prompt if it exists
+if [[ -f "$input_template_file" ]]; then
+    echo "The file 'input_template.in' already exists. Do you want to replace it? (y/n)"
+    read -r response
+    if [[ "$response" == "y" || "$response" == "Y" ]]; then
+        generate_input_template
+        echo "The file 'input_template.in' has been replaced."
+        echo "Do you want to modify 'input_template.in' before proceeding? (y/n)"
+        read -r modify_response
+        if [[ "$modify_response" == "y" || "$modify_response" == "Y" ]]; then
+            nano "$input_template_file"  # Replace `nano` with your preferred editor
+        fi
+    else
+        echo "Using existing 'input_template.in'."
+    fi
+else
+    generate_input_template
+fi
+
+# Check for qe_jobsub.sh and prompt if it exists
+if [[ -f "$qe_jobsub_file" ]]; then
+    echo "The file 'qe_jobsub.sh' already exists. Do you want to replace it? (y/n)"
+    read -r response
+    if [[ "$response" == "y" || "$response" == "Y" ]]; then
+        generate_qe_jobsub
+        echo "The file 'qe_jobsub.sh' has been replaced."
+        echo "Do you want to modify 'qe_jobsub.sh' before proceeding? (y/n)"
+        read -r modify_response
+        if [[ "$modify_response" == "y" || "$modify_response" == "Y" ]]; then
+            nano "$qe_jobsub_file"  # Replace `nano` with your preferred editor
+        fi
+    else
+        echo "Using existing 'qe_jobsub.sh'."
+    fi
+else
+    generate_qe_jobsub
+fi
+
+# Confirm whether to continue generating job submission folders
+echo "Do you want to continue to copy the files and generate job submission folders? (y/n)"
+read -r continue_response
+if [[ "$continue_response" != "y" && "$continue_response" != "Y" ]]; then
+    echo "Exiting without generating job submission folders."
+    exit 0
 fi
 
 # Search for POSCAR files in the current script folder
@@ -82,6 +128,7 @@ fi
 parse_poscar_to_input() {
     local poscar_file="$1"
     local input_file="$2"
+    local material_folder="$3"
 
     # Extract cell parameters
     cell_parameters=$(sed -n '3,5p' "$poscar_file")
@@ -92,11 +139,37 @@ parse_poscar_to_input() {
     nat=$(echo "$atom_counts" | awk '{sum=0; for(i=1; i<=NF; i++) sum+=$i; print sum}')
     ntyp=$(echo "$atom_types" | wc -w)
 
-    # Generate ATOMIC_SPECIES section
+    # Generate ATOMIC_SPECIES section and copy corresponding UPF files
     atomic_species=""
+    missing_potentials=()
     for species in $atom_types; do
-        atomic_species+="$species $species.upf 1.0\n"
+        species=$(echo "$species" | xargs)  # Trim whitespace
+        echo "Looking for UPF file for species: '$species'"
+        
+        # Use case-insensitive find to match UPF files
+        # Use exact word matching for species in UPF filenames
+        upf_file=$(find "$parent_folder" -type f -regextype posix-extended -iregex ".*[/_]+${species}[._].*upf" | head -n 1)
+
+        
+        if [[ -z "$upf_file" ]]; then
+            echo "UPF file for species '$species' not found."
+            missing_potentials+=("$species")
+        else
+            echo "Found UPF file: $upf_file"
+            cp "$upf_file" "$material_folder/"
+            upf_filename=$(basename "$upf_file")
+            atomic_species+="$species 1.0 $upf_filename\n"
+        fi
     done
+
+
+    # Warn if any UPF files are missing
+    if [[ ${#missing_potentials[@]} -gt 0 ]]; then
+        echo -e "\033[31mWarning: The following pseudopotentials are missing for $material_folder:\033[0m"
+        for species in "${missing_potentials[@]}"; do
+            echo -e "\033[31m- $species\033[0m"
+        done
+    fi
 
     # Extract atomic positions
     positions=$(sed -n '9,$p' "$poscar_file")
@@ -133,7 +206,7 @@ for poscar_path in "${structure_files[@]}"; do
     cp "$qe_jobsub_file" "$material_folder/"
 
     # Generate the input file for Quantum Espresso
-    parse_poscar_to_input "$material_folder/POSCAR" "$material_folder/input.in"
+    parse_poscar_to_input "$material_folder/POSCAR" "$material_folder/input.in" "$material_folder"
 
     echo "Processed $folder_name and organized files into $material_folder"
 done
