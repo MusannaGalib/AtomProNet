@@ -29,27 +29,29 @@ submit_jobs_recursive() {
         if [ -d "$item" ]; then
             cd "$item" || continue
 
-            # If a "vasp_jobsub.sh" exists, submit the job
-            if [ -f "vasp_jobsub.sh" ]; then
+            # Find all .sh files in the current directory
+            sh_files=($(find . -maxdepth 1 -type f -name "*.sh"))
+
+            # Submit each .sh file as a job
+            for sh_file in "${sh_files[@]}"; do
                 # Increment total job counter
                 ((total_jobs++))
 
                 # Skip jobs already submitted
                 if (( total_jobs <= counter )); then
-                    cd ..  # Return to the previous directory
                     continue
                 fi
 
                 # Submit the job and capture the output
-                sbatch_output=$(sbatch vasp_jobsub.sh)
+                sbatch_output=$(sbatch "$sh_file")
                 if [[ $sbatch_output == *"Submitted batch job"* ]]; then
                     echo "Job $total_jobs submitted successfully: $sbatch_output"
-                    echo "[$(date)] Job $total_jobs submitted successfully in folder: $item" >> "$log_file"
+                    echo "[$(date)] Job $total_jobs submitted successfully in folder: $item with script: $sh_file" >> "$log_file"
                     submitted_jobs=$((submitted_jobs + 1))
                 else
                     echo "Job $total_jobs submission failed: $sbatch_output"
-                    echo "[$(date)] Job $total_jobs submission failed in folder: $item" >> "$log_file"
-                    continue  # Proceed to the next folder despite failure
+                    echo "[$(date)] Job $total_jobs submission failed in folder: $item with script: $sh_file" >> "$log_file"
+                    continue  # Proceed to the next job despite failure
                 fi
 
                 # Save the last submitted job number to last_job.txt
@@ -60,7 +62,7 @@ submit_jobs_recursive() {
                     echo "Reached the job submission limit of $max_jobs. Stopping."
                     return 0
                 fi
-            fi
+            done
 
             # Recurse into subdirectories
             submit_jobs_recursive "$item"
