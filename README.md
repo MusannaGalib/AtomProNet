@@ -113,6 +113,24 @@ python3 process_and_run_script.py
    - Post-process MLIP data to get parity plots and cumulative distributions.
 
 
+**Options**
+
+To use this package, use the following options:
+
+```bash
+Choose an option:
+1. Data from Materials Project
+2. Pre-processing for DFT simulation
+3. Pre-processing for Neural Network
+4. Post-processing
+```
+
+
+<details>
+<summary>📖 Read More</summary>  
+
+<br> 
+
 **Pre-processing for DFT simulation (VASP)**
 
 To use this package, run the Bash script with an input file, then pass the output file path to the Python scripts:
@@ -146,10 +164,7 @@ python3 process_and_run_script.py
 
 
 
-<details>
-<summary>📖 Read More</summary>  
-
-<br>  
+ 
 
 **Additional Information**
 
@@ -172,7 +187,7 @@ Options in lattice.py for 2D and 3D strains: (mianly required for data-extrantio
 # Defalut: if len(index_line) == 3 (hydrostatic strain)
         if len(index_line) == 3:              #3 for -0.05 -0.05 -0.05   2 for -0.05 -0.05
 ```
-</details>
+
 
 
 **Ab-inito MD simulation:**
@@ -195,7 +210,7 @@ Options in lattice.py for 2D and 3D strains: (mianly required for data-extrantio
 			sed -n '3,5p' CONTCAR | awk '{printf $1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "} END {print ""}' >> ../lattice.txt
 		done
 ```
-
+</details>
 
 ## Authors
 This Software is developed by Musanna Galib
