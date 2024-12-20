@@ -63,7 +63,7 @@ Example notebook of using AtomProNet's 4 modules- <a href="https://colab.researc
 
 ## Installation and Usage Guide
 
-This guide provides detailed instructions on how to install and use the VASP_Neural_Network_dataset_converter package.
+This guide provides detailed instructions on how to install and use the AtomProNet package.
 
 ### Prerequisites
 - Python 3.6 or later
