@@ -125,6 +125,15 @@ Choose an option:
 4. Post-processing
 ```
 ```python
+Enter your choice (1/2/3/4 or 'exit'): 1
+Enter your Materials Project API key (press Enter to use default): 
+Enter the material ID (e.g., mp-1234), compound formula (e.g., Al2O3), or elements (e.g., Li, O, Mn): Al2O3
+Do you want to create supercells for all structures? (yes/no): yes
+Enter the supercell size (e.g., 2 2 2): 2 3 4
+Do you want to download energy+lattice data for the materials? (yes/no): yes
+```
+
+```python
 Enter your choice (1/2/3/4 or 'exit'): 2
 Options:
 1: Copy and run MP_vasp_folders.sh
