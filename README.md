@@ -133,6 +133,13 @@ Options:
 q: Quit
 ```
 ```python
+Enter your choice (1/2/3/4 or 'exit'): 3
+Do you want to run the first step (execute post_processing.sh)? (yes/no): yes
+Do you want to split the dataset into train, test, and validation sets? (yes/no): yes
+```
+
+```python
+Enter your choice (1/2/3/4 or 'exit'): 4
 Post-Processing Options:
 1. Post-Processing of MLIP
 2. Post-Processing of LAMMPS
