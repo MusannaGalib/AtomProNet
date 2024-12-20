@@ -117,13 +117,27 @@ python3 process_and_run_script.py
 
 To use this package, use the following options:
 
-```bash
+```python
 Choose an option:
 1. Data from Materials Project
 2. Pre-processing for DFT simulation
 3. Pre-processing for Neural Network
 4. Post-processing
 ```
+```python
+Enter your choice (1/2/3/4 or 'exit'): 2
+Options:
+1: Copy and run MP_vasp_folders.sh
+2: Copy and run job_submission.sh
+3: Copy and run post_processing.sh
+q: Quit
+```
+```python
+Post-Processing Options:
+1. Post-Processing of MLIP
+2. Post-Processing of LAMMPS
+```
+
 
 
 <details>
