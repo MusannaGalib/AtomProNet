@@ -90,17 +90,13 @@ This guide provides detailed instructions on how to install and use the VASP_Neu
      pip install AtomProNet
      ```
 
-### Using the Package
+## Using the Package
 
 ### Example Usage
 
-An example dataset is given in 'example_dataset' folder. You can use the following commands to play with that.
+Example datasets are given in 'example_dataset' folder. You can use the following commands to play with that by executing the python wrapper file.
 
 ```python
-# change the folder path
-process_and_run_script(r'FOLDER_PATH\example_dataset\hydrostatic_strain')
-
-# execute the python wrapper
 python3 process_and_run_script.py
 ```
 
