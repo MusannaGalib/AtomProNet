@@ -28,24 +28,32 @@ process_directory() {
 
     cd "$current_dir" || return
 
-    # Check if OUTCAR exists and process it
-    if [ -f "OUTCAR" ]; then
-        sed -n '/POSITION/,/total drift/ p' OUTCAR > pos-conv.txt
-        echo "Directory: $current_dir" >> "$pos_file"
-        cat pos-conv.txt >> "$pos_file"
+	# Check if OUTCAR exists and process it
+	if [ -f "OUTCAR" ]; then
+		awk -v dir="$current_dir" '
+			/POSITION/,/total drift/ {
+				if ($0 ~ /POSITION/) { print "Directory: " dir }
+				print
+			}
+		' OUTCAR >> "$pos_file"
+		
+		# Extract energy lines and append directory for each energy line
+		grep "energy  without entropy=" OUTCAR | while read -r ENERGY_LINE; do
+			echo "Directory: $current_dir" >> "$energy_file"
+			echo "$ENERGY_LINE" >> "$energy_file"
+		done
 
-        # Extract energy lines
-        ENERGY_LINE=$(grep "energy  without entropy=" OUTCAR)
-        echo "Directory: $current_dir" >> "$energy_file"
-        echo "$ENERGY_LINE" >> "$energy_file"
+		# Extract pressure data and append directory for each pressure block
+		grep -B1 "in kB" OUTCAR | grep -v -e "in kB" -e "^--$" | while read -r TOTAL_LINE; do
+			echo "Directory: $current_dir" >> "$pressure_file"
+			echo "$TOTAL_LINE" >> "$pressure_file"
+		done
 
-        # Extract pressure data
-        TOTAL_LINE=$(grep -B1 "in kB" OUTCAR | grep -v "in kB")
-        echo "Directory: $current_dir" >> "$pressure_file"
-        echo "$TOTAL_LINE" >> "$pressure_file"
-    else
-        echo "OUTCAR not found in $current_dir. Skipping."
-    fi
+	else
+		echo "OUTCAR not found in $current_dir. Skipping."
+	fi
+
+
 
 
 	# Check if OUTCAR exists and process it
@@ -71,19 +79,25 @@ process_directory() {
 
 
 
-    if [ -f "CONTCAR" ]; then
-        # Read the 6th and 7th lines from the CONTCAR file
-        atom_symbols=$(sed -n '6p' "$current_dir/CONTCAR")
-        atom_counts=$(sed -n '7p' "$current_dir/CONTCAR")
+	if [ -f "CONTCAR" ] && [ -f "OUTCAR" ]; then
+		# Read the 6th and 7th lines from the CONTCAR file
+		atom_symbols=$(sed -n '6p' "$current_dir/CONTCAR")
+		atom_counts=$(sed -n '7p' "$current_dir/CONTCAR")
+		
+		# Count occurrences of "POSITION TOTAL-FORCE (eV/Angst)" in OUTCAR
+		occurrences=$(grep -c "POSITION                                       TOTAL-FORCE (eV/Angst)" "$current_dir/OUTCAR")
+		
+		# Append directory, symbols, and counts for each occurrence
+		for ((i = 1; i <= occurrences; i++)); do
+			echo "Directory: $current_dir" >> "$symbols_file"
+			echo "Symbols: $atom_symbols" >> "$symbols_file"
+			echo "Counts: $atom_counts" >> "$symbols_file"
+			echo "" >> "$symbols_file"
+		done
+	else
+		echo "CONTCAR or OUTCAR not found in $current_dir. Skipping."
+	fi
 
-        # Append the current directory and extracted data to symbols.txt
-        echo "Directory: $current_dir" >> "$symbols_file"
-        echo "Symbols: $atom_symbols" >> "$symbols_file"
-        echo "Counts: $atom_counts" >> "$symbols_file"
-        echo "" >> "$symbols_file"
-    else
-        echo "CONTCAR not found in $current_dir. Skipping."
-    fi
 
     cd - > /dev/null || return  
 }
