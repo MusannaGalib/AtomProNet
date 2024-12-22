@@ -152,6 +152,14 @@ Options:
         q: Quit
 q: Quit
 ```
+1. **Instruction for preparing VASP jobs: (`"INCAR", "KPOINTS", "vasp_jobsub.sh"`):**
+   - `"INCAR", "KPOINTS", "vasp_jobsub.sh"` files must be outside of the folder containing all the `POSCAR` files
+   - `POTCAR` files must be provided as `POTCAR_$atomsymbol` (e.g. `POTCAR_Al`, `POTCAR_O`)
+
+1. **Instruction for preparing Quantum ESPRESSO jobs: (`"INCAR", "KPOINTS", "vasp_jobsub.sh"`):**
+   - The code will prepare `input_template` and `qe_jobsub.sh` one level up of the provided `POSCAR` files
+   - Update the `input_template` and `qe_jobsub.sh` as needed 
+   - Pesudopotentials files must be provided as `$atomsymbol_*.UPF` (e.g. `li_pbe_v1.4.uspp.F.UPF`, `O.pbe-n-kjpaw_psl.0.1.UPF`)
 
 
 ```python
