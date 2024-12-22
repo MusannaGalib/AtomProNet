@@ -10,22 +10,31 @@ def read_datasets(file_path):
     return datasets
 
 def split(input_folder):
-    """
-    Split the dataset in 'Converted.extxyz' or a user-specified file into train, test, and validation sets interactively.
 
-    Parameters:
-        input_folder (str): Path to the folder containing the extxyz file.
-    
-    Returns:
-        None
-    """
-    # Ask the user if they want to split the default 'Converted.extxyz' or specify a different file
-    use_default = input("Do you want to split 'Converted.extxyz'? (yes/no): ").strip().lower()
+    use_default = input("Do you want to split the Data files? (yes/no): ").strip().lower()
+
     if use_default.startswith('y'):
-        input_file_name = 'Converted.extxyz'
+        file_choice = input("Do you want to split '1.Converted.extxyz' or '2.Other files'? (1 or 2): ").strip()
+
+        if file_choice == '1':
+            input_file_name = 'Converted.extxyz'
+            print(f"Splitting file: {input_file_name}")
+        elif file_choice == '2':
+            input_file_name = input("Please enter the name of the file to split (including extension): ").strip()
+            print(f"Splitting file: {input_file_name}")
+        else:
+            print("Invalid choice. Returning to main script.")
+            return None
+        
     else:
-        input_file_name = input("Please enter the name of the file to split (including extension): ").strip()
+        print("Dataset splitting skipped. Returning control to the main script.")
+        return None
     
+    # Define the path to the selected file only if input_file_name is set
+    if 'input_file_name' not in locals():
+        print("No valid file selected for splitting. Returning to main script.")
+        return None
+
     # Define the path to the selected file
     input_file = os.path.join(input_folder, input_file_name)
     
@@ -71,6 +80,7 @@ def split(input_folder):
         print(f"Train dataset saved to {train_file} with {len(train_datasets)} structures.")
         print(f"Validation dataset saved to {validation_file} with {len(validation_datasets)} structures.")
         print(f"Test dataset saved to {test_file} with {len(test_datasets)} structures.")
+        return input_folder
     else:
         print("Dataset splitting skipped.")
 
