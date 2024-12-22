@@ -63,9 +63,9 @@ def process_and_run_script(input_folder):
                 if sub_option == '1':  # VASP Job Submission
                     while True:
                         print("VASP Options:")
-                        print("1: Copy and run MP_vasp_folders.sh")
-                        print("2: Job submission")
-                        print("3: Post processing")
+                        print("1: Prepare VASP job submission folders")
+                        print("2: VASP job submission")
+                        print("3: Post-processing of VASP jobs")
                         print("q: Quit")
                         option = input("Enter your choice: ").strip()
 
@@ -287,9 +287,9 @@ def process_and_run_script(input_folder):
                 elif sub_option == '2':  # Quantum ESPRESSO Job Submission
                     while True:
                         print("Quantum ESPRESSO Options:")
-                        print("1: Copy and run MP_qe_folders.sh")
-                        print("2: Copy and run qe_job_submission.sh")
-                        print("3: Copy and run qe_post_processing.sh")
+                        print("1: Prepare Quantum ESPRESSO job submission folders")
+                        print("2: Quantum ESPRESSO job submission")
+                        print("3: Post-processing of Quantum ESPRESSO jobs")
                         print("q: Quit")
                         option = input("Enter your choice: ").strip()
 

@@ -136,11 +136,20 @@ Do you want to download energy+lattice data for the materials? (yes/no): yes
 ```python
 Enter your choice (1/2/3/4 or 'exit'): 2
 Options:
-1: Copy and run MP_vasp_folders.sh
-2: Copy and run job_submission.sh
-3: Copy and run post_processing.sh
+1: VASP
+    ```python
+        Enter your choice: 1
+        VASP Options:
+        1: Prepare VASP job submission folders
+        2: VASP job submission
+        3: Post-processing of VASP jobs       
+        q: Quit
+    ```
+2: Quantum ESPRESSO
 q: Quit
 ```
+
+
 ```python
 Enter your choice (1/2/3/4 or 'exit'): 3
 Do you want to run the first step (execute post_processing.sh)? (yes/no): yes
