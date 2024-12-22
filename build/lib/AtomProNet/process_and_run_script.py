@@ -429,10 +429,26 @@ def process_and_run_script(input_folder):
                     system_choice = input("Enter your choice (1/2): ").strip()
 
                     if system_choice == '1':  # VASP
-                        bash_script_path = os.path.join(script_dir, '..', 'scripts', 'post_processing.sh')
-                        break
+                        print("Select the extraction type for VASP:")
+                        print("1. Extract ionic last step (Self-Consistent simulations)")
+                        print("2. Extract all ionic steps (Ab-initio MD)")
+                        vasp_choice = input("Enter your choice (1/2): ").strip()
+
+                        if vasp_choice == '1':
+                            bash_script_path = os.path.join(script_dir, '..', 'scripts', 'post_processing.sh')
+                            print(f"Using script: {bash_script_path}")
+                            break
+                        elif vasp_choice == '2':
+                            bash_script_path = os.path.join(script_dir, '..', 'scripts', 'AIMD_post_processing.sh')
+                            print(f"Using script: {bash_script_path}")
+                            break
+                        else:
+                            print("Invalid choice. Please select 1 or 2 for VASP.")
+                            continue
+
                     elif system_choice == '2':  # Quantum ESPRESSO
                         bash_script_path = os.path.join(script_dir, '..', 'scripts', 'QE_post_processing.sh')
+                        print(f"Using script: {bash_script_path}")
                         break
                     else:
                         print("Invalid choice. Please select 1 for VASP or 2 for Quantum ESPRESSO.")

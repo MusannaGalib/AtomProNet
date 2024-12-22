@@ -21,7 +21,7 @@ def pressure_eV(input_file):
     # Iterate through lines and extract relevant information
     for i in range(len(lines)):
         # Check if the line starts with "Total"
-        if lines[i].startswith('  Total'):
+        if lines[i].strip().startswith('Total'):
             # Extract the 6 columns following "Total"
             total_pressure_values = [float(value) for value in lines[i].split()[1:7]]
 
