@@ -3,15 +3,18 @@ import subprocess
 import shutil
 import pymatgen
 import mp_api
-from AtomProNet.lattice import lattice
-from AtomProNet.pressure_eV import pressure_eV
-from AtomProNet.position_force import position_force
-from AtomProNet.energy import energy
-from AtomProNet.atom_symbol import atom_symbol
-from AtomProNet.combine import combine
-from AtomProNet.npz_to_extxyz import npz_to_extxyz
-from AtomProNet.materials_project import fetch_and_write_poscar  # Import the function from your materials_fetcher.py
-from AtomProNet.split import split
+# from AtomProNet.lattice import lattice
+# from AtomProNet.pressure_eV import pressure_eV
+# from AtomProNet.position_force import position_force
+# from AtomProNet.energy import energy
+# from AtomProNet.atom_symbol import atom_symbol
+# from AtomProNet.combine import combine
+# from AtomProNet.npz_to_extxyz import npz_to_extxyz
+# from AtomProNet.materials_project import fetch_and_write_poscar  # Import the function from your materials_fetcher.py
+# from AtomProNet.split import split
+
+
+
 
 def process_and_run_script(input_folder):
     while True:
@@ -43,6 +46,7 @@ def process_and_run_script(input_folder):
                 sizes = input("Enter the supercell size (e.g., 2 2 2): ")
                 supercell_size = [int(x) for x in sizes.split()]
 
+            from AtomProNet.materials_project import fetch_and_write_poscar  # Import the function from your materials_fetcher.py
             if create_supercell_option:
                 fetch_and_write_poscar(api_key, query, input_folder, create_supercell_option, supercell_size)
             else:
@@ -482,7 +486,15 @@ def process_and_run_script(input_folder):
             
             os.chdir(input_folder)
             print("Starting Step 2: Processing files with Python scripts.")
-
+            
+            from AtomProNet.lattice import lattice
+            from AtomProNet.pressure_eV import pressure_eV
+            from AtomProNet.position_force import position_force
+            from AtomProNet.energy import energy
+            from AtomProNet.atom_symbol import atom_symbol
+            from AtomProNet.combine import combine
+            from AtomProNet.npz_to_extxyz import npz_to_extxyz
+            from AtomProNet.split import split
 
             try:
                 lattice_output_file = lattice(input_folder)
