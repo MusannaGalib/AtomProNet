@@ -10,7 +10,7 @@
 </div>
 
 
-This package demonstrates a data processing workflow involving Bash script, Python conversion scripts, which automatically converts multiple VASP OUTCAR data into neural network training format (extxyz or npz).
+This package demonstrates a data processing workflow involving Bash script, Python conversion scripts, which automatically converts pre and post-process VASP/Quantum ESPRESSO data into machine learning interatomic potential (MLIP) training format (extxyz or npz).
 
 ```
 AtomProNet
@@ -21,7 +21,7 @@ AtomProNet
     │   └── Supercell formation  
     |
     |
-    ├── Data generation using DFT simulation (VASP/Quantum Espresso)
+    ├── Data generation using DFT simulation (VASP/Quantum ESPRESSO)
     │   │
     │   ├── Batch job preparation  
     │   ├── Batch job submission                   
