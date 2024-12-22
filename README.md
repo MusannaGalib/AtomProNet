@@ -137,22 +137,36 @@ Do you want to download energy+lattice data for the materials? (yes/no): yes
 Enter your choice (1/2/3/4 or 'exit'): 2
 Options:
 1: VASP
-    ```python
         Enter your choice: 1
         VASP Options:
         1: Prepare VASP job submission folders
         2: VASP job submission
         3: Post-processing of VASP jobs       
         q: Quit
-    ```
 2: Quantum ESPRESSO
+        Enter your choice: 2
+        Quantum ESPRESSO Options:
+        1: Prepare Quantum ESPRESSO job submission folders
+        2: Quantum ESPRESSO job submission
+        3: Post-processing of Quantum ESPRESSO jobs
+        q: Quit
 q: Quit
 ```
 
 
 ```python
 Enter your choice (1/2/3/4 or 'exit'): 3
-Do you want to run the first step (execute post_processing.sh)? (yes/no): yes
+Do you want to run the first step (execute post-processing script)? (yes/no): yes
+        Select the system for post-processing:
+        1. VASP
+              Enter your choice (1/2): 1
+                Select the extraction type for VASP:
+                1. Extract ionic last step (Self-Consistent simulations)
+                   Do you want to split the Data files? (yes/no):
+                2. Extract all ionic steps (Ab-initio MD)
+                   Do you want to split the Data files? (yes/no):
+        2. Quantum ESPRESSO
+           Do you want to split the Data files? (yes/no): 
 Do you want to split the dataset into train, test, and validation sets? (yes/no): yes
 ```
 
