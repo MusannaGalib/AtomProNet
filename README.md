@@ -97,7 +97,7 @@ Example datasets are given in 'example_dataset' folder. You can use the followin
 python3 process_and_run_script.py
 ```
 
-## Workflow Overview
+### Workflow Overview
 
 1. **Bash Scripts (`.sh` files):**
    - Takes a user-provided file path, process VASP and Quantum ESPRESSO job submission
@@ -110,7 +110,7 @@ python3 process_and_run_script.py
    - Post-process MLIP data to get parity plots and cumulative distributions.
 
 
-**Options**
+### Options
 
 To use this package, use the following options:
 
@@ -121,6 +121,7 @@ Choose an option:
 3. Pre-processing for Neural Network
 4. Post-processing
 ```
+**Option 1**
 ```python
 Enter your choice (1/2/3/4 or 'exit'): 1
 Enter your Materials Project API key (press Enter to use default): 
@@ -129,7 +130,7 @@ Do you want to create supercells for all structures? (yes/no): yes
 Enter the supercell size (e.g., 2 2 2): 2 3 4
 Do you want to download energy+lattice data for the materials? (yes/no): yes
 ```
-
+**Option 2**
 ```python
 Enter your choice (1/2/3/4 or 'exit'): 2
 Options:
@@ -148,7 +149,7 @@ Options:
         3: Post-processing of Quantum ESPRESSO jobs
         q: Quit
 q: Quit
-
+```
 **Instruction for preparing VASP jobs:**
    - `"INCAR", "KPOINTS", "vasp_jobsub.sh"` files must be outside of the folder containing all the `POSCAR` files
    - `POTCAR` files must be provided as `POTCAR_$atomsymbol` (e.g. `POTCAR_Al`, `POTCAR_O`)
@@ -158,10 +159,7 @@ q: Quit
    - Update the `input_template` and `qe_jobsub.sh` as needed 
    - Pesudopotentials files must be provided as `$atomsymbol_*.UPF` (e.g. `li_pbe_v1.4.uspp.F.UPF`, `O.pbe-n-kjpaw_psl.0.1.UPF`)
 
-```
-
-
-
+**Option 3**
 ```python
 Enter your choice (1/2/3/4 or 'exit'): 3
 Do you want to run the first step (execute post-processing script)? (yes/no): yes
@@ -177,7 +175,7 @@ Do you want to run the first step (execute post-processing script)? (yes/no): ye
            Do you want to split the Data files? (yes/no): 
 Do you want to split the dataset into train, test, and validation sets? (yes/no): yes
 ```
-
+**Option 4**
 ```python
 Enter your choice (1/2/3/4 or 'exit'): 4
 Post-Processing Options:
