@@ -79,7 +79,7 @@ This guide provides detailed instructions on how to install and use the AtomProN
      ```
 
 2. **Install Using PyPI:**
-   AtomProNet can also be installed from PyPI:
+   - AtomProNet can also be installed from PyPI:
      ```
      pip install AtomProNet
      ```
