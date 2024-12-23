@@ -11,7 +11,10 @@ setup(
     long_description_content_type='text/markdown',  
     url='https://github.com/MusannaGalib/AtomProNet',  
     packages=find_packages(),  
-    install_requires=open('requirements.txt').read().splitlines(),  
+    install_requires=[
+    req.strip() for req in open('requirements.txt').read().splitlines()
+    if req.strip() and not req.strip().startswith('#')
+    ],  
     classifiers=[  # Classifiers give the PyPI users more information about your package
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
