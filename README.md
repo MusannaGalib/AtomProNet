@@ -82,9 +82,9 @@ This guide provides detailed instructions on how to install and use the AtomProN
    AtomProNet can also be installed from PyPI:
      ```
      pip install AtomProNet
-   
-This command installs the package along with its dependencies.
      ```
+This command installs the package along with its dependencies.
+
 
 ## Using the Package
 
