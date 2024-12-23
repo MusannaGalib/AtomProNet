@@ -68,11 +68,7 @@ This guide provides detailed instructions on how to install and use the AtomProN
 - Bash Shell (e.g., Git Bash, Cygwin, or WSL on Windows) to execute .sh scripts.
 
 ### Installation
-1. **Download the Package:**
-   - Download the zip file containing the AtomProNet package.
-   - Extract the zip file to a directory of your choice.
-
-2. **Install the Package:**
+1. **Install Using Git:**
    - Open a command prompt or terminal.
    - Navigate to the directory where you extracted the package.
    - Install the package by running the command:
@@ -81,11 +77,13 @@ This guide provides detailed instructions on how to install and use the AtomProN
      cd AtomProNet
      pip install .
      ```
-   This command installs the package along with its dependencies.
 
+2. **Install Using PyPI:**
    AtomProNet can also be installed from PyPI:
      ```
      pip install AtomProNet
+   
+This command installs the package along with its dependencies.
      ```
 
 ## Using the Package
