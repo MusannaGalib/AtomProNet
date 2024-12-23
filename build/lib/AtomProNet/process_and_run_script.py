@@ -488,13 +488,6 @@ def process_and_run_script(input_folder):
             print("Starting Step 2: Processing files with Python scripts.")
             
             from AtomProNet.lattice import lattice
-            from AtomProNet.pressure_eV import pressure_eV
-            from AtomProNet.position_force import position_force
-            from AtomProNet.energy import energy
-            from AtomProNet.atom_symbol import atom_symbol
-            from AtomProNet.combine import combine
-            from AtomProNet.npz_to_extxyz import npz_to_extxyz
-            from AtomProNet.split import split
 
             try:
                 lattice_output_file = lattice(input_folder)
@@ -502,30 +495,37 @@ def process_and_run_script(input_folder):
             except Exception as e:
                 print(f"Error in lattice processing: {e}")
 
+            from AtomProNet.pressure_eV import pressure_eV
             try:
                 pressure_eV_output_file = pressure_eV(input_folder)
                 print(f"Pressure (eV) processing completed: {pressure_eV_output_file}")
             except Exception as e:
                 print(f"Error in pressure (eV) processing: {e}")
 
+            from AtomProNet.position_force import position_force
             try:
                 position_force_output_file = position_force(input_folder)
                 print(f"Position and force processing completed: {position_force_output_file}")
             except Exception as e:
                 print(f"Error in position and force processing: {e}")
 
+            from AtomProNet.energy import energy
             try:
                 energy_output_file = energy(input_folder)
                 print(f"Energy processing completed: {energy_output_file}")
             except Exception as e:
                 print(f"Error in energy processing: {e}")
 
+            from AtomProNet.atom_symbol import atom_symbol
             try:
                 atom_symbol_output_file = atom_symbol(input_folder)
                 print(f"Atom symbol processing completed: {atom_symbol_output_file}")
             except Exception as e:
                 print(f"Error in atom symbol processing: {e}")
 
+            from AtomProNet.combine import combine
+            from AtomProNet.npz_to_extxyz import npz_to_extxyz
+            from AtomProNet.split import split
             combined_output_file = combine(input_folder)
             npz_to_extxyz_output_file = npz_to_extxyz(combined_output_file)
             print(f"Final output file directory from the workflow: {npz_to_extxyz_output_file}") 
