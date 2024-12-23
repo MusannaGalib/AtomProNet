@@ -65,6 +65,7 @@ This guide provides detailed instructions on how to install and use the AtomProN
 ### Prerequisites
 - Python 3.6 or later
 - Pip (Python package manager)
+- Bash Shell (e.g., Git Bash, Cygwin, or WSL on Windows) to execute .sh scripts.
 
 ### Installation
 1. **Download the Package:**
