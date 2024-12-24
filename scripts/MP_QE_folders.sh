@@ -66,7 +66,7 @@ module load fftw
 
 cd $PBS_O_WORKDIR
 
-mpirun /home/galibubc/scratch/quantum-expresso/q-e-qe-6.5MaX/bin/pw.x < input.in > output.out
+mpirun /scratch/st-mponga1-1/musanna/software/q-e/bin/pw.x < input.in > output.out
 EOL
     echo "Generated 'qe_jobsub.sh' in the parent folder."
 }
