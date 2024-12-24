@@ -49,11 +49,14 @@ EOL
 generate_qe_jobsub() {
     cat > "$qe_jobsub_file" <<EOL
 #!/bin/bash
-#PBS -l walltime=60:00:00,select=1:ncpus=32:ompthreads=1:mpiprocs=32:mem=180gb
-#PBS -N JobName
-#PBS -A ex-mponga1-1
-#PBS -o output.txt
-#PBS -e error.txt
+#SBATCH --account=st-mponga1-1
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=4
+#SBATCH --mem=4G
+#SBATCH --time=1:00:00
+#SBATCH --job-name=Quantum_ESPRESSO
+#SBATCH --output=output.txt
+#SBATCH --error=error.txt
 
 ################################################################################
 
@@ -62,9 +65,9 @@ module load intel-mkl/2019.3.199
 module load openmpi/3.1.4
 module load fftw/3.3.8-mpi3.1.4
 
-cd \$PBS_O_WORKDIR
+cd $PBS_O_WORKDIR
 
-mpirun QE_PATH/bin/pw.x < input > output
+mpirun /home/galibubc/scratch/quantum-expresso/q-e-qe-6.5MaX/bin/pw.x < input_template.in > output.out
 EOL
     echo "Generated 'qe_jobsub.sh' in the parent folder."
 }
