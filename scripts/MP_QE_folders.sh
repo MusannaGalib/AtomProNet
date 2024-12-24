@@ -60,10 +60,9 @@ generate_qe_jobsub() {
 
 ################################################################################
 
-module load gcc/9.1.0
-module load intel-mkl/2019.3.199
-module load openmpi/3.1.4
-module load fftw/3.3.8-mpi3.1.4
+module load gcc
+module load openmpi
+module load fftw
 
 cd $PBS_O_WORKDIR
 
