@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 # Define OUTCAR path
-outcar_file = "/home/galibubc/scratch/musanna/VASP/Microwave_graphene_recycling/relaxation/with_vdW/Trial_1_graphite_1C_defect_efield_2/OUTCAR"
+outcar_file = input("Please provide the path to the OUTCAR file: ")
 
 # Define output file paths in the same directory as OUTCAR
 output_dir = os.path.dirname(outcar_file)
