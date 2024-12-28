@@ -11,8 +11,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
-# Define OUTCAR path
-outcar_file = input("Please provide the path to the OUTCAR file: ")
+# Ask for the directory path where the OUTCAR file is located
+directory_path = input("Please provide the directory where the OUTCAR file is located: ").strip()
+
+# Construct the full path to the OUTCAR file
+outcar_file = os.path.join(directory_path, "OUTCAR")
+
 
 # Define output file paths in the same directory as OUTCAR
 output_dir = os.path.dirname(outcar_file)
