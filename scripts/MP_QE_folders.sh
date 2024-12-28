@@ -65,6 +65,8 @@ module load openmpi
 module load fftw
 
 cd $PBS_O_WORKDIR
+cd $SLURM_SUBMIT_DIR
+
 
 mpirun /scratch/st-mponga1-1/musanna/software/q-e/bin/pw.x < input.in > output.out
 EOL
@@ -173,8 +175,23 @@ parse_poscar_to_input() {
         done
     fi
 
-    # Extract atomic positions
-    positions=$(sed -n '9,$p' "$poscar_file")
+    # Extract atomic positions and format them with atom types
+    positions=$(awk -v types="$atom_types" -v counts="$atom_counts" '
+        BEGIN {
+            split(types, typeArray);  # Split atom types into an array
+            split(counts, countArray);  # Split atom counts into an array
+            atomIndex = 1;
+        }
+        NR >= 9 {  # Start reading positions from line 9
+            for (i = 1; i <= length(typeArray); i++) {  # Loop over each atom type
+                for (j = 1; j <= countArray[i]; j++) {  # Repeat based on atom count
+                    printf "%s  %s\n", typeArray[i], $0;  # Prepend atom type to position
+                    atomIndex++;
+                    getline;  # Read the next position line
+                }
+            }
+        }
+    ' "$poscar_file")
 
     # Replace placeholders directly into the template
     awk -v nat="$nat" -v ntyp="$ntyp" \
