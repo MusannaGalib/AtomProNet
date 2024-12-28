@@ -10,6 +10,7 @@ import re
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from matplotlib.ticker import MaxNLocator
 
 # Ask for the directory path where the OUTCAR file is located
 directory_path = input("Please provide the directory where the OUTCAR file is located: ").strip()
@@ -112,6 +113,9 @@ plt.xlabel('Ionic Relaxation Step', fontsize=14, fontweight='normal')
 plt.ylabel('Mean RMS Force (eV/Å)', fontsize=14, fontweight='normal')
 plt.legend(loc='upper right',fontsize=14, borderaxespad=0., frameon=False)
 plt.gca().tick_params(axis='both', which='major', labelsize=14)
+# Dynamically determine the x-axis ticks
+plt.gca().xaxis.set_major_locator(MaxNLocator(integer=True, nbins=10))  # Show up to 10 evenly spaced ticks
+
 
 # Add inset showing the last 10 ionic steps
 if step_count >= 10:
@@ -165,8 +169,9 @@ def compute_log_delta_e(energy_file, num_atoms):
                 energies.append(float(match.group(1)))
     
     delta_es = [abs(energies[i] - energies[i - 1]) / num_atoms for i in range(1, len(energies))]
-    log_delta_es = np.log10(delta_es)
-    
+    log_delta_es = np.log10([de if de > 0 else 1e-10 for de in delta_es])  # Add small offset to zero values
+
+        
     return log_delta_es
 
 log_delta_es = compute_log_delta_e(energy_file, num_atoms)
@@ -206,6 +211,10 @@ ax2 = ax1.twinx()
 ax2.plot(steps, log_delta_es, color='#800080', label='$\log_{10}(\Delta E) \, (\mathrm{eV/atom})$')
 ax2.set_ylabel(r'$\log_{10}(\Delta E) \, (\mathrm{eV/atom})$', color='#800080', fontsize=14, fontweight='normal')
 ax2.tick_params(axis='y', labelcolor='#800080')
+
+# Dynamically determine the x-axis ticks
+ax1.xaxis.set_major_locator(MaxNLocator(integer=True, nbins=10))  # Show up to 10 evenly spaced ticks
+
 
 # Set the left spine color and tick color for ax1
 ax1.spines['left'].set_color('#FF8C00')
