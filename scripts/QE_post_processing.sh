@@ -44,7 +44,7 @@ process_directory() {
         cat pos-conv.txt >> "$pos_file"
 
         # Extract stress
-        sed -n '/^total   stress/,/^$/p' pw.out | sed '/^$/d' > stress-conv.txt
+        sed -n '/total   stress/ {n; p; n; p; n; p;}' pw.out > stress-conv.txt
         cat stress-conv.txt >> "$stress_file"
     else
         echo "pw.out not found in $current_dir. Skipping."
