@@ -16,7 +16,7 @@ qe_jobsub_file="$parent_folder/qe_jobsub.sh"
 generate_input_template() {
     cat > "$input_template_file" <<EOL
 &control
-    calculation = 'scf',
+    calculation = 'vc-relax',          !vc-relax, scf
     restart_mode = 'from_scratch',
     pseudo_dir = './',
     outdir = './tmp/'
@@ -35,6 +35,13 @@ generate_input_template() {
     diagonalization = 'david',
     conv_thr = 1.0d-8,
     mixing_beta = 0.7,
+/
+&ions
+    ion_dynamics = 'bfgs',             ! Ions relaxation algorithm
+/
+&cell
+    cell_dynamics = 'bfgs',            ! Cell optimization algorithm
+    press_conv_thr = 0.5,              ! Convergence threshold for pressure (kbar)
 /
 CELL_PARAMETERS angstrom
 CELL_PLACEHOLDER
@@ -71,7 +78,7 @@ cd $PBS_O_WORKDIR
 cd $SLURM_SUBMIT_DIR
 
 
-mpirun /scratch/st-mponga1-1/musanna/software/q-e/bin/pw.x < input.in > output.out
+mpirun /scratch/st-mponga1-1/musanna/software/q-e/bin/pw.x -in input.in > pw.out
 EOL
     echo "Generated 'qe_jobsub.sh' in the parent folder."
 }
