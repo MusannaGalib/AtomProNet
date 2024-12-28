@@ -4,7 +4,7 @@ MANIFEST.in
 README.md
 setup.py
 AtomProNet/MLIP_post_processing.py
-AtomProNet/VASP_post_processing.py
+AtomProNet/VASP_convergence_check.py
 AtomProNet/__init__.py
 AtomProNet/atom_symbol.py
 AtomProNet/combine.py

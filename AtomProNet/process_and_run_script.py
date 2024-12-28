@@ -70,6 +70,7 @@ def process_and_run_script(input_folder):
                         print("1: Prepare VASP job submission folders")
                         print("2: VASP job submission")
                         print("3: Post-processing of VASP jobs")
+                        print("4: Convergence check of VASP jobs")
                         print("q: Quit")
                         option = input("Enter your choice: ").strip()
 
@@ -280,6 +281,23 @@ def process_and_run_script(input_folder):
                             except subprocess.CalledProcessError as e:
                                 print(f"Error executing bash script: {e}")
                                 continue
+
+                        elif option == '4':
+                            # Get the absolute path of the script's directory
+                            script_dir = os.path.dirname(os.path.abspath(__file__))  # This gets the folder where the wrapper script is located
+                            script_path = os.path.join(script_dir, "VASP_convergence_check.py")  # Build the full path to VASP_convergence_check.py
+                            
+                            # Print the script path for debugging
+                            print(f"Looking for script at: {script_path}")
+                            
+                            # Check if the script exists
+                            if not os.path.exists(script_path):
+                                print(f"Error: '{script_path}' not found.")
+                                return  # Exit if the script is not found
+                            
+                            # Run the script to extract and plot data from OUTCAR
+                            subprocess.run(["python", script_path])  # Run the full path of the script
+
 
                         elif option == 'q':
                             print("Exiting VASP options.")
