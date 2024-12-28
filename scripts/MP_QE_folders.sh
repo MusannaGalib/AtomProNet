@@ -27,6 +27,9 @@ generate_input_template() {
     ntyp = 0,   ! This will be replaced with the unique atom types count
     ecutwfc = 40,
     ecutrho = 320,
+    occupations = 'smearing',
+    smearing = 'gaussian',
+    degauss = 0.02
 /
 &electrons
     diagonalization = 'david',
