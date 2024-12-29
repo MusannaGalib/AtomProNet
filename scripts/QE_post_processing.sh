@@ -26,14 +26,30 @@ process_directory() {
 
     # Check if Quantum Espresso output file (e.g., pw.out) exists and process it
     if [ -f "pw.out" ]; then
-        echo "Directory: $current_dir" >> "$energy_file"
+        #echo "Directory: $current_dir" >> "$energy_file"
         echo "Directory: $current_dir" >> "$pos_file"
         echo "Directory: $current_dir" >> "$force_file"
-        echo "Directory: $current_dir" >> "$stress_file"
+        #echo "Directory: $current_dir" >> "$stress_file"
 
-        # Extract energy
-        ENERGY_LINE=$(grep -i "!" pw.out | tail -n 1)
-        echo "$ENERGY_LINE" >> "$energy_file"
+        # Extract energy lines after "the Fermi energy is"
+        FermiLines=$(grep -n "the Fermi energy is" pw.out | cut -d: -f1)  # Find all line numbers
+
+        if [ -n "$FermiLines" ]; then  # Check if Fermi energy lines exist
+            for LineNum in $FermiLines; do
+                # Extract lines after the Fermi line and find the first energy line
+                ENERGY_LINE=$(sed -n "$((LineNum + 1)),\$p" pw.out | grep -i "!" | head -n 1)
+                if [ -n "$ENERGY_LINE" ]; then
+                    echo "Directory: $current_dir" >> "$energy_file"
+                    echo "$ENERGY_LINE" >> "$energy_file"
+                else
+                    echo "No energy line found after Fermi energy in $current_dir/pw.out."
+                fi
+            done
+        else
+            echo "No 'the Fermi energy is' line found in $current_dir/pw.out. Skipping energy extraction."
+        fi
+
+
 
         # Extract forces
         sed -n '/Forces acting/,/Total force/p' pw.out > forces-conv.txt
@@ -43,9 +59,37 @@ process_directory() {
         sed -n '/ATOMIC_POSITIONS/,/^$/p' pw.out | sed '/^$/d' > pos-conv.txt
         cat pos-conv.txt >> "$pos_file"
 
-        # Extract stress
-        sed -n '/total   stress/ {n; p; n; p; n; p;}' pw.out > stress-conv.txt
-        cat stress-conv.txt >> "$stress_file"
+
+        # Extract stress (with debugging)
+        sed -n '/total   stress/ {n; p; n; p; n; p;}' pw.out | \
+        awk -v dir="$current_dir" '{
+            # Print the directory path only before the first row of each block
+            if (NR % 3 == 1) {
+                print "Directory: " dir;
+            }
+            
+            # Print the first 3 columns of each row on the same line
+            printf "%s %s %s ", $1, $2, $3;
+
+            row_count++;
+            if (row_count % 3 == 0) {
+                # After 3 rows, print a newline
+                print "";
+            }
+        } END {
+            # If not a multiple of 3, print a newline
+            if (row_count % 3 != 0) print "";
+        }' > stress-conv.txt
+
+        # Save the stress values to the main file with directory path
+        if [ -s stress-conv.txt ]; then  # Check if the file is not empty
+            #echo "Directory: $current_dir" >> "$stress_file"
+            cat stress-conv.txt >> "$stress_file"
+        else
+            echo "No stress data found for $current_dir" >> "$stress_file"
+        fi
+
+
     else
         echo "pw.out not found in $current_dir. Skipping."
     fi
