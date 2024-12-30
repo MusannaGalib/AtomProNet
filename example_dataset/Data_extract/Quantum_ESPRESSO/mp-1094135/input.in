@@ -1,0 +1,45 @@
+&control
+    calculation = 'vc-relax',          !vc-relax, scf
+    restart_mode = 'from_scratch',
+    pseudo_dir = './',
+    outdir = './tmp/',
+/
+&system
+    ibrav = 0,
+    nat = 6,    ! This will be replaced with the atom count
+    ntyp = 2,   ! This will be replaced with the unique atom types count
+    ecutwfc = 40,
+    ecutrho = 320,
+    occupations = 'smearing',
+    smearing = 'gaussian',
+    degauss = 0.02
+/
+&electrons
+    diagonalization = 'david',
+    conv_thr = 1.0d-8,
+    mixing_beta = 0.7,
+/
+&ions
+    ion_dynamics = 'bfgs',             ! Ions relaxation algorithm
+/
+&cell
+    cell_dynamics = 'bfgs',            ! Cell optimization algorithm
+    press_conv_thr = 0.5,              ! Convergence threshold for pressure (kbar)
+/
+CELL_PARAMETERS angstrom
+2.937268 2.999807 0.0
+-2.937268 2.999807 0.0
+0.0 2.722989 3.120302
+ATOMIC_SPECIES
+Li 1.0 li_pbe_v1.4.uspp.F.UPF
+O 1.0 O.pbe-n-kjpaw_psl.0.1.UPF
+
+ATOMIC_POSITIONS angstrom
+Li  0.251654999999999 0.748344999999999 0.5
+Li  0.748344999999999 0.251654999999999 0.5
+O  0.20985 0.79015 0.0
+O  0.79015 0.20985 0.0
+O  0.790605999999999 0.790605999999999 0.007651
+O  0.209394 0.209394 0.992348999999999
+K_POINTS automatic
+4 4 4 0 0 0
