@@ -19,7 +19,7 @@ def position_force(input_file):
                     in_data_block = False
                 else:
                     in_data_block = True
-            elif in_data_block and re.search(r'^\s*\d', line):  # Ensure numeric lines
+            elif in_data_block:  # Collect lines within a block
                 current_block.append(line.strip())
 
         if current_block:  # Append the last block
@@ -31,10 +31,10 @@ def position_force(input_file):
         positions = []
         forces = []
         for line in block:
-            values = list(map(float, line.split()))
-            # First three columns are positions, next three are forces
-            positions.append(values[:3])
-            forces.append(values[3:6])
+            values = list(map(float, re.findall(r'-?\d+\.\d+', line)))
+            if len(values) >= 6:  # Ensure line has enough data
+                positions.append(values[:3])
+                forces.append(values[3:6])
         return positions, forces
 
     # Get the absolute path of the input file
@@ -67,10 +67,6 @@ def position_force(input_file):
     print(f"Number of tables in forces.npz: {len(all_forces)}")
 
     return input_file
-
-
-
-
 
 
 
