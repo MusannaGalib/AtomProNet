@@ -110,7 +110,7 @@ process_directory() {
                 } else {
                     # Ensure the numbers are printed with 10 decimal places and aligned correctly
                     # This approach will handle negative signs without misalignment
-                    printf "%-20s %-20s %-20s %-20s %-20s %-20s\n", $2, $3, $4, $5, $6, $7;
+                    printf "%17s %17s %17s %17s %17s %17s\n", $2, $3, $4, $5, $6, $7;
                 }
             }
             END {
@@ -118,11 +118,6 @@ process_directory() {
                 print "-----------------------------------------------------------------------------------";
             }
         ' >> "$pos_force_file"
-
-
-
-
-
 
 
 
