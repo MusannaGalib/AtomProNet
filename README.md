@@ -229,7 +229,7 @@ If you use this software in your research, please cite the following paper:
 ```python
 BibTeX entry:
 @article{YourPaper,
-  title={Data flow to and from machine learning interatomic potentials in materials science},
+  title={AtomProNet: Data flow to and from machine learning interatomic potentials in materials science},
   author={Musanna Galib, Mewael Isiet, Mauricio Ponga},
   journal={Journal/Conference},
   year={2025},
