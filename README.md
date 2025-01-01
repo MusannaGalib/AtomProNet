@@ -138,7 +138,8 @@ Options:
         VASP Options:
         1: Prepare VASP job submission folders
         2: VASP job submission
-        3: Post-processing of VASP jobs       
+        3: Post-processing of VASP jobs 
+        4: Convergence check of VASP jobs      
         q: Quit
 2: Quantum ESPRESSO
         Enter your choice: 2
