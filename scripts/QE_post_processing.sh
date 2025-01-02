@@ -242,7 +242,7 @@ process_directory() {
                 # Check if we have read 3 lines (9 components)
                 if [[ $(echo "$lattice_line" | awk '{print NF}') -eq 9 ]]; then
                     {
-                        echo "$current_dir"
+                        echo "Directory: ""$current_dir"
                         echo "$lattice_line"
                         #echo "" # Add a blank line for separation
                     } >> "$lattice_file"
