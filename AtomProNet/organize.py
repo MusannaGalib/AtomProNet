@@ -109,7 +109,7 @@ def process_pos_conv_file(file_path):
         print(f"  Dataset row counts changed from {old_rows} to {new_rows}")
 
 # Function to copy directory contents dynamically based on ranges
-def copy_directory_contents_dynamic(base_dir, changes, output_dir):
+def copy_directory_contents_dynamic(base_dir, changes, output_dir, total_directories):
     """Copy contents for ranges derived from changes in Counts."""
     files_to_process = [
         "symbols.txt",
@@ -123,15 +123,35 @@ def copy_directory_contents_dynamic(base_dir, changes, output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    # Collect all unique Counts types from changes
-    counts_types = set(f"{change[2][0]}_{change[2][1]}" for change in changes)
+    # Collect all unique Counts types and their ranges
+    counts_to_ranges = {}
+    previous_count = changes[0][2]
+    start_index = 1
 
-    # Create base folders for each Counts type
-    for counts_type in counts_types:
+    for i, change in enumerate(changes):
+        end_index = change[0] - 1
+        counts_type = f"{previous_count[0]}_{previous_count[1]}"
+
+        if counts_type not in counts_to_ranges:
+            counts_to_ranges[counts_type] = []
+
+        counts_to_ranges[counts_type].append((start_index, end_index))
+        start_index = change[0]
+        previous_count = change[3]
+
+    # Handle the final range explicitly
+    final_counts_type = f"{changes[-1][3][0]}_{changes[-1][3][1]}"
+    if final_counts_type not in counts_to_ranges:
+        counts_to_ranges[final_counts_type] = []
+    counts_to_ranges[final_counts_type].append((start_index, total_directories))
+
+    # Ensure all Counts folders are created
+    for counts_type in counts_to_ranges:
         counts_folder = os.path.join(output_dir, f"counts_{counts_type}")
         if not os.path.exists(counts_folder):
             os.makedirs(counts_folder)
 
+    # Process files for each Counts type and range
     for file_name in files_to_process:
         source_file = os.path.join(base_dir, file_name)
         if not os.path.exists(source_file):
@@ -142,44 +162,55 @@ def copy_directory_contents_dynamic(base_dir, changes, output_dir):
         with open(source_file, 'r') as f:
             lines = f.readlines()
 
-        # Identify and copy relevant ranges
-        for i in range(len(changes) - 1):
-            start_dir = changes[i][0]
-            end_dir = changes[i + 1][0] - 1
-            counts_type = f"{changes[i][3][0]}_{changes[i][3][1]}"
+        # Process for each Counts type and its directory ranges
+        for counts_type, ranges in counts_to_ranges.items():
             counts_folder = os.path.join(output_dir, f"counts_{counts_type}")
 
-            subfolder = os.path.join(counts_folder, f"directory_{start_dir}_{end_dir}")
-            if not os.path.exists(subfolder):
-                os.makedirs(subfolder)
-            new_file_path = os.path.join(subfolder, file_name)
-            with open(new_file_path, 'w') as new_file:
-                current_dir_number = 0
-                copy_lines = False
+            for start_dir, end_dir in ranges:
+                subfolder = os.path.join(counts_folder, f"directory_{start_dir}_{end_dir}")
+                if not os.path.exists(subfolder):
+                    os.makedirs(subfolder)
 
-                for line in lines:
-                    if line.startswith("Directory:"):
-                        current_dir_number += 1
-                        if start_dir <= current_dir_number <= end_dir:
-                            copy_lines = True
-                        else:
-                            copy_lines = False
+                new_file_path = os.path.join(subfolder, file_name)
+                with open(new_file_path, 'w') as new_file:
+                    current_dir_number = 0
+                    copy_lines = False
 
-                    if copy_lines:
-                        new_file.write(line)
+                    for line in lines:
+                        if line.startswith("Directory:"):
+                            current_dir_number += 1
+                            if start_dir <= current_dir_number <= end_dir:
+                                copy_lines = True
+                            else:
+                                copy_lines = False
 
-            print(f"Filtered content for range {start_dir}-{end_dir} written to {new_file_path}")
+                        if copy_lines:
+                            new_file.write(line)
+
+                print(f"Filtered content for {counts_type} range {start_dir}-{end_dir} written to {new_file_path}")
+
 
 # Main script
 base_directory = "/home/galibubc/scratch/musanna/AtomProNet/AtomProNet-main/example_dataset/Data_generation/Quantum_ESPRESSO/VASP_files_LiO2"
 processed_directory = os.path.join(base_directory, "processed_data")
 
-# Process symbols.txt to get ranges
+def count_total_directories(file_path):
+    """Count total directories in symbols.txt."""
+    total_count = 0
+    with open(file_path, 'r') as f:
+        for line in f:
+            if line.startswith("Directory:"):
+                total_count += 1
+    return total_count
+
+# Main script
 symbols_file = os.path.join(base_directory, "symbols.txt")
 if os.path.exists(symbols_file):
     changes = process_symbols_file(symbols_file)
     if changes:
-        copy_directory_contents_dynamic(base_directory, changes, processed_directory)
+        # Dynamically determine the total number of directories
+        total_directories = count_total_directories(symbols_file)
+        copy_directory_contents_dynamic(base_directory, changes, processed_directory, total_directories)
 else:
     print(f"symbols.txt not found in the directory: {base_directory}")
 
@@ -189,3 +220,5 @@ if os.path.exists(pos_conv_file):
     process_pos_conv_file(pos_conv_file)
 else:
     print(f"pos-conv.txt not found in the directory: {base_directory}")
+
+
