@@ -13,6 +13,7 @@ AtomProNet/lattice.py
 AtomProNet/materials_project.py
 AtomProNet/nequip_to_mace.py
 AtomProNet/npz_to_extxyz.py
+AtomProNet/organize.py
 AtomProNet/position_force.py
 AtomProNet/pressure_eV.py
 AtomProNet/process_and_run_script.py
