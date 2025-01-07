@@ -139,7 +139,8 @@ def copy_directory_contents_dynamic(base_dir, changes, output_dir, total_directo
 
     for i, change in enumerate(changes):
         end_index = change[0] - 1
-        counts_type = f"{previous_count[0]}_{previous_count[1]}"
+        # Safely construct counts_type
+        counts_type = "_".join(map(str, previous_count))
 
         if counts_type not in counts_to_ranges:
             counts_to_ranges[counts_type] = []
@@ -149,7 +150,7 @@ def copy_directory_contents_dynamic(base_dir, changes, output_dir, total_directo
         previous_count = change[3]
 
     # Handle the final range explicitly
-    final_counts_type = f"{changes[-1][3][0]}_{changes[-1][3][1]}"
+    final_counts_type = "_".join(map(str, changes[-1][3]))
     if final_counts_type not in counts_to_ranges:
         counts_to_ranges[final_counts_type] = []
     counts_to_ranges[final_counts_type].append((start_index, total_directories))
