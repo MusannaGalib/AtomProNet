@@ -3,6 +3,7 @@ import subprocess
 import shutil
 import pymatgen
 import mp_api
+import numpy as np
 # from AtomProNet.lattice import lattice
 # from AtomProNet.pressure_eV import pressure_eV
 # from AtomProNet.position_force import position_force
@@ -499,58 +500,175 @@ def process_and_run_script(input_folder):
             else:
                 print("Skipping the first step and proceeding to step 2.")
 
-            print("Input folder path:", input_folder_path) 
- 
-            
-            os.chdir(input_folder)
-            print("Starting Step 2: Processing files with Python scripts.")
-            
-            from AtomProNet.lattice import lattice
+        
+        
 
+            input_folder_path = input("Enter the path to the input folder: ").strip()
+            if not os.path.exists(input_folder_path):
+                print(f"Error: Input folder path '{input_folder_path}' does not exist.")
+                exit()
+
+            # Step 1: Run the organize.py script in the input folder path
+            wrapper_dir = os.path.dirname(os.path.abspath(__file__))  # Current wrapper script directory
+            organize_script_path = os.path.join(wrapper_dir, "organize.py")
+
+            if not os.path.exists(organize_script_path):
+                print(f"Error: organize.py not found at {organize_script_path}.")
+                exit()
+
+            print(f"Executing organize.py to process initial directories in {input_folder_path}...")
             try:
-                lattice_output_file = lattice(input_folder)
-                print(f"Lattice processing completed: {lattice_output_file}")
-            except Exception as e:
-                print(f"Error in lattice processing: {e}")
+                subprocess.run(['python', organize_script_path, input_folder_path], check=True)
+                print("organize.py executed successfully.")
+            except subprocess.CalledProcessError as e:
+                print(f"Error executing organize.py: {e}")
+                exit()
 
-            from AtomProNet.pressure_eV import pressure_eV
-            try:
-                pressure_eV_output_file = pressure_eV(input_folder)
-                print(f"Pressure (eV) processing completed: {pressure_eV_output_file}")
-            except Exception as e:
-                print(f"Error in pressure (eV) processing: {e}")
+            # Check if `processed_data` folder exists
+            processed_data_path = os.path.join(input_folder_path, "processed_data")
+            required_files = [
+                "symbols.txt",
+                "pos-conv.txt",
+                "lattice.txt",
+                "pressure_eV.txt",
+                "energy-conv.txt",
+            ]
 
-            from AtomProNet.position_force import position_force
-            try:
-                position_force_output_file = position_force(input_folder)
-                print(f"Position and force processing completed: {position_force_output_file}")
-            except Exception as e:
-                print(f"Error in position and force processing: {e}")
+            concatenated_npz = []
+            concatenated_extxyz = []
 
-            from AtomProNet.energy import energy
-            try:
-                energy_output_file = energy(input_folder)
-                print(f"Energy processing completed: {energy_output_file}")
-            except Exception as e:
-                print(f"Error in energy processing: {e}")
+            if os.path.exists(processed_data_path):
+                print(f"Found processed_data folder. Processing subdirectories in {processed_data_path}...")
+                for root, dirs, files in os.walk(processed_data_path):
+                    # Process folders containing all required files
+                    if all(file in files for file in required_files):
+                        print(f"Processing folder: {root}")
+                        os.chdir(root)
+                        try:
+                            from AtomProNet.lattice import lattice
+                            lattice_output_file = lattice(root)
+                            print(f"Lattice processing completed: {lattice_output_file}")
 
-            from AtomProNet.atom_symbol import atom_symbol
-            try:
-                atom_symbol_output_file = atom_symbol(input_folder)
-                print(f"Atom symbol processing completed: {atom_symbol_output_file}")
-            except Exception as e:
-                print(f"Error in atom symbol processing: {e}")
+                            from AtomProNet.pressure_eV import pressure_eV
+                            pressure_eV_output_file = pressure_eV(root)
+                            print(f"Pressure (eV) processing completed: {pressure_eV_output_file}")
 
-            from AtomProNet.combine import combine
-            from AtomProNet.npz_to_extxyz import npz_to_extxyz
-            from AtomProNet.split import split
-            combined_output_file = combine(input_folder)
-            npz_to_extxyz_output_file = npz_to_extxyz(combined_output_file)
-            print(f"Final output file directory from the workflow: {npz_to_extxyz_output_file}") 
-            input_folder = os.path.dirname(npz_to_extxyz_output_file)
-            split_dataset = split(input_folder)
-            print(f"Final split dataset directory from the workflow: {split_dataset}")
-            
+                            from AtomProNet.position_force import position_force
+                            position_force_output_file = position_force(root)
+                            print(f"Position and force processing completed: {position_force_output_file}")
+
+                            from AtomProNet.energy import energy
+                            energy_output_file = energy(root)
+                            print(f"Energy processing completed: {energy_output_file}")
+
+                            from AtomProNet.atom_symbol import atom_symbol
+                            atom_symbol_output_file = atom_symbol(root)
+                            print(f"Atom symbol processing completed: {atom_symbol_output_file}")
+
+                            from AtomProNet.combine import combine
+                            from AtomProNet.npz_to_extxyz import npz_to_extxyz
+                            combined_output_file = combine(root)
+                            extxyz_output_file = npz_to_extxyz(combined_output_file)
+                            print(f"Final output file: {extxyz_output_file}")
+
+                            concatenated_npz.append(combined_output_file)
+                            concatenated_extxyz.append(extxyz_output_file)
+
+                        except Exception as e:
+                            print(f"Error while processing {root}: {e}")
+                    else:
+                        print(f"Required files missing in {root}. Skipping.")
+
+
+            else:
+                print(f"No processed_data folder found. Checking required files in base directory: {input_folder_path}")
+                if all(os.path.exists(os.path.join(input_folder_path, file)) for file in required_files):
+                    print(f"All required files found in base directory. Processing...")
+                    try:
+                        os.chdir(input_folder_path)
+                        from AtomProNet.lattice import lattice
+                        lattice_output_file = lattice(input_folder_path)
+                        print(f"Lattice processing completed: {lattice_output_file}")
+
+                        from AtomProNet.pressure_eV import pressure_eV
+                        pressure_eV_output_file = pressure_eV(input_folder_path)
+                        print(f"Pressure (eV) processing completed: {pressure_eV_output_file}")
+
+                        from AtomProNet.position_force import position_force
+                        position_force_output_file = position_force(input_folder_path)
+                        print(f"Position and force processing completed: {position_force_output_file}")
+
+                        from AtomProNet.energy import energy
+                        energy_output_file = energy(input_folder_path)
+                        print(f"Energy processing completed: {energy_output_file}")
+
+                        from AtomProNet.atom_symbol import atom_symbol
+                        atom_symbol_output_file = atom_symbol(input_folder_path)
+                        print(f"Atom symbol processing completed: {atom_symbol_output_file}")
+
+                        from AtomProNet.combine import combine
+                        from AtomProNet.npz_to_extxyz import npz_to_extxyz
+                        combined_output_file = combine(input_folder_path)
+                        extxyz_output_file = npz_to_extxyz(combined_output_file)
+                        print(f"Final output file: {extxyz_output_file}")
+
+                        # Save the final combined files as the result directly
+                        converted_npz_file = os.path.join(input_folder_path, "Converted.npz")
+                        converted_extxyz_file = os.path.join(input_folder_path, "Converted.extxyz")
+
+                        if os.path.isfile(combined_output_file):
+                            os.rename(combined_output_file, converted_npz_file)
+                            print(f"Generated Converted.npz at: {converted_npz_file}")
+
+                        if os.path.isfile(extxyz_output_file):
+                            os.rename(extxyz_output_file, converted_extxyz_file)
+                            print(f"Generated Converted.extxyz at: {converted_extxyz_file}")
+
+                        # Directly assign converted_extxyz_file to a variable for further use
+                        final_extxyz_file = converted_extxyz_file
+
+                    except Exception as e:
+                        print(f"Error while processing base directory: {e}")
+                        exit()  # Exit if an error occurs in base directory processing
+                else:
+                    print(f"Required files missing in base directory. Cannot process.")
+                    exit()
+
+            # Step 3: Concatenate all npz and extxyz files
+            if concatenated_npz:
+                concatenated_npz = [f for f in concatenated_npz if os.path.isfile(f)]
+                concatenated_npz_file = os.path.join(input_folder_path, "Converted.npz")
+                combined_data = {}
+                for file in concatenated_npz:
+                    data = np.load(file, allow_pickle=True)
+                    for key in data.keys():
+                        if key not in combined_data:
+                            combined_data[key] = []
+                        combined_data[key].extend(data[key])
+                np.savez(concatenated_npz_file, **combined_data)
+                print(f"All .npz files concatenated into: {concatenated_npz_file}")
+
+            if concatenated_extxyz:
+                concatenated_extxyz = [f for f in concatenated_extxyz if os.path.isfile(f)]
+                concatenated_extxyz_file = os.path.join(input_folder_path, "Converted.extxyz")
+                with open(concatenated_extxyz_file, 'w') as outfile:
+                    for file in concatenated_extxyz:
+                        with open(file, 'r') as infile:
+                            outfile.write(infile.read())
+                print(f"All .extxyz files concatenated into: {concatenated_extxyz_file}")
+                final_extxyz_file = concatenated_extxyz_file  # Assign concatenated file for further use
+            else:
+                print("No .extxyz files were generated. Skipping concatenation.")
+
+            # Ensure split is only performed if `final_extxyz_file` exists
+            if 'final_extxyz_file' in locals() and os.path.exists(final_extxyz_file):
+                from AtomProNet.split import split
+                split_dataset = split(input_folder_path)
+                print(f"Final split dataset directory from the workflow: {split_dataset}")
+            else:
+                print("No final extxyz file found. Cannot proceed with splitting.")
+
+                    
 
         elif option == '4':
             print("\nPost-Processing Options:")
