@@ -1,4 +1,5 @@
 import os
+import sys
 
 # Functions for `symbols.txt` processing
 def parse_symbols(file_path):
@@ -7,14 +8,22 @@ def parse_symbols(file_path):
     directories = []
     with open(file_path, 'r') as f:
         current_dir = None
-        for line in f:
+        for line_num, line in enumerate(f, start=1):
+            line = line.strip()
+            print(f"DEBUG: Line {line_num} -> '{line}'")  # Debugging
             if line.startswith("Directory:"):
                 current_dir = line.split(":", 1)[1].strip()
                 directories.append(current_dir)
+                print(f"DEBUG: Parsed Directory -> '{current_dir}'")  # Debugging
             elif line.startswith("Counts:"):
-                counts = tuple(map(int, line.split(":")[1].strip().split()))
+                counts = tuple(map(int, line.split(":", 1)[1].strip().split()))
                 counts_list.append((current_dir, counts))
+                print(f"DEBUG: Parsed Counts -> {counts}")  # Debugging
+    print(f"DEBUG: Total Directories Parsed -> {len(directories)}")  # Debugging
+    print(f"DEBUG: Total Counts Parsed -> {len(counts_list)}")  # Debugging
+    print(f"DEBUG: Counts List -> {counts_list}")  # Debugging
     return counts_list
+
 
 def find_changes_in_counts(counts_list):
     """Identify when Counts: changes and at which Directory."""
@@ -190,10 +199,10 @@ def copy_directory_contents_dynamic(base_dir, changes, output_dir, total_directo
                 print(f"Filtered content for {counts_type} range {start_dir}-{end_dir} written to {new_file_path}")
 
 
-# Main script
-#base_directory = "/home/galibubc/scratch/musanna/AtomProNet/AtomProNet-main/example_dataset/Data_generation/Quantum_ESPRESSO/VASP_files_LiO2"
-base_directory = "C:/Users/Galib/Downloads/AtomProNet-main(1)/AtomProNet-main/example_dataset/hydrostatic_strain"
-processed_directory = os.path.join(base_directory, "processed_data")
+# # Main script
+# base_directory = "/home/galibubc/scratch/musanna/AtomProNet/AtomProNet-main/example_dataset/Data_generation/Quantum_ESPRESSO/VASP_files_LiO2"
+# processed_directory = os.path.join(base_directory, "processed_data")
+
 
 def count_total_directories(file_path):
     """Count total directories in symbols.txt."""
@@ -205,21 +214,55 @@ def count_total_directories(file_path):
     return total_count
 
 # Main script
-symbols_file = os.path.join(base_directory, "symbols.txt")
-if os.path.exists(symbols_file):
-    changes = process_symbols_file(symbols_file)
-    if changes:
-        # Dynamically determine the total number of directories
-        total_directories = count_total_directories(symbols_file)
-        copy_directory_contents_dynamic(base_directory, changes, processed_directory, total_directories)
-else:
-    print(f"symbols.txt not found in the directory: {base_directory}")
+# Main script
+if __name__ == "__main__":
+    # Dynamically get the base directory from command-line arguments
+    if len(sys.argv) < 2:
+        print("Usage: python organize.py <base_directory>")
+        sys.exit(1)
 
-# Process pos-conv.txt
-pos_conv_file = os.path.join(base_directory, "pos-conv.txt")
-if os.path.exists(pos_conv_file):
-    process_pos_conv_file(pos_conv_file)
-else:
-    print(f"pos-conv.txt not found in the directory: {base_directory}")
+    base_directory = sys.argv[1]
+    if not os.path.exists(base_directory):
+        print(f"Error: Base directory '{base_directory}' does not exist.")
+        sys.exit(1)
+
+    print(f"Base directory: {base_directory}")  # Debugging
+    processed_directory = os.path.join(base_directory, "processed_data")
+
+    # List of required files
+    required_files = ["symbols.txt", "pos-conv.txt"]
+
+    # Check for required files in the main directory
+    print(f"Checking required files in base directory: {base_directory}")  # Debugging
+    missing_files = [file for file in required_files if not os.path.exists(os.path.join(base_directory, file))]
+    if missing_files:
+        print(f"Missing required files in the base directory: {', '.join(missing_files)}")
+        sys.exit(1)
+
+    # Debugging
+    print(f"Found required files in base directory: {', '.join(required_files)}")
+
+    # Process symbols.txt
+    symbols_file = os.path.join(base_directory, "symbols.txt")
+    if os.path.exists(symbols_file):
+        print(f"Processing symbols file: {symbols_file}")  # Debugging
+        changes = process_symbols_file(symbols_file)
+        if changes:
+            # Dynamically determine the total number of directories
+            print("Determining total directories...")  # Debugging
+            total_directories = count_total_directories(symbols_file)
+            print(f"Total directories: {total_directories}")  # Debugging
+            copy_directory_contents_dynamic(base_directory, changes, processed_directory, total_directories)
+    else:
+        print(f"symbols.txt not found in the directory: {base_directory}")
+
+    # Process pos-conv.txt
+    pos_conv_file = os.path.join(base_directory, "pos-conv.txt")
+    if os.path.exists(pos_conv_file):
+        print(f"Processing pos-conv file: {pos_conv_file}")  # Debugging
+        process_pos_conv_file(pos_conv_file)
+    else:
+        print(f"pos-conv.txt not found in the directory: {base_directory}")
+
 
 
