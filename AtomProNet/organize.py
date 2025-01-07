@@ -191,7 +191,8 @@ def copy_directory_contents_dynamic(base_dir, changes, output_dir, total_directo
 
 
 # Main script
-base_directory = "/home/galibubc/scratch/musanna/AtomProNet/AtomProNet-main/example_dataset/Data_generation/Quantum_ESPRESSO/VASP_files_LiO2"
+#base_directory = "/home/galibubc/scratch/musanna/AtomProNet/AtomProNet-main/example_dataset/Data_generation/Quantum_ESPRESSO/VASP_files_LiO2"
+base_directory = "C:/Users/Galib/Downloads/AtomProNet-main(1)/AtomProNet-main/example_dataset/hydrostatic_strain"
 processed_directory = os.path.join(base_directory, "processed_data")
 
 def count_total_directories(file_path):
