@@ -1,4 +1,4 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: AtomProNet
 Version: 0.0.1
 Summary: A Python package for converting VASP data to extxyz/npz format.
@@ -24,6 +24,15 @@ Requires-Dist: pymatgen==2023.11.12
 Requires-Dist: statsmodels
 Requires-Dist: seaborn
 Requires-Dist: scikit-learn
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
 
 <!---![PyPI downloads](https://img.shields.io/pypi/dm/your-package-name)-->
 <!---![![Paper](https://img.shields.io/badge/Journal-Nat.Comput.Sci.-blue)](https://doi.org/your-paper-doi)-->

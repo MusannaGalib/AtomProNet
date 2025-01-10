@@ -39,7 +39,7 @@ def process_and_run_script(input_folder):
             default_api_key = "H5zmHxuvPs9LKyABNRQmUsj0ROBYs5C4"
             user_api_key = input("Enter your Materials Project API key (press Enter to use default): ")
             api_key = user_api_key if user_api_key.strip() != "" else default_api_key
-            query = input("Enter the material ID (e.g., mp-1234, mp-1001790), compound formula (e.g., Al2O3), or elements (e.g., Li, O, Mn): ")
+            query = input("Enter the material ID (e.g., mp-1938, mp-1001790), compound formula (e.g., Al2O3), or elements (e.g., Li, O, Mn): ")
             
             create_supercell_option = input("Do you want to create supercells for all structures? (yes/no): ").lower() == 'yes'
             supercell_size = None
