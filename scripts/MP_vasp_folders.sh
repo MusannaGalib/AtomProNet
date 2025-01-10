@@ -55,7 +55,7 @@ for poscar_path in "$poscar_folder"/*_POSCAR; do
     cp "$vasp_jobsub_file" "$material_folder/"
 
     # Extract atom types from the 6th line of the POSCAR file
-    atom_types=$(sed -n '6p' "$material_folder/POSCAR" | awk '{print $1,$2,$3,$4}')  # Modify to handle multiple atoms
+    atom_types=$(sed -n '6p' "$material_folder/POSCAR" | awk '{print $1,$2,$3,$4}' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
     atom_list=($atom_types)
 
     # Create a new POTCAR file by concatenating atom-specific POTCAR files
