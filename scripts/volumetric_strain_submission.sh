@@ -11,7 +11,7 @@ do
 	     for EZZ in `seq -0.05 0.01 0.05` # strain range in ZZ direction
 	     do     
 	          cd strain_ZZ_$EZZ
-                   sbatch vasp_job.sh
+                   sbatch vasp_jobsub.sh
 	          cd ..
 	          done
 	cd ..

@@ -3,9 +3,9 @@
 # Submission script for hydrostatic strain
 
 # Define strain range in XX direction (can be modified by the user)
-start=-0.2
-increment=0.0001
-end=0.2
+start=-0.05
+increment=0.01
+end=0.05
 
 # Automatically calculate the total number of jobs based on the sequence parameters
 total_jobs=$(echo "scale=0; ($end - $start) / $increment + 1" | bc)
@@ -73,7 +73,7 @@ do
      cd "strain_ZZ_$formatted_EXX"; then
 
     # Submit the job and capture the output
-    sbatch_output=$(sbatch vasp_job.sh)
+    sbatch_output=$(sbatch vasp_jobsub.sh)
     if [[ $sbatch_output == *"Submitted batch job"* ]]; then
         echo "Job $job_index submitted successfully: $sbatch_output"
         submitted_jobs=$((submitted_jobs + 1))

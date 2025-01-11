@@ -7,7 +7,7 @@ counter=0
 # Initialize list to keep track of restarted jobs
 restarted_jobs=()
 
-for EXX in $(seq -0.2 0.0001 0.2) # strain range in XX direction
+for EXX in $(seq -0.05 0.01 0.05) # strain range in XX direction
 do 
   ((counter++))
   cd strain_XX_$EXX
@@ -24,8 +24,8 @@ do
     echo "Job already completed successfully."
   else
     echo "Resubmitting job with 10-hour time limit."
-    sed -i 's/#SBATCH --time=3:00:00/#SBATCH --time=10:00:00/' vasp_job.sh  # Change the time limit in vasp_job.sh
-    sbatch vasp_job.sh
+    sed -i 's/#SBATCH --time=3:00:00/#SBATCH --time=10:00:00/' vasp_jobsub.sh  # Change the time limit in vasp_jobsub.sh
+    sbatch vasp_jobsub.sh
     restarted_jobs+=("strain_XX_$EXX/strain_YY_$EYY/strain_ZZ_$EZZ")  # Add the restarted job to the list
   fi
   

@@ -7,7 +7,7 @@ exec 2>error_from_bash.log  # Redirect standard error to a file
 counter=0
 
 # Post processing script for hydrostatic strain
-for EXX in $(seq -0.003 0.001 0.003); do
+for EXX in $(seq -0.05 0.01 0.05); do
     if [ "$EXX" = "0.000" ]; then
         EXX="-0.000"
     fi

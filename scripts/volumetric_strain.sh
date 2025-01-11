@@ -66,7 +66,7 @@ EOF
 	cp POSCAR strain_ZZ_$EZZ/
 	cp ../../POTCAR strain_ZZ_$EZZ/
 	cp ../../KPOINTS strain_ZZ_$EZZ/
-	cp ../../vasp_job.sh strain_ZZ_$EZZ/
+	cp ../../vasp_jobsub.sh strain_ZZ_$EZZ/
 	cd strain_ZZ_$EZZ
 
 	#submission

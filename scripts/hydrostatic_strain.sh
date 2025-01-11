@@ -23,7 +23,7 @@ counter=0
 
 
 # Strain range in XX direction
-for EXX in $(seq -0.2 0.0001 0.2)
+for EXX in $(seq -0.05 0.01 0.05)
 do 
 ((counter++))
 mkdir strain_XX_$EXX
@@ -131,7 +131,7 @@ EOF
 	cp POSCAR strain_ZZ_$EXX/
 	cp ../../POTCAR strain_ZZ_$EXX/
 	cp ../../KPOINTS strain_ZZ_$EXX/
-	cp ../../vasp_job.sh strain_ZZ_$EXX/
+	cp ../../vasp_jobsub.sh strain_ZZ_$EXX/
 	cd strain_ZZ_$EXX
 
 	#submission
