@@ -30,6 +30,8 @@ else
     exit 1
 fi
 
+# Initialize counter
+counter=0
 
 # Strain range in XX direction
 for EXX in $(seq -0.05 0.01 0.05)
@@ -43,7 +45,11 @@ cd strain_XX_$EXX
   cd strain_YY_$EYY  
         # Strain range in ZZ direction
         for EZZ in $(seq -0.05 0.01 0.05)
-        do  
+        do
+        # Increment counter
+        ((counter++))
+        echo "Debug: Simulation $counter - EXX=$EXX, EYY=$EYY, EZZ=$EZZ"
+
 cat <<EOF >POSCAR
 $header
 $scale
@@ -86,5 +92,3 @@ done
 #  ϵ = [ ϵ1      ϵ6/2   ϵ5/2    
 #        ϵ6/2    ϵ2     ϵ4/2     
 #        ϵ5/2    ϵ4/2   ϵ3 ]
-
-
