@@ -141,16 +141,15 @@ Options:
                2. Do you want to strain hydrostatically one POSCAR structure
                      Do you want to modify the EXX range in the script? (yes/no): yes
                      Enter the new range for EXX:
-                     Start (e.g., -0.05): -0.04
-                     Step size (e.g., 0.01): 0.02
-                     End (e.g., 0.05): 0.04
+                     Start (e.g., -0.05): 
+                     Step size (e.g., 0.01): 
+                     End (e.g., 0.05): 
                3. Do you want to strain volumetrically one POSCAR structure
                      Do you want to modify the EXX, EYY, and EZZ ranges in the script? (yes/no): yes
                      Enter the new range for EXX, EYY, and EZZ:
-                     Start (e.g., -0.05): -0.04
-                     Step size (e.g., 0.01): 0.02
-                     End (e.g., 0.05): 0.04
-               q. Quit
+                     Start (e.g., -0.05): 
+                     Step size (e.g., 0.01): 
+                     End (e.g., 0.05): 
         2: VASP job submission
         3: Post-processing of VASP jobs 
         4: Convergence check of VASP jobs      
@@ -203,25 +202,8 @@ Post-Processing Options:
 <br> 
 
 ### Pre-processing for DFT simulation (VASP)
-
-Hydrostatically strain a structure:
-
-```bash
-    Strained structure formation
-    └── hydrostatic_strain.sh
-        └──for EXX in $(seq -0.2 0.0001 0.2) (change the strain range)
-```
-
-Volumetrically strain a structure:
-
-```bash
-    Strained structure formation
-    └── volumetric_strain.sh
-        └──for EXX in $(seq -0.05 0.01 0.05) (change the strain range)
-            └──for EYY in $(seq -0.05 0.01 0.05) (change the strain range)
-                 └──for EZZ in $(seq -0.05 0.01 0.05) (change the strain range)
-```
-**`INCAR`, `KPOINTS`, `POTCAR`,`vasp_job.sh` must be in the `hydrostatic_strain.sh`/`volumetric_strain.sh` folder**
+Hydrostatically/Volumetrically strain a structure:
+**`INCAR`, `KPOINTS`, `POTCAR`, `POSCAR`, `vasp_job.sh` must be in the `hydrostatic_strain.sh`/`volumetric_strain.sh` folder**
 
 
 ### VASP/Quantum ESPRESSO job submission
@@ -231,6 +213,11 @@ Max number of job submission:
     job_submission.sh
     └── max_jobs=${1:-999}  (Limit 999 job submission; change it based on server)
 ```
+2: VASP job submission
+```bash
+   last_job.txt keeps track of how many jobs are submitted. While rerunning `2: VASP job submission`, it will use `last_job.txt`to continue submitting remaining jobs.
+```
+
 </details>
 
 ## Authors
