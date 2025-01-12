@@ -249,12 +249,77 @@ def process_and_run_script(input_folder):
                                         print(f"Error copying the script: {e}")
                                         continue
 
-                                    # Prompt the user to update the script
-                                    print("The volumetric strain script has been copied.")
-                                    print("Please update the script to include the correct POSCAR file before execution.")
+                                    # Ask the user if they want to modify the EXX, EYY, and EZZ ranges
+                                    update_range = input("Do you want to modify the EXX, EYY, and EZZ ranges in the script? (yes/no): ").strip().lower()
+
+                                    if update_range == 'yes':
+                                        # Ask for the new range values for EXX, EYY, and EZZ
+                                        print("Enter the new range for EXX, EYY, and EZZ:")
+                                        try:
+                                            exx_start = float(input("EXX Start (e.g., -0.05): "))
+                                            exx_step = float(input("EXX Step size (e.g., 0.01): "))
+                                            exx_end = float(input("EXX End (e.g., 0.05): "))
+                                        except ValueError:
+                                            print("Error: Please enter valid numerical values for the range.")
+                                            continue
+
+                                        # Path to the copied script in the target folder
+                                        target_script_path = os.path.join(target_folder, 'volumetric_strain.sh')
+
+                                        # Modify the EXX, EYY, and EZZ ranges in the copied script
+                                        try:
+                                            with open(target_script_path, 'r') as file:
+                                                script_content = file.read()
+
+                                            # Dynamically create the range strings and sanitize them
+                                            exx_range = f"for EXX in $(seq {exx_start} {exx_step} {exx_end})"
+                                            eyy_range = f"for EYY in $(seq {exx_start} {exx_step} {exx_end})"
+                                            ezz_range = f"for EZZ in $(seq {exx_start} {exx_step} {exx_end})"
+
+                                            exx_range = exx_range.replace('\r', '').replace('\n', '') + '\n'
+                                            eyy_range = eyy_range.replace('\r', '').replace('\n', '') + '\n'
+                                            ezz_range = ezz_range.replace('\r', '').replace('\n', '') + '\n'
+
+                                            # Replace the default ranges in the script
+                                            updated_content = script_content
+                                            updated_content = updated_content.replace(
+                                                'for EXX in $(seq -0.05 0.01 0.05)', exx_range.strip()
+                                            )
+                                            updated_content = updated_content.replace(
+                                                'for EYY in $(seq -0.05 0.01 0.05)', eyy_range.strip()
+                                            )
+                                            updated_content = updated_content.replace(
+                                                'for EZZ in $(seq -0.05 0.01 0.05)', ezz_range.strip()
+                                            )
+
+                                            # Write the updated script back to the file
+                                            with open(target_script_path, 'w', encoding='utf-8', newline='\n') as file:
+                                                file.write(updated_content)
+
+                                            print(f"Updated EXX, EYY, and EZZ ranges in {target_script_path}")
+                                        except IOError as e:
+                                            print(f"Error updating the script: {e}")
+                                            continue
+
+                                    # Ask the user if they want to execute the script
                                     execute = input("Do you want to execute the volumetric strain script now? (yes/no): ").strip().lower()
 
                                     if execute == 'yes':
+                                        # Fix line endings and execute the script
+                                        try:
+                                            with open(target_script_path, 'r', encoding='utf-8') as file:
+                                                script_content = file.read()
+
+                                            # Replace Windows-style line endings (\r\n) with Unix-style (\n)
+                                            script_content = script_content.replace('\r\n', '\n')
+
+                                            with open(target_script_path, 'w', encoding='utf-8', newline='\n') as file:
+                                                file.write(script_content)
+
+                                            print(f"Fixed line endings in {target_script_path} using Python.")
+                                        except IOError as e:
+                                            print(f"Error fixing line endings: {e}")
+
                                         try:
                                             subprocess.run(['bash', './volumetric_strain.sh'], cwd=target_folder, check=True, text=True)
                                             print("Volumetric strain script executed successfully.")

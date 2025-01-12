@@ -13,9 +13,23 @@ EYZ=0      #ezy or eyz or e4 strain
 EXZ=0      #exz or ezx or e5 strain
 EXY=0      #exy or eyx or e6 strain
 
-A=(4.8049445594525109    0.0000000000000000    0.0000000000000000)  #1st lattice vector
-B=( -0.0000000000000000    4.9416045518304639    0.0000000000000000)  #2nd lattice vector
-C=(0.0000000000000000    0.0000000000000000    7.0241627070936206)  #3rd lattice vector
+# Extract lattice vectors from POSCAR
+POSCAR_FILE="./POSCAR"
+if [[ -f "$POSCAR_FILE" ]]; then
+    header=$(sed -n '1p' "$POSCAR_FILE")              # First line: header
+    scale=$(sed -n '2p' "$POSCAR_FILE")               # Second line: scaling factor
+    A=($(sed -n '3p' "$POSCAR_FILE"))                 # Third line: first lattice vector
+    B=($(sed -n '4p' "$POSCAR_FILE"))                 # Fourth line: second lattice vector
+    C=($(sed -n '5p' "$POSCAR_FILE"))                 # Fifth line: third lattice vector
+    atom_types=$(sed -n '6p' "$POSCAR_FILE")          # Sixth line: atom types
+    atom_counts=$(sed -n '7p' "$POSCAR_FILE")         # Seventh line: atom counts
+    coord_type=$(sed -n '8p' "$POSCAR_FILE")          # Eighth line: coordinate type (Direct/Cartesian)
+    coordinates=$(sed -n '9,$p' "$POSCAR_FILE")       # Remaining lines: atomic coordinates
+else
+    echo "Error: POSCAR file not found in the current directory."
+    exit 1
+fi
+
 
 # Strain range in XX direction
 for EXX in $(seq -0.05 0.01 0.05)
@@ -31,35 +45,15 @@ cd strain_XX_$EXX
         for EZZ in $(seq -0.05 0.01 0.05)
         do  
 cat <<EOF >POSCAR
-   Al  O                                      
-1.0000000000000000
-$(echo "(${A[0]}*(1+$EXX))+(${A[1]}*($EXY/2))+(${A[2]}*($EXZ/2))" | bc)   $(echo "(${A[0]}*($EXY/2))+(${A[1]}*(1+$EYY))+(${A[2]}*($EYZ/2))" | bc)    $(echo "(${A[0]}*($EXZ/2))+(${A[1]}*($EYZ/2))+(${A[2]}*(1+$EZZ))" | bc)               
-$(echo "(${B[0]}*(1+$EXX))+(${B[1]}*($EXY/2))+(${B[2]}*($EXZ/2))" | bc)   $(echo "(${B[0]}*($EXY/2))+(${B[1]}*(1+$EYY))+(${B[2]}*($EYZ/2))" | bc)    $(echo "(${B[0]}*($EXZ/2))+(${B[1]}*($EYZ/2))+(${B[2]}*(1+$EZZ))" | bc)                             
-$(echo "(${C[0]}*(1+$EXX))+(${C[1]}*($EXY/2))+(${C[2]}*($EXZ/2))" | bc)   $(echo "(${C[0]}*($EXY/2))+(${C[1]}*(1+$EYY))+(${C[2]}*($EYZ/2))" | bc)    $(echo "(${C[0]}*($EXZ/2))+(${C[1]}*($EYZ/2))+(${C[2]}*(1+$EZZ))" | bc)                                                                                  
-   Al   O 
-     8    12
-Selective dynamics
-Direct
-  0.2523002353554037  0.0313963657290514  0.3899885770513160   T   T   T
-  0.2523002353554037  0.4686036324055040  0.6100114229768929   T   T   T
-  0.2476997646445963  0.5313963676747305  0.1100114080825527   T   T   T
-  0.2476997646445963  0.9686036323453281  0.8899885769948985   T   T   T
-  0.7476997349350850  0.9686036323453281  0.6100114229768929   T   T   T
-  0.7476997349350850  0.5313963676747305  0.3899885770513160   T   T   T
-  0.7523002650649150  0.4686036324055040  0.8899885769948985   T   T   T
-  0.7523002650649150  0.0313963657290514  0.1100114080825527   T   T   T
-  0.1070727541729076  0.1023897509358228  0.6541476566137407   T   T   T
-  0.1070727541729076  0.3976102415823399  0.3458523434144675   T   T   T
-  0.3929272383997110  0.6023897286106482  0.8458523433580507   T   T   T
-  0.3929272383997110  0.8976102714094104  0.1541476417194010   T   T   T
-  0.8929272683155354  0.8976102714094104  0.3458523434144675   T   T   T
-  0.8929272683155354  0.6023897286106482  0.6541476566137407   T   T   T
-  0.6070727316844646  0.3976102415823399  0.1541476417194010   T   T   T
-  0.6070727316844646  0.1023897509358228  0.8458523433580507   T   T   T
-  0.0501883691512118  0.2500000000702016  0.0000000000000000   T   T   T
-  0.4498116347687957  0.7500000000100329  0.4999999999435829   T   T   T
-  0.9498116048529711  0.7500000000100329  0.0000000000000000   T   T   T
-  0.5501883951470289  0.2500000000702016  0.4999999999435829   T   T   T
+$header
+$scale
+$(echo "(${A[0]}*(1+$EXX))+(${A[1]}*($EXY/2))+(${A[2]}*($EXZ/2))" | tr -d '\r' | bc)   $(echo "(${A[0]}*($EXY/2))+(${A[1]}*(1+$EYY))+(${A[2]}*($EYZ/2))" | tr -d '\r' | bc)    $(echo "(${A[0]}*($EXZ/2))+(${A[1]}*($EYZ/2))+(${A[2]}*(1+$EZZ))" | tr -d '\r' | bc)
+$(echo "(${B[0]}*(1+$EXX))+(${B[1]}*($EXY/2))+(${B[2]}*($EXZ/2))" | tr -d '\r' | bc)   $(echo "(${B[0]}*($EXY/2))+(${B[1]}*(1+$EYY))+(${B[2]}*($EYZ/2))" | tr -d '\r' | bc)    $(echo "(${B[0]}*($EXZ/2))+(${B[1]}*($EYZ/2))+(${B[2]}*(1+$EZZ))" | tr -d '\r' | bc)
+$(echo "(${C[0]}*(1+$EXX))+(${C[1]}*($EXY/2))+(${C[2]}*($EXZ/2))" | tr -d '\r' | bc)   $(echo "(${C[0]}*($EXY/2))+(${C[1]}*(1+$EYY))+(${C[2]}*($EYZ/2))" | tr -d '\r' | bc)    $(echo "(${C[0]}*($EXZ/2))+(${C[1]}*($EYZ/2))+(${C[2]}*(1+$EZZ))" | tr -d '\r' | bc)
+$atom_types
+$atom_counts
+$coord_type
+$coordinates
 EOF
 	mkdir strain_ZZ_$EZZ
 	cp ../../INCAR strain_ZZ_$EZZ/
