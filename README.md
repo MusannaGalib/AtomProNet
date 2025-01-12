@@ -214,6 +214,7 @@ Max number of job submission:
     └── max_jobs=${1:-999}  (Limit 999 job submission; change it based on server)
 ```
 2: VASP job submission
+
 **`last_job.txt` keeps track of how many jobs are submitted. While rerunning `2: VASP job submission`, it will use `last_job.txt`to continue submitting remaining jobs.**
 
 **`job_submission.log` keeps track of how many jobs falied to resubmit later.**
