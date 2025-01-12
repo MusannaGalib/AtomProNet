@@ -215,6 +215,7 @@ Max number of job submission:
 ```
 2: VASP job submission
 **`last_job.txt` keeps track of how many jobs are submitted. While rerunning `2: VASP job submission`, it will use `last_job.txt`to continue submitting remaining jobs.**
+
 **`job_submission.log` keeps track of how many jobs falied to resubmit later.**
 
 </details>
