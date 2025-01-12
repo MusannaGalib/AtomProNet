@@ -134,40 +134,76 @@ def process_and_run_script(input_folder):
 
                                 elif sub_option == '2':
                                     # Logic for hydrostatic strain
-                                    script_dir = os.path.dirname(os.path.abspath(__file__))
-                                    hydrostatic_script_path = os.path.join(script_dir, '..', 'scripts', 'hydrostatic_strain.sh')
+                                        script_dir = os.path.dirname(os.path.abspath(__file__))
+                                        hydrostatic_script_path = os.path.join(script_dir, '..', 'scripts', 'hydrostatic_strain.sh')
 
-                                    if not os.path.exists(hydrostatic_script_path):
-                                        print(f"Error: The hydrostatic strain script '{hydrostatic_script_path}' was not found.")
-                                        continue
+                                        if not os.path.exists(hydrostatic_script_path):
+                                            print(f"Error: The hydrostatic strain script '{hydrostatic_script_path}' was not found.")
+                                            continue
 
-                                    # Ask for the directory where the script will be copied
-                                    target_folder = input("Enter the full path to the folder to copy the hydrostatic strain script: ").strip()
-                                    target_folder = os.path.abspath(target_folder)
+                                        # Ask for the directory where the script will be copied
+                                        target_folder = input("Enter the full path to the folder to copy the hydrostatic strain script: ").strip()
+                                        target_folder = os.path.abspath(target_folder)
 
-                                    if not os.path.isdir(target_folder):
-                                        print(f"Error: The provided path '{target_folder}' is not a valid directory.")
-                                        continue
+                                        if not os.path.isdir(target_folder):
+                                            print(f"Error: The provided path '{target_folder}' is not a valid directory.")
+                                            continue
 
-                                    # Copy the hydrostatic strain script to the target folder
-                                    try:
-                                        shutil.copy(hydrostatic_script_path, target_folder)
-                                        print(f"Copied {hydrostatic_script_path} to {target_folder}")
-                                    except IOError as e:
-                                        print(f"Error copying the script: {e}")
-                                        continue
-
-                                    # Prompt the user to update the script
-                                    print("The hydrostatic strain script has been copied.")
-                                    print("Please update the script to include the correct POSCAR file before execution.")
-                                    execute = input("Do you want to execute the hydrostatic strain script now? (yes/no): ").strip().lower()
-
-                                    if execute == 'yes':
+                                        # Copy the hydrostatic strain script to the target folder
                                         try:
-                                            subprocess.run(['bash', './hydrostatic_strain.sh'], cwd=target_folder, check=True, text=True)
-                                            print("Hydrostatic strain script executed successfully.")
-                                        except subprocess.CalledProcessError as e:
-                                            print(f"Error executing the hydrostatic strain script: {e}")
+                                            shutil.copy(hydrostatic_script_path, target_folder)
+                                            print(f"Copied {hydrostatic_script_path} to {target_folder}")
+                                        except IOError as e:
+                                            print(f"Error copying the script: {e}")
+                                            continue
+
+                                        # Ask the user if they want to modify the EXX range
+                                        update_range = input("Do you want to modify the EXX range in the script? (yes/no): ").strip().lower()
+
+                                        if update_range == 'yes':
+                                            # Ask for the new range values
+                                            print("Enter the new range for EXX:")
+                                            try:
+                                                exx_start = float(input("Start (e.g., -0.05): "))
+                                                exx_step = float(input("Step size (e.g., 0.01): "))
+                                                exx_end = float(input("End (e.g., 0.05): "))
+                                            except ValueError:
+                                                print("Error: Please enter valid numerical values for the range.")
+                                                continue
+
+                                            # Path to the copied script in the target folder
+                                            target_script_path = os.path.join(target_folder, 'hydrostatic_strain.sh')
+
+                                            # Modify the EXX range in the copied script
+                                            try:
+                                                with open(target_script_path, 'r') as file:
+                                                    script_content = file.read()
+
+                                                # Replace the default EXX range
+                                                updated_content = script_content.replace(
+                                                    'for EXX in $(seq -0.05 0.01 0.05)',
+                                                    f'for EXX in $(seq {exx_start} {exx_step} {exx_end})'
+                                                )
+
+                                                # Write the updated script back to the target file
+                                                with open(target_script_path, 'w') as file:
+                                                    file.write(updated_content)
+
+                                                print(f"Updated EXX range in {target_script_path}")
+                                            except IOError as e:
+                                                print(f"Error updating the script: {e}")
+                                                continue
+
+                                        # Ask the user if they want to execute the script
+                                        execute = input("Do you want to execute the hydrostatic strain script now? (yes/no): ").strip().lower()
+
+                                        if execute == 'yes':
+                                            try:
+                                                subprocess.run(['bash', './hydrostatic_strain.sh'], cwd=target_folder, check=True, text=True)
+                                                print("Hydrostatic strain script executed successfully.")
+                                            except subprocess.CalledProcessError as e:
+                                                print(f"Error executing the hydrostatic strain script: {e}")
+
 
                                 elif sub_option == '3':
                                     # Logic for volumetric strain
