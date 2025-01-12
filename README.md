@@ -137,6 +137,20 @@ Options:
         Enter your choice: 1
         VASP Options:
         1: Prepare VASP job submission folders
+               1. Enter the full path to the folder containing multiple POSCAR files
+               2. Do you want to strain hydrostatically one POSCAR structure
+                     Do you want to modify the EXX range in the script? (yes/no): yes
+                     Enter the new range for EXX:
+                     Start (e.g., -0.05): -0.04
+                     Step size (e.g., 0.01): 0.02
+                     End (e.g., 0.05): 0.04
+               3. Do you want to strain volumetrically one POSCAR structure
+                     Do you want to modify the EXX, EYY, and EZZ ranges in the script? (yes/no): yes
+                     Enter the new range for EXX, EYY, and EZZ:
+                     Start (e.g., -0.05): -0.04
+                     Step size (e.g., 0.01): 0.02
+                     End (e.g., 0.05): 0.04
+               q. Quit
         2: VASP job submission
         3: Post-processing of VASP jobs 
         4: Convergence check of VASP jobs      
