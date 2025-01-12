@@ -179,10 +179,14 @@ def process_and_run_script(input_folder):
                                                 with open(target_script_path, 'r') as file:
                                                     script_content = file.read()
 
-                                                # Replace the default EXX range
+                                                # Dynamically create the EXX range string and sanitize it
+                                                exx_range = f"for EXX in $(seq {exx_start} {exx_step} {exx_end})"
+                                                exx_range = exx_range.replace('\r', '').replace('\n', '') + '\n'  # Ensure no carriage returns and add Unix-style newline
+
+                                                # Replace the default range with the sanitized EXX range
                                                 updated_content = script_content.replace(
                                                     'for EXX in $(seq -0.05 0.01 0.05)',
-                                                    f'for EXX in $(seq {exx_start} {exx_step} {exx_end})'
+                                                    exx_range.strip()  # Strip any unintended whitespace
                                                 )
 
                                                 # Write the updated script back to the target file
@@ -198,6 +202,21 @@ def process_and_run_script(input_folder):
                                         execute = input("Do you want to execute the hydrostatic strain script now? (yes/no): ").strip().lower()
 
                                         if execute == 'yes':
+                                            try:
+                                                with open(target_script_path, 'r', encoding='utf-8') as file:
+                                                    script_content = file.read()
+
+                                                # Replace Windows-style line endings (\r\n) with Unix-style (\n)
+                                                script_content = script_content.replace('\r\n', '\n')
+
+                                                with open(target_script_path, 'w', encoding='utf-8', newline='\n') as file:
+                                                    file.write(script_content)
+
+                                                print(f"Fixed line endings in {target_script_path} using Python.")
+                                            except IOError as e:
+                                                print(f"Error fixing line endings: {e}")
+
+
                                             try:
                                                 subprocess.run(['bash', './hydrostatic_strain.sh'], cwd=target_folder, check=True, text=True)
                                                 print("Hydrostatic strain script executed successfully.")

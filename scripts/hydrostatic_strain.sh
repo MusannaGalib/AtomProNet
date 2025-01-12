@@ -53,9 +53,9 @@ cd strain_XX_$EXX
 cat <<EOF >POSCAR
 $header
 $scale
-$(echo "(${A[0]}*(1+$EXX))+(${A[1]}*($EXY/2))+(${A[2]}*($EXZ/2))" | bc)   $(echo "(${A[0]}*($EXY/2))+(${A[1]}*(1+$EYY))+(${A[2]}*($EYZ/2))" | bc)    $(echo "(${A[0]}*($EXZ/2))+(${A[1]}*($EYZ/2))+(${A[2]}*(1+$EZZ))" | bc)
-$(echo "(${B[0]}*(1+$EXX))+(${B[1]}*($EXY/2))+(${B[2]}*($EXZ/2))" | bc)   $(echo "(${B[0]}*($EXY/2))+(${B[1]}*(1+$EYY))+(${B[2]}*($EYZ/2))" | bc)    $(echo "(${B[0]}*($EXZ/2))+(${B[1]}*($EYZ/2))+(${B[2]}*(1+$EZZ))" | bc)
-$(echo "(${C[0]}*(1+$EXX))+(${C[1]}*($EXY/2))+(${C[2]}*($EXZ/2))" | bc)   $(echo "(${C[0]}*($EXY/2))+(${C[1]}*(1+$EYY))+(${C[2]}*($EYZ/2))" | bc)    $(echo "(${C[0]}*($EXZ/2))+(${C[1]}*($EYZ/2))+(${C[2]}*(1+$EZZ))" | bc)
+$(echo "(${A[0]}*(1+$EXX))+(${A[1]}*($EXY/2))+(${A[2]}*($EXZ/2))" | tr -d '\r' | bc)   $(echo "(${A[0]}*($EXY/2))+(${A[1]}*(1+$EYY))+(${A[2]}*($EYZ/2))" | tr -d '\r' | bc)    $(echo "(${A[0]}*($EXZ/2))+(${A[1]}*($EYZ/2))+(${A[2]}*(1+$EZZ))" | tr -d '\r' | bc)
+$(echo "(${B[0]}*(1+$EXX))+(${B[1]}*($EXY/2))+(${B[2]}*($EXZ/2))" | tr -d '\r' | bc)   $(echo "(${B[0]}*($EXY/2))+(${B[1]}*(1+$EYY))+(${B[2]}*($EYZ/2))" | tr -d '\r' | bc)    $(echo "(${B[0]}*($EXZ/2))+(${B[1]}*($EYZ/2))+(${B[2]}*(1+$EZZ))" | tr -d '\r' | bc)
+$(echo "(${C[0]}*(1+$EXX))+(${C[1]}*($EXY/2))+(${C[2]}*($EXZ/2))" | tr -d '\r' | bc)   $(echo "(${C[0]}*($EXY/2))+(${C[1]}*(1+$EYY))+(${C[2]}*($EYZ/2))" | tr -d '\r' | bc)    $(echo "(${C[0]}*($EXZ/2))+(${C[1]}*($EYZ/2))+(${C[2]}*(1+$EZZ))" | tr -d '\r' | bc)
 $atom_types
 $atom_counts
 $coord_type
