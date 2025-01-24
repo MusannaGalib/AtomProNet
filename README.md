@@ -93,6 +93,7 @@ This command installs the package along with its dependencies.
 Example datasets are given in 'example_dataset' folder. You can use the following commands to play with that by executing the python wrapper file.
 
 ```python
+cd AtomProNet
 python3 process_and_run_script.py
 ```
 
@@ -232,7 +233,7 @@ If you use this software in your research, please cite the following paper:
 BibTeX entry:
 @article{YourPaper,
   title={AtomProNet: Data flow to and from machine learning interatomic potentials in materials science},
-  author={Musanna Galib, Mewael Isiet, Mauricio Ponga},
+  author={Musanna Galib, Mewael Isiet, and Mauricio Ponga},
   journal={Journal/Conference},
   year={2025},
   publisher={Publisher}
