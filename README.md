@@ -48,9 +48,9 @@ AtomProNet
         │
         └── Classical Molecular Dynamics (LAMMPS) 
             │   
-            ├── Validations
-            └── Visualization   
-
+            └── Computational Performance Assesment 
+                ├── Simulation cell size
+                └── CPU allocation
 ```
 
 ## Tutorial
