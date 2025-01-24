@@ -84,9 +84,9 @@ AtomProNet
         â”‚
         â””â”€â”€ Classical Molecular Dynamics (LAMMPS) 
             â”‚   
-            â”œâ”€â”€ Validations
-            â””â”€â”€ Visualization   
-
+            â””â”€â”€ Computational Performance Assesment 
+                â”œâ”€â”€ Simulation cell size
+                â””â”€â”€ CPU allocation
 ```
 
 ## Tutorial
@@ -129,6 +129,7 @@ This command installs the package along with its dependencies.
 Example datasets are given in 'example_dataset' folder. You can use the following commands to play with that by executing the python wrapper file.
 
 ```python
+cd AtomProNet
 python3 process_and_run_script.py
 ```
 
@@ -173,6 +174,19 @@ Options:
         Enter your choice: 1
         VASP Options:
         1: Prepare VASP job submission folders
+               1. Enter the full path to the folder containing multiple POSCAR files
+               2. Do you want to strain hydrostatically one POSCAR structure
+                     Do you want to modify the EXX range in the script? (yes/no): yes
+                     Enter the new range for EXX:
+                     Start (e.g., -0.05): 
+                     Step size (e.g., 0.01): 
+                     End (e.g., 0.05): 
+               3. Do you want to strain volumetrically one POSCAR structure
+                     Do you want to modify the EXX, EYY, and EZZ ranges in the script? (yes/no): yes
+                     Enter the new range for EXX, EYY, and EZZ:
+                     Start (e.g., -0.05): 
+                     Step size (e.g., 0.01): 
+                     End (e.g., 0.05): 
         2: VASP job submission
         3: Post-processing of VASP jobs 
         4: Convergence check of VASP jobs      
@@ -225,25 +239,8 @@ Post-Processing Options:
 <br> 
 
 ### Pre-processing for DFT simulation (VASP)
-
-Hydrostatically strain a structure:
-
-```bash
-    Strained structure formation
-    â””â”€â”€ hydrostatic_strain.sh
-        â””â”€â”€for EXX in $(seq -0.2 0.0001 0.2) (change the strain range)
-```
-
-Volumetrically strain a structure:
-
-```bash
-    Strained structure formation
-    â””â”€â”€ volumetric_strain.sh
-        â””â”€â”€for EXX in $(seq -0.05 0.01 0.05) (change the strain range)
-            â””â”€â”€for EYY in $(seq -0.05 0.01 0.05) (change the strain range)
-                 â””â”€â”€for EZZ in $(seq -0.05 0.01 0.05) (change the strain range)
-```
-**`INCAR`, `KPOINTS`, `POTCAR`,`vasp_job.sh` must be in the `hydrostatic_strain.sh`/`volumetric_strain.sh` folder**
+Hydrostatically/Volumetrically strain a structure:
+**`INCAR`, `KPOINTS`, `POTCAR`, `POSCAR`, `vasp_job.sh` must be in the `hydrostatic_strain.sh`/`volumetric_strain.sh` folder**
 
 
 ### VASP/Quantum ESPRESSO job submission
@@ -253,6 +250,11 @@ Max number of job submission:
     job_submission.sh
     â””â”€â”€ max_jobs=${1:-999}  (Limit 999 job submission; change it based on server)
 ```
+**2: VASP job submission:**
+  -  `last_job.txt` keeps track of how many jobs are submitted. While rerunning `2: VASP job submission`, it will use `last_job txt`to continue submitting remaining jobs.
+  - `job_submission.log` keeps track of how many jobs falied to resubmit later.
+
+
 </details>
 
 ## Authors
@@ -267,7 +269,7 @@ If you use this software in your research, please cite the following paper:
 BibTeX entry:
 @article{YourPaper,
   title={AtomProNet: Data flow to and from machine learning interatomic potentials in materials science},
-  author={Musanna Galib, Mewael Isiet, Mauricio Ponga},
+  author={Musanna Galib, Mewael Isiet, and Mauricio Ponga},
   journal={Journal/Conference},
   year={2025},
   publisher={Publisher}

@@ -158,7 +158,7 @@ def process_and_run_script(input_folder):
                                             continue
 
                                         # Ask the user if they want to modify the EXX range
-                                        update_range = input("Do you want to modify the EXX range in the script? (yes/no): ").strip().lower()
+                                        update_range = input("Do you want to modify the default EXX range (5%) in the script? (yes/no): ").strip().lower()
 
                                         if update_range == 'yes':
                                             # Ask for the new range values
@@ -250,7 +250,7 @@ def process_and_run_script(input_folder):
                                         continue
 
                                     # Ask the user if they want to modify the EXX, EYY, and EZZ ranges
-                                    update_range = input("Do you want to modify the EXX, EYY, and EZZ ranges in the script? (yes/no): ").strip().lower()
+                                    update_range = input("Do you want to modify the EXX, EYY, and EZZ default (5%) ranges in the script? (yes/no): ").strip().lower()
 
                                     if update_range == 'yes':
                                         # Ask for the new range values for EXX, EYY, and EZZ
@@ -561,7 +561,7 @@ def process_and_run_script(input_folder):
             script_dir = os.path.dirname(os.path.abspath(__file__))     
 
             # Ask the user if they want to execute the post-processing script
-            run_step1 = input("Do you want to run the first step (execute post-processing script)? (yes/no): ").strip().lower()
+            run_step1 = input("Do you want to run the post-processing script to extract data from simulations? (yes/no): ").strip().lower()
             
             if run_step1 == 'yes':
                 # Ask the user whether it's for VASP or Quantum ESPRESSO
