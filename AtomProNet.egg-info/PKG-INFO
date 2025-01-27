@@ -1,6 +1,6 @@
 Metadata-Version: 2.2
 Name: AtomProNet
-Version: 0.0.3
+Version: 0.0.4
 Summary: A Python package for pre and post-process VASP/Quantum ESPRESSO data into machine learning interatomic potential (MLIP) format.
 Home-page: https://github.com/MusannaGalib/AtomProNet
 Author: Musanna Galib

@@ -1,19 +1,9 @@
 from setuptools import setup, find_packages
 from pathlib import Path
 
-
-here = Path(__file__).parent
-requirements_path = here / "requirements.txt"
-
-if requirements_path.exists():
-    with open(requirements_path, encoding="utf-8") as f:
-        requirements = [line.strip() for line in f if line.strip() and not line.startswith("#")]
-else:
-    requirements = []  
-
 setup(
     name="AtomProNet",
-    version="0.0.1",
+    version="0.0.4",
     author="Musanna Galib",
     author_email="galibubc@student.ubc.ca",
     description="A Python package for pre and post-process VASP/Quantum ESPRESSO data into machine learning interatomic potential (MLIP) format.",
@@ -21,7 +11,16 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/MusannaGalib/AtomProNet",
     packages=find_packages(),
-    install_requires=requirements,  
+    install_requires=[
+        "numpy",
+        "ase",
+        "mp-api",
+        "scipy",
+        "pymatgen==2023.11.12",
+        "statsmodels",
+        "seaborn",
+        "scikit-learn",
+    ],  # Manually listing dependencies here
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Science/Research",
