@@ -7,7 +7,7 @@
 
 # AtomProNet: Atomic Data Processing for Neural Network
 <div align="center">
-  <img src="AtomProNet/AtomProNet_logo.jpg" alt="Logo" width="200">
+  <img src="https://raw.githubusercontent.com/MusannaGalib/AtomProNet/main/AtomProNet_logo.jpg" alt="AtomProNet Logo" width="200">
 </div>
 
 
