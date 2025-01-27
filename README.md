@@ -237,7 +237,6 @@ BibTeX entry:
       year={2025},
       eprint={2501.14039},
       archivePrefix={arXiv},
-      primaryClass={cond-mat.mtrl-sci},
       url={https://arxiv.org/abs/2501.14039}, 
 }
 ```
