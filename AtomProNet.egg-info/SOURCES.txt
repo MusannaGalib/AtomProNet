@@ -2,6 +2,7 @@ CODE_OF_CONDUCT.md
 LICENSE
 MANIFEST.in
 README.md
+pyproject.toml
 setup.py
 AtomProNet/MLIP_post_processing.py
 AtomProNet/VASP_convergence_check.py

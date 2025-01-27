@@ -36,6 +36,7 @@ Dynamic: summary
 
 <!---![PyPI downloads](https://img.shields.io/pypi/dm/your-package-name)-->
 <!---![![Paper](https://img.shields.io/badge/Journal-Nat.Comput.Sci.-blue)](https://doi.org/your-paper-doi)-->
+[![arXiv](https://img.shields.io/badge/arXiv-2501.14039-red)](https://arxiv.org/abs/2501.14039)
 [![Python 3.6+](https://img.shields.io/badge/python-3.6+-red.svg)](https://www.python.org/downloads/)
 [![Release](https://img.shields.io/badge/release-v0.0.1-brightgreen)](https://github.com/MusannaGalib/AtomProNet)
 [![License: MIT](https://img.shields.io/badge/license-MIT_2.0-yellow)](https://opensource.org/licenses/MIT)
@@ -51,42 +52,42 @@ This package demonstrates a data processing workflow involving Bash script, Pyth
 ```
 AtomProNet
     |
-    â”œâ”€â”€ Data collection from materials project database
-    â”‚   â”‚
-    â”‚   â”œâ”€â”€ Atomic energy, position, lattice parameters                   
-    â”‚   â””â”€â”€ Supercell formation  
+    ├── Data collection from materials project database
+    │   │
+    │   ├── Atomic energy, position, lattice parameters                   
+    │   └── Supercell formation  
     |
     |
-    â”œâ”€â”€ Data generation using DFT simulation (VASP/Quantum ESPRESSO)
-    â”‚   â”‚
-    â”‚   â”œâ”€â”€ Batch job preparation  
-    â”‚   â”œâ”€â”€ Batch job submission                   
-    â”‚   â””â”€â”€ Batch data collection            
-    â”‚
-    â”‚
-    â”œâ”€â”€ Pre-processing for Neural Network  (Post-processing of DFT simulation)             
-    â”‚   â”‚
-    â”‚   â””â”€â”€ DFT folders 
-    â”‚       â”‚       
-    â”‚       â”œâ”€â”€ energy
-    â”‚       â”œâ”€â”€ forces
-    â”‚       â”œâ”€â”€ pressure      
-    â”‚       â””â”€â”€ lattice parameters            
-    â”‚            â”‚
-    â”‚            â””â”€â”€ extxyz/npz format
-    â”‚
-    â”‚
-    â””â”€â”€ Post-processing
-        â”œâ”€â”€ Machine Learning Interatomic Potential (MLIP)         
-        â”‚   â”‚                 
-        â”‚   â”œâ”€â”€ Parity plots
-        â”‚   â””â”€â”€ Cumulative distributions
-        â”‚
-        â””â”€â”€ Classical Molecular Dynamics (LAMMPS) 
-            â”‚   
-            â””â”€â”€ Computational Performance Assesment 
-                â”œâ”€â”€ Simulation cell size
-                â””â”€â”€ CPU allocation
+    ├── Data generation using DFT simulation (VASP/Quantum ESPRESSO)
+    │   │
+    │   ├── Batch job preparation  
+    │   ├── Batch job submission                   
+    │   └── Batch data collection            
+    │
+    │
+    ├── Pre-processing for Neural Network  (Post-processing of DFT simulation)             
+    │   │
+    │   └── DFT folders 
+    │       │       
+    │       ├── energy
+    │       ├── forces
+    │       ├── pressure      
+    │       └── lattice parameters            
+    │            │
+    │            └── extxyz/npz format
+    │
+    │
+    └── Post-processing
+        ├── Machine Learning Interatomic Potential (MLIP)         
+        │   │                 
+        │   ├── Parity plots
+        │   └── Cumulative distributions
+        │
+        └── Classical Molecular Dynamics (LAMMPS) 
+            │   
+            └── Computational Performance Assesment 
+                ├── Simulation cell size
+                └── CPU allocation
 ```
 
 ## Tutorial
@@ -234,7 +235,7 @@ Post-Processing Options:
 ```
 
 <details>
-<summary>ðŸ“– Read More</summary>  
+<summary>📖 Read More</summary>  
 
 <br> 
 
@@ -248,7 +249,7 @@ Hydrostatically/Volumetrically strain a structure:
 Max number of job submission:
 ```bash
     job_submission.sh
-    â””â”€â”€ max_jobs=${1:-999}  (Limit 999 job submission; change it based on server)
+    └── max_jobs=${1:-999}  (Limit 999 job submission; change it based on server)
 ```
 **2: VASP job submission:**
   -  `last_job.txt` keeps track of how many jobs are submitted. While rerunning `2: VASP job submission`, it will use `last_job txt`to continue submitting remaining jobs.
@@ -267,12 +268,13 @@ If you use this software in your research, please cite the following paper:
 
 ```python
 BibTeX entry:
-@article{YourPaper,
-  title={AtomProNet: Data flow to and from machine learning interatomic potentials in materials science},
-  author={Musanna Galib, Mewael Isiet, and Mauricio Ponga},
-  journal={Journal/Conference},
-  year={2025},
-  publisher={Publisher}
+@misc{galib2025atompronetdataflowmachine,
+      title={AtomProNet: Data flow to and from machine learning interatomic potentials in materials science}, 
+      author={Musanna Galib and Mewael Isiet and Mauricio Ponga},
+      year={2025},
+      eprint={2501.14039},
+      archivePrefix={arXiv},
+      url={https://arxiv.org/abs/2501.14039}, 
 }
 ```
 
