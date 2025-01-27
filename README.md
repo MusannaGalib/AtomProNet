@@ -238,7 +238,7 @@ BibTeX entry:
       year={2025},
       eprint={2501.14039},
       archivePrefix={arXiv},
-      url={https://arxiv.org/abs/2501.14039}, 
+      url={https://doi.org/10.48550/arXiv.2501.14039}, 
 }
 ```
 
