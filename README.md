@@ -231,12 +231,14 @@ If you use this software in your research, please cite the following paper:
 
 ```python
 BibTeX entry:
-@article{YourPaper,
-  title={AtomProNet: Data flow to and from machine learning interatomic potentials in materials science},
-  author={Musanna Galib, Mewael Isiet, and Mauricio Ponga},
-  journal={Journal/Conference},
-  year={2025},
-  publisher={Publisher}
+@misc{galib2025atompronetdataflowmachine,
+      title={AtomProNet: Data flow to and from machine learning interatomic potentials in materials science}, 
+      author={Musanna Galib and Mewael Isiet and Mauricio Ponga},
+      year={2025},
+      eprint={2501.14039},
+      archivePrefix={arXiv},
+      primaryClass={cond-mat.mtrl-sci},
+      url={https://arxiv.org/abs/2501.14039}, 
 }
 ```
 
