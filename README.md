@@ -1,4 +1,4 @@
-<!---![PyPI downloads](https://img.shields.io/pypi/dm/your-package-name)-->
+[![PyPI downloads](https://img.shields.io/pypi/dm/AtomProNet)](https://pypi.org/project/AtomProNet/)
 <!---![![Paper](https://img.shields.io/badge/Journal-Nat.Comput.Sci.-blue)](https://doi.org/your-paper-doi)-->
 [![arXiv](https://img.shields.io/badge/arXiv-2501.14039-red)](https://arxiv.org/abs/2501.14039)
 [![Python 3.6+](https://img.shields.io/badge/python-3.6+-red.svg)](https://www.python.org/downloads/)
