@@ -3,7 +3,7 @@ from pathlib import Path
 
 setup(
     name="AtomProNet",
-    version="0.0.5",
+    version="0.0.1",
     author="Musanna Galib",
     author_email="galibubc@student.ubc.ca",
     description="A Python package for pre and post-process VASP/Quantum ESPRESSO data into machine learning interatomic potential (MLIP) format.",
