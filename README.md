@@ -1,6 +1,4 @@
 [![PyPI downloads](https://img.shields.io/pypi/dm/AtomProNet)](https://pypi.org/project/AtomProNet/)
-[![PyPI version](https://img.shields.io/pypi/v/AtomProNet)](https://pypi.org/project/AtomProNet/)
-[![PyPI status](https://img.shields.io/pypi/status/AtomProNet)](https://pypi.org/project/AtomProNet/)
 [![arXiv](https://img.shields.io/badge/arXiv-2501.14039-red)](https://arxiv.org/abs/2501.14039)
 [![Python 3.6+](https://img.shields.io/badge/python-3.6+-red.svg)](https://www.python.org/downloads/)
 [![Release](https://img.shields.io/badge/release-v0.0.1-brightgreen)](https://github.com/MusannaGalib/AtomProNet)
