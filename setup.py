@@ -16,7 +16,7 @@ setup(
     version="0.0.1",
     author="Musanna Galib",
     author_email="galibubc@student.ubc.ca",
-    description="A Python package for pre and post-process VASP/Quantum ESPRESSO data into machine learning interatomic potential (MLIP) training format (extxyz or npz).",
+    description="A Python package for pre and post-process VASP/Quantum ESPRESSO data into machine learning interatomic potential (MLIP) format.",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/MusannaGalib/AtomProNet",
