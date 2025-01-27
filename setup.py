@@ -21,16 +21,12 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/MusannaGalib/AtomProNet",
     packages=find_packages(),
-    install_requires=requirements,  # Load dynamically
+    install_requires=requirements,  
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
     ],
     python_requires=">=3.6",
     entry_points={

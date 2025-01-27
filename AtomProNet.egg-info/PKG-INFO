@@ -1,18 +1,14 @@
 Metadata-Version: 2.2
 Name: AtomProNet
-Version: 0.0.1
-Summary: A Python package for converting VASP data to extxyz/npz format.
+Version: 0.0.3
+Summary: A Python package for pre and post-process VASP/Quantum ESPRESSO data into machine learning interatomic potential (MLIP) format.
 Home-page: https://github.com/MusannaGalib/AtomProNet
 Author: Musanna Galib
 Author-email: galibubc@student.ubc.ca
-Classifier: Development Status :: 3 - Alpha
+Classifier: Development Status :: 5 - Production/Stable
 Classifier: Intended Audience :: Science/Research
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Programming Language :: Python :: 3
-Classifier: Programming Language :: Python :: 3.6
-Classifier: Programming Language :: Python :: 3.7
-Classifier: Programming Language :: Python :: 3.8
-Classifier: Programming Language :: Python :: 3.9
 Requires-Python: >=3.6
 Description-Content-Type: text/markdown
 License-File: LICENSE
@@ -43,7 +39,7 @@ Dynamic: summary
 
 # AtomProNet: Atomic Data Processing for Neural Network
 <div align="center">
-  <img src="AtomProNet/AtomProNet_logo.jpg" alt="Logo" width="200">
+  <img src="https://raw.githubusercontent.com/MusannaGalib/AtomProNet/main/AtomProNet/AtomProNet_logo.jpg" alt="AtomProNet Logo" width="200">
 </div>
 
 
@@ -274,7 +270,7 @@ BibTeX entry:
       year={2025},
       eprint={2501.14039},
       archivePrefix={arXiv},
-      url={https://arxiv.org/abs/2501.14039}, 
+      url={https://doi.org/10.48550/arXiv.2501.14039}, 
 }
 ```
 
