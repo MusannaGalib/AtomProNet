@@ -159,6 +159,7 @@ def process_and_run_script(input_folder):
 
                                         # Ask the user if they want to modify the EXX range
                                         update_range = input("Do you want to modify the default EXX range (5%) in the script? (yes/no): ").strip().lower()
+                                        target_script_path = os.path.join(target_folder, 'hydrostatic_strain.sh')
 
                                         if update_range == 'yes':
                                             # Ask for the new range values
@@ -251,6 +252,7 @@ def process_and_run_script(input_folder):
 
                                     # Ask the user if they want to modify the EXX, EYY, and EZZ ranges
                                     update_range = input("Do you want to modify the EXX, EYY, and EZZ default (5%) ranges in the script? (yes/no): ").strip().lower()
+                                    target_script_path = os.path.join(target_folder, 'volumetric_strain.sh')
 
                                     if update_range == 'yes':
                                         # Ask for the new range values for EXX, EYY, and EZZ
