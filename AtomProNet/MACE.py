@@ -33,11 +33,11 @@ def install_mace():
 
     # Use subprocess to activate the environment and install packages
     print(f"Activating virtual environment at {venv_path}")
+    
+    # Enclose the path in double quotes to handle spaces or parentheses in Windows paths
     if platform.system() == "Windows":
-        # For Windows, we activate using the .bat file via subprocess
-        activate_command = f"call {activate_venv_script} && "
+        activate_command = f'call "{activate_venv_script}" && '
     else:
-        # For Linux/macOS, we use the source command
         activate_command = f"source {activate_venv_script} && "
     
     try:
@@ -67,6 +67,7 @@ def install_mace():
     except subprocess.CalledProcessError as e:
         print(f"Error during installation: {e}")
         sys.exit(1)
+
 
 
 def run_mace_training():
