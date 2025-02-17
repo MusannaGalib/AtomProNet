@@ -155,7 +155,7 @@ def run_mace_training():
             activate_venv_script = "source /path/to/your/virtualenv/bin/activate"
         
         # Activate the virtual environment and run the training script
-        activate_command = f'call "{activate_venv_script}" && python3 ./mace/scripts/run_train.py --config {yaml_filename}'
+        activate_command = f'call "{activate_venv_script}" && python ./mace/scripts/run_train.py --config {yaml_filename}'
 
         try:
             subprocess.check_call(activate_command, shell=True)
@@ -165,8 +165,6 @@ def run_mace_training():
             sys.exit(1)
     else:
         print("Training was not started. Exiting.")
-
-
 
 def main():
     """
