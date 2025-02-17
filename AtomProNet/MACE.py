@@ -1,6 +1,7 @@
 import subprocess
 import sys
 import os
+import platform
 
 def install_mace():
     """
@@ -19,9 +20,12 @@ def install_mace():
     venv_path = os.path.join(install_folder, "MACE")
     subprocess.check_call([sys.executable, "-m", "venv", venv_path])
 
-    # Activate the virtual environment using the appropriate script
-    activate_venv_script = os.path.join(venv_path, "bin", "activate")
-    
+    # Determine the activation script based on OS
+    if platform.system() == "Windows":
+        activate_venv_script = os.path.join(venv_path, "Scripts", "activate.bat")
+    else:
+        activate_venv_script = os.path.join(venv_path, "bin", "activate")
+
     # Check if activation script exists
     if not os.path.exists(activate_venv_script):
         print(f"Activation script not found at {activate_venv_script}")
@@ -29,7 +33,12 @@ def install_mace():
 
     # Use subprocess to activate the environment and install packages
     print(f"Activating virtual environment at {venv_path}")
-    activate_command = f"source {activate_venv_script} && "
+    if platform.system() == "Windows":
+        # For Windows, we activate using the .bat file via subprocess
+        activate_command = f"call {activate_venv_script} && "
+    else:
+        # For Linux/macOS, we use the source command
+        activate_command = f"source {activate_venv_script} && "
     
     try:
         # Install ipykernel and other dependencies
