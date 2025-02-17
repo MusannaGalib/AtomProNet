@@ -2,6 +2,7 @@ import subprocess
 import sys
 import os
 import platform
+import yaml
 
 def install_mace():
     """
@@ -69,11 +70,64 @@ def install_mace():
         sys.exit(1)
 
 
+def generate_yaml(train_file, test_file, valid_file, output_folder=".", **kwargs):
+    """
+    Generates a YAML file containing the paths and other configuration options.
+    Args:
+        - train_file: Path to the training file.
+        - test_file: Path to the test file.
+        - valid_file: Path to the validation file.
+        - output_folder: Folder where the YAML file will be saved.
+        - kwargs: Additional configuration options to include in the YAML file.
+    """
+    # Prepare the config dictionary
+    config = {
+        'train_file': train_file,
+        'test_file': test_file,
+        'valid_file': valid_file,
+        'model_dir': os.path.join(output_folder, "MACE_models"),
+        'log_dir': os.path.join(output_folder, "MACE_models", "logs"),
+        'checkpoints_dir': os.path.join(output_folder, "MACE_models", "checkpoints"),
+        'results_dir': os.path.join(output_folder, "MACE_models", "results"),
+        'E0s': '{13:-0.01623775, 8:-0.02536379}',
+        'energy_key': 'REF_energy',
+        'forces_key': 'REF_forces',
+        'model': 'MACE',
+        'r_max': 7.0,
+        'batch_size': 1,
+        'valid_batch_size': 1,
+        'max_num_epochs': 150,
+        'num_interactions': 2,
+        'num_channels': 128,
+        'max_L': 1,
+        'correlation': 3,
+        'ema': True,
+        'ema_decay': 0.99,
+        'error_table': 'PerAtomRMSE',
+        'amsgrad': True,
+        'default_dtype': 'float64',
+        'device': 'cuda',
+        'seed': 123,
+        'swa': True,
+        'save_cpu': True,
+        'restart_latest': True
+    }
+
+    # Add any extra kwargs to the config
+    config.update(kwargs)
+
+    # Generate YAML file
+    yaml_filename = os.path.join(output_folder, "mace_config.yaml")
+    with open(yaml_filename, 'w') as yaml_file:
+        yaml.dump(config, yaml_file, default_flow_style=False)
+    
+    print(f"Generated YAML file: {yaml_filename}")
+    return yaml_filename
 
 def run_mace_training():
     """
     Prompts user to provide file paths for training, testing, and validation datasets,
-    and runs the MACE training script with the provided paths.
+    generates a YAML file, and runs the MACE training script with the provided paths.
     """
     # Ask the user to provide paths to the dataset
     train_file = input("Enter the path to the training file: ")
@@ -90,46 +144,29 @@ def run_mace_training():
 
     review = input("Do you want to proceed with the training (yes/no)? ").lower()
     if review == "yes":
-        # Run the training script with the provided arguments
-        train_command = f"""
-        python3 ./mace/scripts/run_train.py \
-        --name="MACE_alumina_model" \
-        --model_dir="MACE_models" \
-        --log_dir="MACE_models" \
-        --checkpoints_dir="MACE_models" \
-        --results_dir="MACE_models" \
-        --train_file="{train_file}" \
-        --test_file="{test_file}" \
-        --valid_file="{valid_file}" \
-        --E0s="{{13:-0.01623775, 8:-0.02536379}}" \
-        --energy_key="REF_energy" \
-        --forces_key="REF_forces" \
-        --model="MACE" \
-        --r_max=7.0 \
-        --batch_size=1 \
-        --valid_batch_size=1 \
-        --max_num_epochs=150 \
-        --num_interactions=2 \
-        --num_channels=128 \
-        --max_L=1 \
-        --correlation=3 \
-        --ema \
-        --ema_decay=0.99 \
-        --error_table='PerAtomRMSE' \
-        --amsgrad \
-        --default_dtype="float64" \
-        --device=cuda \
-        --seed=123 \
-        --swa \
-        --save_cpu \
-        --restart_latest
-        """
+        # Generate the YAML configuration file with provided paths
+        yaml_filename = generate_yaml(train_file, test_file, valid_file)
 
-        # Execute the training command
-        subprocess.check_call(train_command, shell=True)
-        print("Training started successfully.")
+        # Ensure the virtual environment is activated
+        print("Ensure that the virtual environment is activated.")
+        if platform.system() == "Windows":
+            activate_venv_script = "C:/path/to/your/virtualenv/Scripts/activate.bat"
+        else:
+            activate_venv_script = "source /path/to/your/virtualenv/bin/activate"
+        
+        # Activate the virtual environment and run the training script
+        activate_command = f'call "{activate_venv_script}" && python3 ./mace/scripts/run_train.py --config {yaml_filename}'
+
+        try:
+            subprocess.check_call(activate_command, shell=True)
+            print("Training started successfully.")
+        except subprocess.CalledProcessError as e:
+            print(f"Error during training: {e}")
+            sys.exit(1)
     else:
         print("Training was not started. Exiting.")
+
+
 
 def main():
     """
