@@ -70,16 +70,19 @@ def install_mace():
         sys.exit(1)
 
 
-def generate_yaml(train_file, test_file, valid_file, output_folder=".", **kwargs):
+
+def generate_yaml(train_file, test_file, valid_file, **kwargs):
     """
     Generates a YAML file containing the paths and other configuration options.
     Args:
         - train_file: Path to the training file.
         - test_file: Path to the test file.
         - valid_file: Path to the validation file.
-        - output_folder: Folder where the YAML file will be saved.
         - kwargs: Additional configuration options to include in the YAML file.
     """
+    # Get the directory of the train file to save the YAML in the same location
+    output_folder = os.path.dirname(train_file)
+
     # Prepare the config dictionary
     config = {
         'train_file': train_file,
@@ -147,15 +150,39 @@ def run_mace_training():
         # Generate the YAML configuration file with provided paths
         yaml_filename = generate_yaml(train_file, test_file, valid_file)
 
+        # Ask the user if they want to modify the YAML file before proceeding with training
+        modify_yaml = input("Do you want to modify the generated YAML file before training (yes/no)? ").lower()
+        if modify_yaml == "yes":
+            print(f"Please modify the YAML file at {yaml_filename} and save the changes.")
+            input("Press Enter to continue after modifying the file...")
+
         # Ensure the virtual environment is activated
         print("Ensure that the virtual environment is activated.")
+        venv_path = input("Enter the path to the virtual environment (e.g., C:/path/to/MACE): ")
+
+        # Determine the activation script based on OS
         if platform.system() == "Windows":
-            activate_venv_script = "C:/path/to/your/virtualenv/Scripts/activate.bat"
+            activate_venv_script = os.path.join(venv_path, "Scripts", "activate.bat")
         else:
-            activate_venv_script = "source /path/to/your/virtualenv/bin/activate"
-        
+            activate_venv_script = os.path.join(venv_path, "bin", "activate")
+
+        # Check if activation script exists
+        if not os.path.exists(activate_venv_script):
+            print(f"Activation script not found at {activate_venv_script}")
+            sys.exit(1)
+
+        # Resolve the path to the training script
+        run_train_script = os.path.join(venv_path, "Scripts", "run_train.py")
+        if not os.path.exists(run_train_script):
+            print(f"run_train.py not found at {run_train_script}")
+            sys.exit(1)
+
         # Activate the virtual environment and run the training script
-        activate_command = f'call "{activate_venv_script}" && python ./mace/scripts/run_train.py --config {yaml_filename}'
+        print(f"Activating virtual environment at {venv_path}")
+        if platform.system() == "Windows":
+            activate_command = f'call "{activate_venv_script}" && python "{run_train_script}" --config {yaml_filename}'
+        else:
+            activate_command = f"source {activate_venv_script} && python {run_train_script} --config {yaml_filename}"
 
         try:
             subprocess.check_call(activate_command, shell=True)
@@ -165,6 +192,8 @@ def run_mace_training():
             sys.exit(1)
     else:
         print("Training was not started. Exiting.")
+
+
 
 def main():
     """
