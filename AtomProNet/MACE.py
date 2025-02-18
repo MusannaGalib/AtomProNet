@@ -159,7 +159,7 @@ def run_mace_training():
 
         # Ensure the virtual environment is activated
         print("Ensure that the virtual environment is activated.")
-        venv_path = input("Enter the path to the virtual environment (e.g., C:/path/to/MACE): ")
+        venv_path = input("Enter the path to the virtual environment (e.g., /path/to/MACE): ")
 
         # Determine the activation script based on OS
         if platform.system() == "Windows":
@@ -172,8 +172,10 @@ def run_mace_training():
             print(f"Activation script not found at {activate_venv_script}")
             sys.exit(1)
 
-        # Resolve the path to the training script
-        run_train_script = os.path.join(venv_path, "Scripts", "run_train.py")
+        # Now look for the run_train.py script in the 'mace' folder outside the virtual environment
+        mace_folder = input("Enter the path to the mace folder (outside the virtual environment, e.g., /path/to/mace): ")
+        run_train_script = os.path.join(mace_folder, "scripts", "run_train.py")
+
         if not os.path.exists(run_train_script):
             print(f"run_train.py not found at {run_train_script}")
             sys.exit(1)
@@ -193,6 +195,8 @@ def run_mace_training():
             sys.exit(1)
     else:
         print("Training was not started. Exiting.")
+
+
 
 
 
