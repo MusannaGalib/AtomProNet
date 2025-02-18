@@ -52,7 +52,7 @@ def install_mace():
 
         # Clone and install MACE
         print("Cloning and installing MACE...")
-        subprocess.check_call(activate_command + "pip install git+https://github.com/ACEsuit/mace.git", shell=True)
+        subprocess.check_call(activate_command + "git clone --depth 1 https://github.com/ACEsuit/mace.git", shell=True)
 
         # Install the kernel for Jupyter
         print("Installing Jupyter kernel...")
@@ -68,6 +68,7 @@ def install_mace():
     except subprocess.CalledProcessError as e:
         print(f"Error during installation: {e}")
         sys.exit(1)
+
 
 
 
