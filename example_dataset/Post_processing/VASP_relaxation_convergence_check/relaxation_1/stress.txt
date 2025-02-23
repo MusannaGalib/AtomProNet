@@ -1,0 +1,60 @@
+  in kB     -64.46789   -64.55094   -65.10867     0.00000     0.00000     0.00000
+  external pressure =      -64.71 kB  Pullay stress =        0.00 kB
+
+  in kB      91.48015    86.42537    79.32687     0.00000     0.00000     0.00000
+  external pressure =       85.74 kB  Pullay stress =        0.00 kB
+
+  in kB       2.53795     0.25286    -3.62952    -0.00000     0.00000     0.00000
+  external pressure =       -0.28 kB  Pullay stress =        0.00 kB
+
+  in kB       2.82382     0.52626    -3.37032     0.00000     0.00000     0.00000
+  external pressure =       -0.01 kB  Pullay stress =        0.00 kB
+
+  in kB      -0.87729    -0.15595     0.93644     0.00000     0.00000     0.00000
+  external pressure =       -0.03 kB  Pullay stress =        0.00 kB
+
+  in kB      -1.62174    -0.27130     1.82010    -0.00000     0.00000     0.00000
+  external pressure =       -0.02 kB  Pullay stress =        0.00 kB
+
+  in kB      -0.97402     0.16794     1.09093     0.00000     0.00000     0.00000
+  external pressure =        0.09 kB  Pullay stress =        0.00 kB
+
+  in kB      -0.67444     0.31122     0.70787     0.00000     0.00000     0.00000
+  external pressure =        0.11 kB  Pullay stress =        0.00 kB
+
+  in kB      -0.68460     0.30715     0.71904     0.00000     0.00000     0.00000
+  external pressure =        0.11 kB  Pullay stress =        0.00 kB
+
+  in kB      -0.02148    -0.33030    -0.09201    -0.00000     0.00000     0.00000
+  external pressure =       -0.15 kB  Pullay stress =        0.00 kB
+
+  in kB      -0.01735    -0.33408    -0.10430    -0.00000     0.00000     0.00000
+  external pressure =       -0.15 kB  Pullay stress =        0.00 kB
+
+  in kB       0.33702     0.08423     0.24989     0.00000     0.00000     0.00000
+  external pressure =        0.22 kB  Pullay stress =        0.00 kB
+
+  in kB       0.25396     0.13969     0.15231     0.00000     0.00000     0.00000
+  external pressure =        0.18 kB  Pullay stress =        0.00 kB
+
+  in kB      -0.06064    -0.00344    -0.00731    -0.00000     0.00000     0.00000
+  external pressure =       -0.02 kB  Pullay stress =        0.00 kB
+
+  in kB      -0.08304     0.08802    -0.02395     0.00000     0.00000     0.00000
+  external pressure =       -0.01 kB  Pullay stress =        0.00 kB
+
+  in kB      -0.05507     0.10501    -0.01712    -0.00000     0.00000     0.00000
+  external pressure =        0.01 kB  Pullay stress =        0.00 kB
+
+  in kB      -0.01805     0.10859     0.00546    -0.00000     0.00000     0.00000
+  external pressure =        0.03 kB  Pullay stress =        0.00 kB
+
+  in kB      -0.00813     0.09472     0.01844     0.00000     0.00000     0.00000
+  external pressure =        0.04 kB  Pullay stress =        0.00 kB
+
+  in kB      -0.01632     0.09039     0.01405     0.00000     0.00000     0.00000
+  external pressure =        0.03 kB  Pullay stress =        0.00 kB
+
+  in kB      -0.08675     0.01518    -0.06905     0.00000     0.00000     0.00000
+  external pressure =       -0.05 kB  Pullay stress =        0.00 kB
+
