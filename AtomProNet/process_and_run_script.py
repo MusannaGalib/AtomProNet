@@ -780,7 +780,7 @@ def process_and_run_script(input_folder):
                 print(f"All .extxyz files concatenated into: {concatenated_extxyz_file}")
                 final_extxyz_file = concatenated_extxyz_file  # Assign concatenated file for further use
             else:
-                print("No .extxyz files were generated. Skipping concatenation.")
+                print("No multiple .extxyz files found. Skipping concatenation step.")
 
             # Ensure split is only performed if `final_extxyz_file` exists
             if 'final_extxyz_file' in locals() and os.path.exists(final_extxyz_file):
