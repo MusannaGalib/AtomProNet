@@ -56,10 +56,10 @@ AtomProNet
 
 ## Tutorial
 
+- Example notebook of building machine learning interatomic potential using AtomProNet- <a href="https://colab.research.google.com/drive/1yXe1jLJ_zjeokESq5Fe9QLMMPD5f1zvS?usp=sharing" target="_blank"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" style="vertical-align: middle;"></a>
+
 - Example notebook of using AtomProNet's 4 modules- <a href="https://colab.research.google.com/drive/1RZ4txh0NH7t5kEyNNxojxVN8c5QAky5P?usp=sharing" target="_blank"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" style="vertical-align: middle;"></a>
 
-
-- Example notebook of building machine learning interatomic potential using AtomProNet- <a href="https://colab.research.google.com/drive/1yXe1jLJ_zjeokESq5Fe9QLMMPD5f1zvS?usp=sharing" target="_blank"> <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" style="vertical-align: middle;"></a>
 
 
 ## Installation and Usage Guide
