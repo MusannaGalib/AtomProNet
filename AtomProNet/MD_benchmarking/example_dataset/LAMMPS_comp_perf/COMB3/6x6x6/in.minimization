@@ -1,0 +1,32 @@
+
+##-----------INITIALIZATION---------- ##
+units           metal
+atom_style      charge
+boundary        p p p
+atom_modify     map yes
+newton          on
+read_data       /home/mewael/scratch/alumina_supercell/lammps_data_file_with_charges.data
+replicate       6 6 6
+
+##-----------MASS INFORMATION---------- ##
+mass 1 26.981538
+mass 2 15.9994
+
+##-----------INTERATOMIC POTENTIAL---------- ##
+pair_style      comb3 polar_off
+pair_coeff      * * /home/mewael/scratch/potentials/ffield.comb3.NiAlO Al O
+neighbor        2.0 bin
+neigh_modify    delay 10 check yes
+
+## ----------ENERGY/FORCE MINIMIZATION---------- ##
+fix 1 all nvt temp 300.0 300.0 0.1
+run 1
+fix 2 all qeq/comb 1 0.0001 file fq.out
+run 5
+unfix 1
+fix 3 all box/relax aniso 0.0 vmax 0.001
+min_modify      dmax 0.01
+minimize        1e-25 1e-25 5000 10000
+
+## ----------DUMP DATA FILE---------- ##
+write_data      comb3_min_6x6x6.data
