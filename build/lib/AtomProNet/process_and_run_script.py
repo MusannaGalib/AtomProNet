@@ -812,6 +812,38 @@ def process_and_run_script(input_folder):
 
             elif post_processing_option == '2':
                 print("\nStarting LAMMPS Post-Processing...")
+                
+                import os
+                import subprocess
+
+                # Get the directory where this script is located
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                print("Script directory:", script_dir)
+
+                # Construct the MD_benchmarking folder path relative to the script
+                md_dir = os.path.join(script_dir, "MD_benchmarking")
+                print("Using MD_benchmarking folder:", md_dir)
+
+                # Check that the directory exists
+                if not os.path.isdir(md_dir):
+                    print(f"Directory {md_dir} does not exist!")
+                else:
+                    try:
+                        # Run main.py in the MD_benchmarking folder
+                        result = subprocess.run(['python', 'main.py'],
+                                                cwd=md_dir,
+                                                capture_output=True,
+                                                text=True)
+                        print("MD Benchmarking output:")
+                        print(result.stdout)
+                        if result.stderr:
+                            print("Errors:")
+                            print(result.stderr)
+                    except Exception as e:
+                        print(f"An error occurred while running main.py: {e}")
+
+
+
 
             else:
                 print("Invalid option. Please select either 1 or 2.")
