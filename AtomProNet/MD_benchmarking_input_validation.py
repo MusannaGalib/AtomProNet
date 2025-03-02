@@ -5,7 +5,7 @@ def validate_repetitions(repetitions):
             exit(1)
 
 def validate_potentials(potentials):
-    from config import VALID_POTENTIALS
+    from MD_benchmarking_config import VALID_POTENTIALS
     for pot in potentials:
         if pot not in VALID_POTENTIALS:
             print(f"Error: '{pot}' is not a valid interatomic potential. Please enter valid options: {', '.join(VALID_POTENTIALS)}.")
