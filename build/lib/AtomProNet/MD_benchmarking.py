@@ -1,15 +1,15 @@
 import os
 import json
-from input_validation import validate_repetitions, validate_potentials
-from file_management import (
+from MD_benchmarking_input_validation import validate_repetitions, validate_potentials
+from MD_benchmarking_file_management import (
     create_main_directory,
     create_folders_and_files,
     submit_all_minimization_jobs,
     submit_all_npt_jobs,
 )
-from config import VALID_POTENTIALS
-from file_conversion import convert_to_lammps_data
-from plotting import plot_npt_performance
+from MD_benchmarking_config import VALID_POTENTIALS
+from MD_benchmarking_file_conversion import convert_to_lammps_data
+from MD_benchmarking_plotting import plot_npt_performance
 
 def is_lammps_data_file(file_path):
     try:
