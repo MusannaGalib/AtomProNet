@@ -1,7 +1,7 @@
 import os
 import json
 from MD_benchmarking_input_validation import validate_repetitions, validate_potentials
-from file_management import (
+from MD_benchmarking_file_management import (
     create_main_directory,
     create_folders_and_files,
     submit_all_minimization_jobs,
