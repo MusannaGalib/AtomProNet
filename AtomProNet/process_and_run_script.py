@@ -812,8 +812,6 @@ def process_and_run_script(input_folder):
 
                 
             elif post_processing_option == '2':
-                import os
-                import subprocess
 
                 # Get the directory where this script is located
                 script_dir = os.path.dirname(os.path.abspath(__file__))

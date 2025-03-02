@@ -1,0 +1,1 @@
+VALID_POTENTIALS = ["allegro", "mace", "comb3", "reaxff"]
