@@ -1,6 +1,6 @@
 import os
 import json
-from input_validation import validate_repetitions, validate_potentials
+from MD_benchmarking_input_validation import validate_repetitions, validate_potentials
 from file_management import (
     create_main_directory,
     create_folders_and_files,
