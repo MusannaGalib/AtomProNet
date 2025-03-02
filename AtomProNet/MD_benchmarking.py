@@ -8,7 +8,7 @@ from MD_benchmarking_file_management import (
     submit_all_npt_jobs,
 )
 from MD_benchmarking_config import VALID_POTENTIALS
-from file_conversion import convert_to_lammps_data
+from MD_benchmarking_file_conversion import convert_to_lammps_data
 from plotting import plot_npt_performance
 
 def is_lammps_data_file(file_path):
