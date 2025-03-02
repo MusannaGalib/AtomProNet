@@ -1,7 +1,7 @@
 import os
 import subprocess
 import shutil
-from lammps_script_generator import generate_minimization_script, generate_npt_relaxation_script
+from MD_benchmarking_lammps_script_generator import generate_minimization_script, generate_npt_relaxation_script
 
 def create_main_directory():
     main_dir = "LAMMPS_computational_performance"
