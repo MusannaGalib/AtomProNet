@@ -7,7 +7,7 @@ from MD_benchmarking_file_management import (
     submit_all_minimization_jobs,
     submit_all_npt_jobs,
 )
-from config import VALID_POTENTIALS
+from MD_benchmarking_config import VALID_POTENTIALS
 from file_conversion import convert_to_lammps_data
 from plotting import plot_npt_performance
 
