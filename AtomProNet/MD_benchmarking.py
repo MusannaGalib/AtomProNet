@@ -9,7 +9,7 @@ from MD_benchmarking_file_management import (
 )
 from MD_benchmarking_config import VALID_POTENTIALS
 from MD_benchmarking_file_conversion import convert_to_lammps_data
-from plotting import plot_npt_performance
+from MD_benchmarking_plotting import plot_npt_performance
 
 def is_lammps_data_file(file_path):
     try:
