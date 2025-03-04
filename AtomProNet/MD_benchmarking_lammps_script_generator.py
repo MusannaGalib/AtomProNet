@@ -98,6 +98,19 @@ POTENTIAL_SETTINGS = {
 }
 
 def generate_minimization_script(folder_name, potential, unit_cell_path, repetition, elements, masses, potential_path, allegro_precision=None):
+    """
+    Generates a LAMMPS minimization script for the specified potential.
+
+    Args:
+        folder_name (str): Path to the folder where the script will be saved.
+        potential (str): The interatomic potential (e.g., "allegro", "mace").
+        unit_cell_path (str): Path to the unit cell file.
+        repetition (int): Number of unit cell repetitions.
+        elements (list): List of elements (e.g., ["Al", "O"]).
+        masses (dict): Dictionary mapping element symbols to their masses.
+        potential_path (str): Path to the potential file.
+        allegro_precision (str): Precision for Allegro potential ("32" or "64").
+    """
     script_path = os.path.join(folder_name, "in.minimization")
     
     # Get potential-specific settings
@@ -114,7 +127,8 @@ def generate_minimization_script(folder_name, potential, unit_cell_path, repetit
     
     # Generate mass commands
     mass_commands = "\n".join([f"mass {i+1} {masses[element]}" for i, element in enumerate(elements)])
-    
+    unit_cell_path = os.path.abspath(unit_cell_path)
+    potential_path = os.path.abspath(potential_path)    
     # Fill the template with the appropriate values
     script_content = LAMMPS_MINIMIZATION_TEMPLATE.format(
         units=settings["units"],
@@ -126,7 +140,7 @@ def generate_minimization_script(folder_name, potential, unit_cell_path, repetit
         elements=" ".join(elements),
         fix_min=settings["fix_min"],
         output_file=output_file,
-        mass_commands=mass_commands,
+        mass_commands=mass_commands,  # Add mass commands
     )
     
     # Write the script to the file
@@ -136,6 +150,18 @@ def generate_minimization_script(folder_name, potential, unit_cell_path, repetit
     print(f"Created LAMMPS minimization script: {script_path}")
 
 def generate_npt_relaxation_script(folder_name, potential, repetition, elements, masses, potential_path, allegro_precision=None):
+    """
+    Generates a LAMMPS NPT relaxation script for the specified potential.
+
+    Args:
+        folder_name (str): Path to the folder where the script will be saved.
+        potential (str): The interatomic potential (e.g., "allegro", "mace").
+        repetition (int): Number of unit cell repetitions.
+        elements (list): List of elements (e.g., ["Al", "O"]).
+        masses (dict): Dictionary mapping element symbols to their masses.
+        potential_path (str): Path to the potential file.
+        allegro_precision (str): Precision for Allegro potential ("32" or "64").
+    """
     script_path = os.path.join(folder_name, "in.npt_relaxation")
     
     # Get potential-specific settings
@@ -155,7 +181,7 @@ def generate_npt_relaxation_script(folder_name, potential, repetition, elements,
     
     # Generate mass commands
     mass_commands = "\n".join([f"mass {i+1} {masses[element]}" for i, element in enumerate(elements)])
-    
+    potential_path = os.path.abspath(potential_path) 
     # Fill the template with the appropriate values
     script_content = LAMMPS_NPT_RELAXATION_TEMPLATE.format(
         units=settings["units"],
