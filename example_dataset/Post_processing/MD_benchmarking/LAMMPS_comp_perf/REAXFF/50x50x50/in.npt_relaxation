@@ -1,0 +1,33 @@
+
+##-----------INITIALIZATION---------- ##
+units           real
+atom_style      charge
+boundary        p p p
+atom_modify     map yes
+newton          on
+read_data       reaxff_min_50x50x50.data
+
+##-----------MASS INFORMATION---------- ##
+mass 1 26.981538
+mass 2 15.9994
+
+##-----------INTERATOMIC POTENTIAL---------- ##
+pair_style      reaxff NULL
+pair_coeff      * * /home/mewael/scratch/potentials/ffield_AlCO_Hong_2016 Al O
+neighbor        2.0 bin
+neigh_modify    delay 10 check yes
+
+##-----------THERMO SETTINGS---------- ##
+thermo          1
+thermo_style    custom step lx ly lz press pxx pyy pzz pe temp
+timestep        0.1
+
+##-----------NPT RELAXATION---------- ##
+fix 1 all npt temp 300.0 300.0 1 iso 0 0 10
+fix 2 all qeq/reaxff 1 0.0 10.0 0.0001 reaxff
+
+##-----------OUTPUT TO FILE---------- ##
+variable        time equal time
+fix             comp_perf all ave/time 1 1 1 v_time file reaxff_comp_perf_50x50x50.txt
+
+run             100000000

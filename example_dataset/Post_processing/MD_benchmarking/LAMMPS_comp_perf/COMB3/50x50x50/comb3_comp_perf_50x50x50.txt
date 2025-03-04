@@ -1,0 +1,4 @@
+# Time-averaged data for fix comp_perf
+# TimeStep v_time
+0 0
+1 0.0001
