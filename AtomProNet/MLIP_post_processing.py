@@ -121,7 +121,11 @@ def compare_rms_forces(extracted_forces, test_forces, title, folder_path, save=T
 
     plt.figure(figsize=(5, 4), dpi=1200)
     plt.scatter(true_rms_forces, predicted_rms_forces, alpha=0.7, color='black', s=10)
-    plt.plot([true_rms_forces.min(), true_rms_forces.max()], [true_rms_forces.min(), true_rms_forces.max()], color='red')
+    
+    # Compute unified axis limits similar to plot_parity
+    min_val = min(true_rms_forces.min(), predicted_rms_forces.min(), 0)
+    max_val = max(true_rms_forces.max(), predicted_rms_forces.max())
+    plt.plot([min_val, max_val], [min_val, max_val], color='red')
     
     # Confidence interval calculation and plotting
     mean_true = np.mean(true_rms_forces)
@@ -138,16 +142,13 @@ def compare_rms_forces(extracted_forces, test_forces, title, folder_path, save=T
     metrics_text = f"$R^2$ = {r_squared:.3f}\nMAE = {mae:.3f}\nRMSE = {rmse:.3f}"
     plt.text(0.05, 0.85, metrics_text, ha='left', va='center', transform=plt.gca().transAxes, fontsize=14)
 
-
-
     plt.xlabel('True RMS Forces (eV/$\AA$)', fontsize=16)
     plt.ylabel('Predicted RMS Forces (eV/$\AA$)', fontsize=16)
     #plt.title(title, fontsize=14)
     
-    # Set range limits for x and y axes
-    plt.xlim([min(true_rms_forces), max(true_rms_forces)])  # Adjust range limits for the x-axis
-    plt.ylim([min(predicted_rms_forces), max(predicted_rms_forces)])  # Adjust range limits for the y-axis
-
+    # Set range limits for both axes using unified limits
+    plt.xlim(min_val, max_val)
+    plt.ylim(min_val, max_val)
 
     # Set aspect ratio
     plt.gca().set_aspect('auto')
@@ -156,9 +157,7 @@ def compare_rms_forces(extracted_forces, test_forces, title, folder_path, save=T
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
 
-
     plt.tight_layout()
- 
 
     if save:
         figure_save_path = os.path.join(save_dir, f"{title.replace(' ', '_')}_rms_forces.png")
@@ -171,6 +170,7 @@ def compare_rms_forces(extracted_forces, test_forces, title, folder_path, save=T
         np.savetxt(true_rms_forces_path, true_rms_forces, header='True RMS Forces', comments='')
         np.savetxt(predicted_rms_forces_path, predicted_rms_forces, header='Predicted RMS Forces', comments='')
         print(f"RMS force data saved to {true_rms_forces_path} and {predicted_rms_forces_path}")
+
 
 
 
