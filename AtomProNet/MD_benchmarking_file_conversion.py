@@ -3,9 +3,30 @@ import numpy as np
 import os
 
 def convert_to_lammps_data(input_file, output_file, charges=None):
+    """
+    Converts a non-LAMMPS file (e.g., XYZ, POSCAR) to LAMMPS data format, including charges.
+
+    Args:
+        input_file (str): Path to the input file.
+        output_file (str): Path to the output LAMMPS data file.
+        charges (dict): Dictionary of charges for each element. Keys are element symbols, values are charges.
+                        If None, charges will not be included.
+
+    Returns:
+        str: Path to the output file if successful, None otherwise.
+    """
     try:
         # Read the input file using ASE
         atoms = read(input_file)
+
+        # Automatically determine the order of elements based on their first occurrence
+        unique_elements = []
+        for atom in atoms:
+            if atom.symbol not in unique_elements:
+                unique_elements.append(atom.symbol)
+
+        # Create a mapping from element to atom type based on the order of first occurrence
+        element_to_type = {element: i + 1 for i, element in enumerate(unique_elements)}
 
         # If charges are provided, assign them to the atoms
         if charges is not None:
@@ -26,7 +47,7 @@ def convert_to_lammps_data(input_file, output_file, charges=None):
             # Write LAMMPS header
             f.write("# LAMMPS data file written by OVITO Basic 3.9.2\n\n")
             f.write(f"{len(atoms)} atoms\n")
-            f.write(f"{len(set(atoms.get_chemical_symbols()))} atom types\n\n")
+            f.write(f"{len(unique_elements)} atom types\n\n")  # Use the number of unique elements
 
             # Write box dimensions
             cell = atoms.get_cell()
@@ -41,8 +62,8 @@ def convert_to_lammps_data(input_file, output_file, charges=None):
                 f.write("Atoms\n\n")
 
             for i, atom in enumerate(atoms):
-                # Assign atom types based on element (1 for the first element, 2 for the second, etc.)
-                atom_type = list(set(atoms.get_chemical_symbols())).index(atom.symbol) + 1
+                # Assign atom types based on the order of first occurrence
+                atom_type = element_to_type[atom.symbol]
                 if charges is not None:
                     charge = atom.charge
                     f.write(f"{i+1} {atom_type} {charge} {atom.position[0]} {atom.position[1]} {atom.position[2]}\n")
