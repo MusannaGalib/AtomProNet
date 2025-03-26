@@ -15,9 +15,9 @@ ase
 # For materials project API
 mp-api
 scipy
-pymatgen==2023.11.12
+#pymatgen==2023.11.12
 #pymatgen[core]==2023.11.12
-#pymatgen
+pymatgen
 
 # For MLIP Post processing
 statsmodels

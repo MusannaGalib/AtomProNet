@@ -16,7 +16,7 @@ setup(
         "ase",
         "mp-api",
         "scipy",
-        "pymatgen==2023.11.12",
+        "pymatgen",
         "statsmodels",
         "seaborn",
         "scikit-learn",
